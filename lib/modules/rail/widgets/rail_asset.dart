@@ -39,18 +39,18 @@ class RailAsset extends StatelessWidget {
                   imageFit: BoxFit.cover,
                 ),
               ),
-              Positioned(
-                left: 12,
-                bottom: 12,
-                child: GestureDetector(
-                  onTap: onPlayClick,
-                  child: const Icon(
-                    Icons.play_arrow,
-                    color: Colors.white,
-                    size: 18,
-                  ),
-                ),
-              ),
+              // Positioned(
+              //   left: 12,
+              //   bottom: 12,
+              //   child: GestureDetector(
+              //     onTap: onPlayClick,
+              //     child: const Icon(
+              //       Icons.play_arrow,
+              //       color: Colors.white,
+              //       size: 18,
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
