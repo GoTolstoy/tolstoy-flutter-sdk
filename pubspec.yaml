@@ -23,5 +23,5 @@ flutter:
   uses-material-design: true
 
 executables:
-  update_tolstoy_sdk:
+  update:
     main: ./scripts/update.dart
