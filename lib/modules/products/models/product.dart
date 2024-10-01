@@ -14,6 +14,7 @@ class Product {
   final String appUrl;
   final String currencyCode;
   final String currencySymbol;
+  final YotpoReview? yotpoReview;
 
   Product({
     required this.id,
@@ -31,6 +32,7 @@ class Product {
     required this.appUrl,
     required this.currencyCode,
     required this.currencySymbol,
+    this.yotpoReview,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -50,6 +52,7 @@ class Product {
       appUrl: json['appUrl'],
       currencyCode: json['currencyCode'],
       currencySymbol: json['currencySymbol'],
+      yotpoReview: json['yotpo'] != null ? YotpoReview.fromJson(json['yotpo']) : null,
     );
   }
 }
@@ -99,6 +102,26 @@ class Variant {
       selectedOptions: Map<String, String?>.from(json['selectedOptions']),
       isVariantAvailableForSale: json['isVariantAvailableForSale'],
       sku: json['sku'],
+    );
+  }
+}
+
+class YotpoReview {
+  final int reviews;
+  final double score;
+  final DateTime updatedAt;
+
+  YotpoReview({
+    required this.reviews,
+    required this.score,
+    required this.updatedAt,
+  });
+
+  factory YotpoReview.fromJson(Map<String, dynamic> json) {
+    return YotpoReview(
+      reviews: json['reviews'],
+      score: json['score'].toDouble(),
+      updatedAt: DateTime.parse(json['updatedAt']),
     );
   }
 }

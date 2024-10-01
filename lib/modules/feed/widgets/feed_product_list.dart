@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/feed/widgets/feed_product_card.dart';
+import 'package:tolstoy_flutter_sdk/modules/feed/widgets/product_card/feed_product_card.dart';
 
 class FeedProductListOptions {
   final Color backgroundColor;
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry itemPadding;
+  final double itemHeight;
 
   const FeedProductListOptions({
     this.backgroundColor = Colors.transparent,
     this.padding = EdgeInsets.zero,
     this.itemPadding = const EdgeInsets.symmetric(horizontal: 8),
+    this.itemHeight = 88,
   });
 }
 
@@ -33,7 +35,7 @@ class FeedProductList extends StatelessWidget {
       color: options.backgroundColor,
       padding: options.padding,
       child: SizedBox(
-        height: 100,
+        height: options.itemHeight,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: products.length,
@@ -43,6 +45,10 @@ class FeedProductList extends StatelessWidget {
               padding: options.itemPadding,
               child: FeedProductCard(
                 product: product,
+                options: FeedProductCardOptions(
+                  height: options.itemHeight,
+                  imageWidth: 88,
+                ),
                 onProductClick: onProductClick,
               ),
             );

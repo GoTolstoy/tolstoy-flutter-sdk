@@ -9,11 +9,13 @@ class FeedScreen extends StatelessWidget {
     required this.config,
     this.onProductClick,
     this.title = 'Styled by You',
+    this.initialAssetId,
   });
 
   final TvPageConfig config;
   final void Function(Product)? onProductClick;
   final String title;
+  final String? initialAssetId;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,7 @@ class FeedScreen extends StatelessWidget {
       body: FeedView(
         config: config,
         onProductClick: onProductClick,
+        initialAssetId: initialAssetId,
         options: const FeedViewOptions(
           pageThreshold: 10,
           isMutedByDefault: true, // temp

@@ -45,24 +45,12 @@ class _FeedAssetViewState extends State<FeedAssetView> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Column(
-          children: [
-            ValueListenableBuilder<double>(
-              valueListenable: _progressNotifier,
-              builder: (context, value, child) {
-                return LinearProgressIndicator(
-                  value: value,
-                );
-              },
-            ),
-            Expanded(
-              child: AssetView(
-                asset: widget.asset,
-                options: widget.options,
-                onProgressUpdate: _handleProgressUpdate,
-              ),
-            ),
-          ],
+        SizedBox.expand(
+          child: AssetView(
+            asset: widget.asset,
+            options: widget.options,
+            onProgressUpdate: _handleProgressUpdate,
+          ),
         ),
         FeedAssetOverlay(
           products: widget.products,
@@ -71,6 +59,21 @@ class _FeedAssetViewState extends State<FeedAssetView> {
           onProductClick: widget.onProductClick,
           onPlayPause: () => widget.onPlayClick(widget.asset),
           onMuteUnmute: () => widget.onMuteClick(widget.asset),
+        ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: ValueListenableBuilder<double>(
+            valueListenable: _progressNotifier,
+            builder: (context, value, child) {
+              return LinearProgressIndicator(
+                value: value,
+                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFF15B56)),
+                backgroundColor: Colors.transparent,
+              );
+            },
+          ),
         ),
       ],
     );

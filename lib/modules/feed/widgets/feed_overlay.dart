@@ -35,16 +35,20 @@ class FeedAssetOverlay extends StatelessWidget {
           if (!isPlaying)
             Center(
               child: GestureDetector(
-                onTap: () {
-                  onPlayPause();
-                },
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.play_arrow,
-                    size: 64,
-                    color: Colors.white,
+                onTap: onPlayPause,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF222222).withOpacity(0.8),
+                    shape: BoxShape.circle,
                   ),
-                  onPressed: onPlayPause,
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.play_arrow,
+                      size: 64,
+                      color: Colors.white,
+                    ),
+                    onPressed: onPlayPause,
+                  ),
                 ),
               ),
             ),
@@ -60,12 +64,18 @@ class FeedAssetOverlay extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      IconButton(
-                        icon: Icon(
-                          isMuted ? Icons.volume_off : Icons.volume_up,
-                          color: Colors.white,
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF222222).withOpacity(0.8),
+                          shape: BoxShape.circle,
                         ),
-                        onPressed: onMuteUnmute,
+                        child: IconButton(
+                          icon: Icon(
+                            isMuted ? Icons.volume_off : Icons.volume_up,
+                            color: Colors.white,
+                          ),
+                          onPressed: onMuteUnmute,
+                        ),
                       ),
                     ],
                   ),

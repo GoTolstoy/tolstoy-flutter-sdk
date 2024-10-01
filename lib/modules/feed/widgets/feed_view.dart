@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
@@ -30,12 +31,14 @@ class FeedView extends StatefulWidget {
     this.onLoadNextPage,
     this.options = const FeedViewOptions(),
     this.onProductClick,
+    this.initialAssetId,
   });
 
   final TvPageConfig config;
   final FeedViewOptions options;
   final Function()? onLoadNextPage;
   final void Function(Product)? onProductClick;
+  final String? initialAssetId;
 
   @override
   State<FeedView> createState() => _FeedViewState();
@@ -46,19 +49,45 @@ class _FeedViewState extends State<FeedView> {
   bool isPlaying = true;
   bool isMuted = false;
   int activePageIndex = 0;
+  late FocusNode _focusNode;
+  bool _isVisible = true;
 
   @override
   void initState() {
     super.initState();
     isPlaying = widget.options.isAutoplay;
     isMuted = widget.options.isMutedByDefault;
-    _pageViewController = PageController(initialPage: 0);
+    
+    int initialPage = 0;
+    if (widget.initialAssetId != null) {
+      initialPage = widget.config.assets.indexWhere((asset) => asset.id == widget.initialAssetId);
+      initialPage = initialPage != -1 ? initialPage : 0;
+    }
+    
+    _pageViewController = PageController(initialPage: initialPage);
+    activePageIndex = initialPage;
+    _focusNode = FocusNode();
+    _focusNode.addListener(_onFocusChange);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
   }
 
   @override
   void dispose() {
-    super.dispose();
     _pageViewController.dispose();
+    _focusNode.removeListener(_onFocusChange);
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _onFocusChange() {
+    if (mounted) {
+      setState(() {
+        _isVisible = _focusNode.hasFocus;
+        isPlaying = _isVisible && widget.options.isAutoplay;
+      });
+    }
   }
 
   _onPageChanged(int index) {
@@ -119,26 +148,29 @@ class _FeedViewState extends State<FeedView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).colorScheme.surface,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: <Widget>[
-          PageView.builder(
-            controller: _pageViewController,
-            scrollDirection: Axis.vertical,
-            itemBuilder: itemBuilder,
-            onPageChanged: _onPageChanged,
-            allowImplicitScrolling: true,
-          ),
-          if (activePageIndex == widget.config.assets.length - 1 && widget.options.isLoadingNextPage)
-            const Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: LinearProgressIndicator(),
+    return Focus(
+      focusNode: _focusNode,
+      child: Container(
+        color: Theme.of(context).colorScheme.surface,
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: <Widget>[
+            PageView.builder(
+              controller: _pageViewController,
+              scrollDirection: Axis.vertical,
+              itemBuilder: itemBuilder,
+              onPageChanged: _onPageChanged,
+              allowImplicitScrolling: true,
             ),
-        ],
+            if (activePageIndex == widget.config.assets.length - 1 && widget.options.isLoadingNextPage)
+              const Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: LinearProgressIndicator(),
+              ),
+          ],
+        ),
       ),
     );
   }

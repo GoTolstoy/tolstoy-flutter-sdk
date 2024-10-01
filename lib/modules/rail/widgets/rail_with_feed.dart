@@ -32,6 +32,7 @@ class RailWithFeed extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => FeedScreen(
                   config: config,
+                  initialAssetId: asset.id,
                   onProductClick: onProductClick,
                 ),
               ),
