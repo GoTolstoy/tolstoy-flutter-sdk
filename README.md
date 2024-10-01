@@ -16,6 +16,16 @@ To install the Tolstoy Flutter SDK, you need to have access to the Tolstoy GitHu
 
 3. Run `flutter pub get` to fetch the package.
 
+## Update package
+
+To update the Tolstoy Flutter SDK package, run the following command:
+
+```
+dart run tolstoy_flutter_sdk:update
+```
+
+This will ensure you have the latest version of the SDK.
+
 ## Examples
 
 Basic usage example are available here: [Tolstoy Flutter SDK Examples](https://github.com/GoTolstoy/tolstoy-flutter-sdk/tree/master/examples)
