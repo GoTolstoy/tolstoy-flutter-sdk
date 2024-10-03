@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/widgets.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
-
+import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
 import 'feed_overlay.dart';
 
 class FeedAssetView extends StatefulWidget {
   const FeedAssetView({
     super.key,
     required this.asset,
+    required this.config,
     required this.onPlayClick,
     required this.onMuteClick,
     this.options = const AssetViewOptions(),
@@ -18,6 +19,7 @@ class FeedAssetView extends StatefulWidget {
   });
 
   final Asset asset;
+  final TvPageConfig config;
   final AssetViewOptions options;
   final List<Product> products;
   final Function(Asset) onPlayClick;
@@ -48,6 +50,7 @@ class _FeedAssetViewState extends State<FeedAssetView> {
         SizedBox.expand(
           child: AssetView(
             asset: widget.asset,
+            config: widget.config,
             options: widget.options,
             onProgressUpdate: _handleProgressUpdate,
           ),

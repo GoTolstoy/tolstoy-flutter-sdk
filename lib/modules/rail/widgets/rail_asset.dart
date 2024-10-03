@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/widgets.dart';
-
 class RailAsset extends StatelessWidget {
   final Asset asset;
+  final TvPageConfig config;
+  final AssetViewOptions? options;
   final VoidCallback onTap;
   final VoidCallback onPlayClick;
   final double width;
@@ -12,6 +14,8 @@ class RailAsset extends StatelessWidget {
   const RailAsset({
     super.key,
     required this.asset,
+    this.options,
+    required this.config,
     required this.onTap,
     required this.onPlayClick,
     required this.width,
@@ -35,9 +39,8 @@ class RailAsset extends StatelessWidget {
             children: [
               AssetView(
                 asset: asset,
-                options: const AssetViewOptions(
-                  imageFit: BoxFit.cover,
-                ),
+                config: config,
+                options: options ?? const AssetViewOptions(imageFit: BoxFit.cover),
               ),
               Positioned(
                 left: 12,

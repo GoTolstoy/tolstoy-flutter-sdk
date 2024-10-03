@@ -57,4 +57,15 @@ class ApiService {
       throw Exception('Failed to load actions by VOD asset IDs. Status code: ${response.statusCode}');
     }
   }
+
+  static Future<void> sendEvent(Map<String, dynamic> params) async {
+    await http.post(
+      Uri.parse('$_baseUrl/events/event'),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(params),
+    );
+  }
 }

@@ -55,6 +55,27 @@ class Product {
       yotpoReview: json['yotpo'] != null ? YotpoReview.fromJson(json['yotpo']) : null,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'handle': handle,
+      'title': title,
+      'imageUrl': imageUrl,
+      'variants': variants.map((v) => v.toJson()).toList(),
+      'options': options,
+      'images': images.map((i) => i.toJson()).toList(),
+      'tags': tags,
+      'descriptionHtml': descriptionHtml,
+      'templateSuffix': templateSuffix,
+      'dbProductId': dbProductId,
+      'appKey': appKey,
+      'appUrl': appUrl,
+      'currencyCode': currencyCode,
+      'currencySymbol': currencySymbol,
+      'yotpo': yotpoReview?.toJson(),
+    };
+  }
 }
 
 class ProductImage {
@@ -68,6 +89,13 @@ class ProductImage {
       id: json['id'],
       src: json['src'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'src': src,
+    };
   }
 }
 
@@ -104,6 +132,19 @@ class Variant {
       sku: json['sku'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'productId': productId,
+      'id': id,
+      'price': price,
+      'compareAtPrice': compareAtPrice,
+      'title': title,
+      'selectedOptions': selectedOptions,
+      'isVariantAvailableForSale': isVariantAvailableForSale,
+      'sku': sku,
+    };
+  }
 }
 
 class YotpoReview {
@@ -123,6 +164,14 @@ class YotpoReview {
       score: json['score'].toDouble(),
       updatedAt: DateTime.parse(json['updatedAt']),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'reviews': reviews,
+      'score': score,
+      'updatedAt': updatedAt.toIso8601String(),
+    };
   }
 }
 

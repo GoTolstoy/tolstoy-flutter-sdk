@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/constants.dart';
+import 'package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart';
 
 import 'image_asset.dart';
 import 'video_asset.dart';
@@ -10,12 +11,14 @@ class AssetView extends StatefulWidget {
   const AssetView({
     super.key,
     required this.asset,
+    required this.config,
     this.onAssetEnded,
     this.onProgressUpdate,
     this.options = const AssetViewOptions(),
   });
 
   final Asset asset;
+  final TvPageConfig config;
   final AssetViewOptions options;
   final Function(Asset)? onAssetEnded;
   final Function(
@@ -35,6 +38,7 @@ class _AssetViewState extends State<AssetView> {
       case AssetType.video:
         return VideoAsset(
           asset: widget.asset,
+          config: widget.config,
           options: widget.options,
           onAssetEnded: widget.onAssetEnded,
           onProgressUpdate: widget.onProgressUpdate,
@@ -43,6 +47,7 @@ class _AssetViewState extends State<AssetView> {
         return ImageAsset(
           asset: widget.asset,
           options: widget.options,
+          config: widget.config,
           onAssetEnded: widget.onAssetEnded,
           onProgressUpdate: widget.onProgressUpdate,
         );

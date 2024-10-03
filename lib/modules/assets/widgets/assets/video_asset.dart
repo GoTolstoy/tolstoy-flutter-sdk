@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/services.dart';
+import 'package:tolstoy_flutter_sdk/modules/analytics/analytics.dart';
+
+const watchThresholdMS = 200;
 
 class VideoAsset extends StatefulWidget {
   const VideoAsset({
     super.key,
     required this.asset,
+    required this.config,
     this.onAssetEnded,
     this.onProgressUpdate,
     this.options = const AssetViewOptions(),
   });
 
   final Asset asset;
+  final TvPageConfig config;
   final Function(Asset)? onAssetEnded;
   final Function(
     Asset asset,
@@ -29,10 +35,16 @@ class VideoAsset extends StatefulWidget {
 class _VideoAssetState extends State<VideoAsset> {
   late VideoPlayerController _controller;
   late String _thumbnailUrl;
+  late Analytics _analytics;
+  int _loopCount = 0;
+  bool _hasPlayed = false;
+  bool _hasWatched = false;
+  Duration _lastPosition = Duration.zero;
 
   @override
   void initState() {
     super.initState();
+    _analytics = Analytics();
 
     final url = AssetService.getAssetUrl(widget.asset);
     _thumbnailUrl = AssetService.getPosterUrl(widget.asset);
@@ -41,30 +53,80 @@ class _VideoAssetState extends State<VideoAsset> {
       Uri.parse(url),
     )..initialize().then((_) {
         _updateControllerState();
+        _controller.setLooping(widget.options.shouldLoop);
         _controller.addListener(_videoPlayerListener);
         setState(() {});
       });
   }
 
   void _videoPlayerListener() {
-    if (_controller.value.isPlaying &&
-        widget.onProgressUpdate != null &&
-        _controller.value.position > Duration.zero) {
-      widget.onProgressUpdate!(
-          widget.asset, _controller.value.position, _controller.value.duration);
-    }
+    final currentPosition = _controller.value.position;
 
-    // loop video if ended
-    if (widget.options.shouldLoop &&
-        _controller.value.position >= _controller.value.duration) {
-      _controller.seekTo(Duration.zero);
-      _controller.play();
+    if (!_controller.value.isPlaying) {
+      _sendVideoWatchedAnalytics();
       return;
     }
 
-    if (widget.onAssetEnded != null) {
+    _hasWatched = true;
+
+    if (!_hasPlayed && widget.options.trackAnalytics) {
+      _analytics.sendVideoLoaded(
+        widget.config,
+        {
+          'videoId': widget.asset.id,
+          'text': widget.asset.name,
+          'type': widget.asset.type.name,
+        },
+      );
+      _hasPlayed = true;
+    }
+
+    if (_lastPosition > currentPosition &&
+        _lastPosition.inMilliseconds > watchThresholdMS) {
+      _loopCount++;
+    }
+
+    _lastPosition = currentPosition;
+
+    if (_controller.value.isPlaying &&
+        widget.onProgressUpdate != null &&
+        currentPosition > Duration.zero) {
+      widget.onProgressUpdate!(
+          widget.asset, currentPosition, _controller.value.duration);
+    }
+
+    if (widget.onAssetEnded != null &&
+        currentPosition >= _controller.value.duration) {
       widget.onAssetEnded!(widget.asset);
     }
+  }
+
+  void _sendVideoWatchedAnalytics() {
+    if (!_hasWatched || !widget.options.trackAnalytics) {
+      return;
+    }
+
+    final watchedSeconds = _controller.value.position.inMicroseconds /
+            1000000.0 +
+        (_loopCount * _controller.value.duration.inMicroseconds / 1000000.0);
+
+    if (watchedSeconds == 0.0) {
+      return;
+    }
+
+    _analytics.sendVideoWatched(
+      widget.config,
+      {
+        'videoId': widget.asset.id,
+        'text': widget.asset.name,
+        'type': widget.asset.type.name,
+        'videoLoopCount': _loopCount,
+        'videoWatchedTime': watchedSeconds,
+        'videoDuration': _controller.value.duration.inMicroseconds / 1000000.0,
+      },
+    );
+    _loopCount = 0;
+    _hasWatched = false;
   }
 
   void _updateControllerState() {
@@ -124,6 +186,7 @@ class _VideoAssetState extends State<VideoAsset> {
 
   @override
   void dispose() {
+    _sendVideoWatchedAnalytics();
     _controller.removeListener(_videoPlayerListener);
     _controller.dispose();
     super.dispose();

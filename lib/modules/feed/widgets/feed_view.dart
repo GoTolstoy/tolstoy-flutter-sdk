@@ -1,11 +1,12 @@
 import 'dart:math';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/constants.dart';
+import 'package:tolstoy_flutter_sdk/modules/analytics/analytics.dart';
 
 import 'feed_asset.dart';
 
@@ -51,10 +52,14 @@ class _FeedViewState extends State<FeedView> {
   int activePageIndex = 0;
   late FocusNode _focusNode;
   bool _isVisible = true;
+  late Analytics _analytics;
 
   @override
   void initState() {
     super.initState();
+    _analytics = Analytics();
+    _analytics.sendSessionStart(widget.config);
+
     isPlaying = widget.options.isAutoplay;
     isMuted = widget.options.isMutedByDefault;
     
@@ -108,6 +113,15 @@ class _FeedViewState extends State<FeedView> {
     });
   }
 
+  void _onProductClick(Product product) {
+    _analytics.sendProductClicked(widget.config, {
+      'products': jsonEncode(product.toJson()),
+      'productIds': jsonEncode([product.id]),
+      'productNames': product.title,
+    });
+    widget.onProductClick?.call(product);
+  }
+
   Widget? itemBuilder(BuildContext context, int index) {
     if (index > widget.config.assets.length - 1) {
       return null;
@@ -133,16 +147,18 @@ class _FeedViewState extends State<FeedView> {
 
     return FeedAssetView(
       asset: asset,
+      config: widget.config,
       options: AssetViewOptions(
         isPlaying: isPlaying && isActive,
         isMuted: isMuted,
         shouldLoop: true,
         withMuteButton: asset.type != AssetType.image,
+        trackAnalytics: true,
       ),
       onPlayClick: _onPlayClick,
       onMuteClick: _onMuteClick,
       products: products,
-      onProductClick: widget.onProductClick,
+      onProductClick: _onProductClick,
     );
   }
 
