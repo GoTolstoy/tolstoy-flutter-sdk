@@ -8,6 +8,7 @@ class RailAsset extends StatelessWidget {
   final AssetViewOptions? options;
   final VoidCallback onTap;
   final VoidCallback onPlayClick;
+  final Function(Asset)? onVideoEnded;
   final double width;
   final double height;
 
@@ -18,6 +19,7 @@ class RailAsset extends StatelessWidget {
     required this.config,
     required this.onTap,
     required this.onPlayClick,
+    required this.onVideoEnded,
     required this.width,
     required this.height,
   });
@@ -40,6 +42,7 @@ class RailAsset extends StatelessWidget {
               AssetView(
                 asset: asset,
                 config: config,
+                onAssetEnded: onVideoEnded,
                 options: options ?? const AssetViewOptions(imageFit: BoxFit.cover),
               ),
               Positioned(

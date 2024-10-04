@@ -62,6 +62,11 @@ class _VideoAssetState extends State<VideoAsset> {
   void _videoPlayerListener() {
     final currentPosition = _controller.value.position;
 
+    if (widget.onAssetEnded != null &&
+        currentPosition >= _controller.value.duration) {
+      widget.onAssetEnded!(widget.asset);
+    }
+
     if (!_controller.value.isPlaying) {
       _sendVideoWatchedAnalytics();
       return;
@@ -93,11 +98,6 @@ class _VideoAssetState extends State<VideoAsset> {
         currentPosition > Duration.zero) {
       widget.onProgressUpdate!(
           widget.asset, currentPosition, _controller.value.duration);
-    }
-
-    if (widget.onAssetEnded != null &&
-        currentPosition >= _controller.value.duration) {
-      widget.onAssetEnded!(widget.asset);
     }
   }
 

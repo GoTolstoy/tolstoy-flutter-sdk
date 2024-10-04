@@ -46,6 +46,8 @@ class _ImageAssetState extends State<ImageAsset> {
   }
 
   void _assetEnded() {
+    _progressTime = Duration.zero;
+
     if (widget.options.shouldLoop) {
       _progressTime = Duration.zero;
       _loopCount++;

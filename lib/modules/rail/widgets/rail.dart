@@ -8,6 +8,8 @@ import 'package:tolstoy_flutter_sdk/modules/analytics/analytics.dart';
 
 import 'rail_asset.dart';
 
+const maxVisibleItems = 6;
+
 class Rail extends StatefulWidget {
   final TvPageConfig config;
   final Function(Asset)? onAssetClick;
@@ -29,12 +31,50 @@ class Rail extends StatefulWidget {
 class _RailState extends State<Rail> {
   late final Analytics _analytics;
   bool _hasBeenVisible = false;
+  int _currentPlayingIndex = 0;
+  late final ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
     _analytics = Analytics();
     _analytics.sendPageView(widget.config);
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _playNextVideo() {
+    setState(() {
+      _currentPlayingIndex = (_currentPlayingIndex + 1) % widget.config.assets.length.clamp(0, maxVisibleItems - 1);
+    });
+    _scrollToCurrentVideo();
+  }
+
+  void _scrollToCurrentVideo() {
+    if (_scrollController.hasClients) {
+      final railWidth = context.size?.width ?? MediaQuery.of(context).size.width;
+      final itemWidth = widget.options.itemWidth + widget.options.itemGap;
+      final visibleItemCount = widget.config.assets.length.clamp(0, maxVisibleItems);
+      final remainingItems = (visibleItemCount + 1) - _currentPlayingIndex;
+      final remainingWidth = remainingItems * itemWidth;
+
+      if (remainingWidth > railWidth) {
+        final targetOffset = _currentPlayingIndex * itemWidth;
+        final maxOffset = (visibleItemCount * itemWidth) - railWidth - widget.options.itemGap;
+        final clampedOffset = targetOffset.clamp(0.0, maxOffset);
+
+        _scrollController.animateTo(
+          clampedOffset,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    }
   }
 
   @override
@@ -50,6 +90,7 @@ class _RailState extends State<Rail> {
       child: SizedBox(
         height: widget.options.itemHeight,
         child: ListView.separated(
+          controller: _scrollController,
           scrollDirection: Axis.horizontal,
           itemCount: widget.config.assets.length.clamp(0, 6),
           separatorBuilder: (context, index) => SizedBox(width: widget.options.itemGap),
@@ -66,12 +107,15 @@ class _RailState extends State<Rail> {
                 widget.onPlayClick?.call(asset);
                 _analytics.sendVideoWatched(widget.config, { 'videoId': asset.id });
               },
+              onVideoEnded: (asset) {
+                _playNextVideo();
+              },
               width: widget.options.itemWidth,
               height: widget.options.itemHeight,
               options: AssetViewOptions(
-                isPlaying: index == 0, // playing first only for now
+                isPlaying: index == _currentPlayingIndex,
                 isMuted: true,
-                shouldLoop: true,
+                shouldLoop: false,
                 imageFit: BoxFit.cover,
               ),
             );
