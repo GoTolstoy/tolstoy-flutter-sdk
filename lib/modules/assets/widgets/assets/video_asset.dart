@@ -16,6 +16,7 @@ class VideoAsset extends StatefulWidget {
     this.onAssetEnded,
     this.onProgressUpdate,
     this.options = const AssetViewOptions(),
+    this.preload = true,
   });
 
   final Asset asset;
@@ -27,47 +28,57 @@ class VideoAsset extends StatefulWidget {
     Duration duration,
   )? onProgressUpdate;
   final AssetViewOptions options;
+  final bool preload;
 
   @override
   State<VideoAsset> createState() => _VideoAssetState();
 }
 
 class _VideoAssetState extends State<VideoAsset> {
-  late VideoPlayerController _controller;
+  VideoPlayerController? _controller;
   late String _thumbnailUrl;
   late Analytics _analytics;
   int _loopCount = 0;
   bool _hasPlayed = false;
   bool _hasWatched = false;
   Duration _lastPosition = Duration.zero;
+  bool _isVideoInitialized = false;
 
   @override
   void initState() {
     super.initState();
     _analytics = Analytics();
 
-    final url = AssetService.getAssetUrl(widget.asset);
     _thumbnailUrl = AssetService.getPosterUrl(widget.asset);
+
+    if (widget.preload) {
+      _initializeVideoController();
+    }
+  }
+
+  void _initializeVideoController() {
+    final url = AssetService.getAssetUrl(widget.asset);
 
     _controller = VideoPlayerController.networkUrl(
       Uri.parse(url),
     )..initialize().then((_) {
+        _isVideoInitialized = true;
         _updateControllerState();
-        _controller.setLooping(widget.options.shouldLoop);
-        _controller.addListener(_videoPlayerListener);
+        _controller!.setLooping(widget.options.shouldLoop);
+        _controller!.addListener(_videoPlayerListener);
         setState(() {});
       });
   }
 
   void _videoPlayerListener() {
-    final currentPosition = _controller.value.position;
+    final currentPosition = _controller!.value.position;
 
     if (widget.onAssetEnded != null &&
-        currentPosition >= _controller.value.duration) {
+        currentPosition >= _controller!.value.duration) {
       widget.onAssetEnded!(widget.asset);
     }
 
-    if (!_controller.value.isPlaying) {
+    if (!_controller!.value.isPlaying) {
       _sendVideoWatchedAnalytics();
       return;
     }
@@ -93,11 +104,11 @@ class _VideoAssetState extends State<VideoAsset> {
 
     _lastPosition = currentPosition;
 
-    if (_controller.value.isPlaying &&
+    if (_controller!.value.isPlaying &&
         widget.onProgressUpdate != null &&
         currentPosition > Duration.zero) {
       widget.onProgressUpdate!(
-          widget.asset, currentPosition, _controller.value.duration);
+          widget.asset, currentPosition, _controller!.value.duration);
     }
   }
 
@@ -106,9 +117,9 @@ class _VideoAssetState extends State<VideoAsset> {
       return;
     }
 
-    final watchedSeconds = _controller.value.position.inMicroseconds /
+    final watchedSeconds = _controller!.value.position.inMicroseconds /
             1000000.0 +
-        (_loopCount * _controller.value.duration.inMicroseconds / 1000000.0);
+        (_loopCount * _controller!.value.duration.inMicroseconds / 1000000.0);
 
     if (watchedSeconds == 0.0) {
       return;
@@ -122,7 +133,7 @@ class _VideoAssetState extends State<VideoAsset> {
         'type': widget.asset.type.name,
         'videoLoopCount': _loopCount,
         'videoWatchedTime': watchedSeconds,
-        'videoDuration': _controller.value.duration.inMicroseconds / 1000000.0,
+        'videoDuration': _controller!.value.duration.inMicroseconds / 1000000.0,
       },
     );
     _loopCount = 0;
@@ -130,30 +141,34 @@ class _VideoAssetState extends State<VideoAsset> {
   }
 
   void _updateControllerState() {
+    if (_controller == null) return;
     setState(() {
       if (widget.options.isPlaying) {
-        _controller.play();
+        _controller!.play();
       } else {
-        _controller.pause();
+        _controller!.pause();
       }
-      _controller.setVolume(widget.options.isMuted ? 0.0 : 1.0);
+      _controller!.setVolume(widget.options.isMuted ? 0.0 : 1.0);
     });
   }
 
   @override
   void didUpdateWidget(VideoAsset oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.options.isPlaying != widget.options.isPlaying ||
-        oldWidget.options.isMuted != widget.options.isMuted) {
+    if (oldWidget.preload != widget.preload && widget.preload && _controller == null) {
+      _initializeVideoController();
+    }
+    if (_controller != null && (oldWidget.options.isPlaying != widget.options.isPlaying ||
+        oldWidget.options.isMuted != widget.options.isMuted)) {
       _updateControllerState();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_controller.value.isInitialized ||
-        (!_controller.value.isPlaying &&
-            _controller.value.position == Duration.zero)) {
+    if (_controller == null || !_isVideoInitialized ||
+        (!_controller!.value.isPlaying &&
+            _controller!.value.position == Duration.zero)) {
       return Image.network(
         _thumbnailUrl,
         fit: BoxFit.cover,
@@ -175,9 +190,9 @@ class _VideoAssetState extends State<VideoAsset> {
         FittedBox(
           fit: BoxFit.cover,
           child: SizedBox(
-            height: _controller.value.size.height,
-            width: _controller.value.size.width,
-            child: VideoPlayer(_controller),
+            height: _controller!.value.size.height,
+            width: _controller!.value.size.width,
+            child: VideoPlayer(_controller!),
           ),
         ),
       ],
@@ -187,8 +202,8 @@ class _VideoAssetState extends State<VideoAsset> {
   @override
   void dispose() {
     _sendVideoWatchedAnalytics();
-    _controller.removeListener(_videoPlayerListener);
-    _controller.dispose();
+    _controller?.removeListener(_videoPlayerListener);
+    _controller?.dispose();
     super.dispose();
   }
 }

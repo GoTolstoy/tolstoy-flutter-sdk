@@ -11,12 +11,16 @@ class RailWithFeed extends StatelessWidget {
   final String publishId;
   final RailOptions railOptions;
   final void Function(Product)? onProductClick;
+  final PreferredSizeWidget? header;
+  final Widget? footer;
 
   const RailWithFeed({
     super.key,
     required this.publishId,
     this.railOptions = const RailOptions(),
     this.onProductClick,
+    this.header,
+    this.footer,
   });
 
   @override
@@ -34,6 +38,8 @@ class RailWithFeed extends StatelessWidget {
                   config: config,
                   initialAssetId: asset.id,
                   onProductClick: onProductClick,
+                  header: header,
+                  footer: footer,
                 ),
               ),
             );

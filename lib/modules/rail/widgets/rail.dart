@@ -50,7 +50,7 @@ class _RailState extends State<Rail> {
 
   void _playNextVideo() {
     setState(() {
-      _currentPlayingIndex = (_currentPlayingIndex + 1) % widget.config.assets.length.clamp(0, maxVisibleItems - 1);
+      _currentPlayingIndex = (_currentPlayingIndex + 1) % widget.config.assets.length.clamp(0, maxVisibleItems);
     });
     _scrollToCurrentVideo();
   }
@@ -77,6 +77,20 @@ class _RailState extends State<Rail> {
     }
   }
 
+  bool _shouldPreload(int index) {
+    final visibleItemCount = widget.config.assets.length.clamp(0, maxVisibleItems);
+    if (_currentPlayingIndex == 0) {
+      // if first playing: preload first and second items
+      return index == 0 || index == 1;
+    } else if (_currentPlayingIndex == visibleItemCount - 1) {
+      // if last playing: second last items, preload last and first items
+      return index == visibleItemCount - 2 || index == visibleItemCount - 1 || index == 0;
+    } else {
+      // if non edge item playing: preload current and adjacent items
+      return index >= _currentPlayingIndex - 1 && index <= _currentPlayingIndex + 1;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
@@ -92,7 +106,7 @@ class _RailState extends State<Rail> {
         child: ListView.separated(
           controller: _scrollController,
           scrollDirection: Axis.horizontal,
-          itemCount: widget.config.assets.length.clamp(0, 6),
+          itemCount: widget.config.assets.length.clamp(0, maxVisibleItems),
           separatorBuilder: (context, index) => SizedBox(width: widget.options.itemGap),
           itemBuilder: (context, index) {
             final asset = widget.config.assets[index];
@@ -118,6 +132,7 @@ class _RailState extends State<Rail> {
                 shouldLoop: false,
                 imageFit: BoxFit.cover,
               ),
+              preload: _shouldPreload(index),
             );
           },
         ),

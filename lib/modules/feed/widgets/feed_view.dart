@@ -26,20 +26,23 @@ class FeedViewOptions {
 }
 
 class FeedView extends StatefulWidget {
-  const FeedView({
+  final TvPageConfig config;
+  final FeedViewOptions options;
+  final Function()? onLoadNextPage;
+  final void Function(Product)? onProductClick;
+  final String? initialAssetId;
+  final Widget? footer;
+  final GlobalKey footerKey;
+
+  FeedView({
     super.key,
     required this.config,
     this.onLoadNextPage,
     this.options = const FeedViewOptions(),
     this.onProductClick,
     this.initialAssetId,
-  });
-
-  final TvPageConfig config;
-  final FeedViewOptions options;
-  final Function()? onLoadNextPage;
-  final void Function(Product)? onProductClick;
-  final String? initialAssetId;
+    this.footer,
+  }) : footerKey = GlobalKey();
 
   @override
   State<FeedView> createState() => _FeedViewState();
@@ -53,6 +56,7 @@ class _FeedViewState extends State<FeedView> {
   late FocusNode _focusNode;
   bool _isVisible = true;
   late Analytics _analytics;
+  double _footerHeight = 0.0;
 
   @override
   void initState() {
@@ -75,7 +79,21 @@ class _FeedViewState extends State<FeedView> {
     _focusNode.addListener(_onFocusChange);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
+      _calculateFooterHeight();
     });
+  }
+
+  void _calculateFooterHeight() {
+    if (widget.footer != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final RenderBox? footerBox = widget.footerKey.currentContext?.findRenderObject() as RenderBox?;
+        if (footerBox != null) {
+          setState(() {
+            _footerHeight = footerBox.size.height;
+          });
+        } 
+      });
+    }
   }
 
   @override
@@ -159,6 +177,9 @@ class _FeedViewState extends State<FeedView> {
       onMuteClick: _onMuteClick,
       products: products,
       onProductClick: _onProductClick,
+      feedAssetOptions: FeedAssetOptions(
+        overlayBottomPadding: _footerHeight,
+      ),
     );
   }
 
@@ -184,6 +205,16 @@ class _FeedViewState extends State<FeedView> {
                 left: 0,
                 right: 0,
                 child: LinearProgressIndicator(),
+              ),
+            if (widget.footer != null)
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: KeyedSubtree(
+                  key: widget.footerKey,
+                  child: widget.footer!,
+                ),
               ),
           ],
         ),

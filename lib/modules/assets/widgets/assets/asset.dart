@@ -15,6 +15,7 @@ class AssetView extends StatefulWidget {
     this.onAssetEnded,
     this.onProgressUpdate,
     this.options = const AssetViewOptions(),
+    this.preload = true,
   });
 
   final Asset asset;
@@ -26,6 +27,7 @@ class AssetView extends StatefulWidget {
     Duration progress,
     Duration duration,
   )? onProgressUpdate;
+  final bool preload;
 
   @override
   State<AssetView> createState() => _AssetViewState();
@@ -42,6 +44,7 @@ class _AssetViewState extends State<AssetView> {
           options: widget.options,
           onAssetEnded: widget.onAssetEnded,
           onProgressUpdate: widget.onProgressUpdate,
+          preload: widget.preload,
         );
       case AssetType.image:
         return ImageAsset(

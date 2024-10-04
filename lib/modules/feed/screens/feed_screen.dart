@@ -8,32 +8,29 @@ class FeedScreen extends StatelessWidget {
     super.key,
     required this.config,
     this.onProductClick,
-    this.title = 'Styled by You',
     this.initialAssetId,
+    this.header,
+    this.footer,
   });
 
   final TvPageConfig config;
   final void Function(Product)? onProductClick;
-  final String title;
   final String? initialAssetId;
+  final PreferredSizeWidget? header;
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(title),
-      ),
+      appBar: header,
       body: FeedView(
         config: config,
         onProductClick: onProductClick,
         initialAssetId: initialAssetId,
+        footer: footer,
         options: const FeedViewOptions(
           pageThreshold: 10,
-          isMutedByDefault: true, // temp
+          isMutedByDefault: true,
         ),
       ),
     );

@@ -19,6 +19,28 @@ class _MyHomePageState extends State<MyHomePage> {
     print('product clicked: ${product.title}');
   }
 
+  PreferredSizeWidget _buildFeedHeader() {
+    return AppBar(
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      title: const Text('Styled by You'),
+    );
+  }
+
+  Widget? _buildFeedFooter() {
+    return Container(
+      height: 60,
+      color: Colors.black.withOpacity(0.6),
+      alignment: Alignment.center,
+      child: const Text(
+        'Footer Placeholder',
+        style: TextStyle(fontSize: 16),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +48,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: RailWithFeed(
           publishId: publishId,
           onProductClick: onProductClick,
+          header: _buildFeedHeader(),
+          footer: _buildFeedFooter(),
         ),
       ),
     );

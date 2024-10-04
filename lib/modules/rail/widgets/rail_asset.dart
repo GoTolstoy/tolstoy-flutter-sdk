@@ -11,6 +11,7 @@ class RailAsset extends StatelessWidget {
   final Function(Asset)? onVideoEnded;
   final double width;
   final double height;
+  final bool preload;
 
   const RailAsset({
     super.key,
@@ -22,6 +23,7 @@ class RailAsset extends StatelessWidget {
     required this.onVideoEnded,
     required this.width,
     required this.height,
+    this.preload = true,
   });
 
   @override
@@ -44,6 +46,7 @@ class RailAsset extends StatelessWidget {
                 config: config,
                 onAssetEnded: onVideoEnded,
                 options: options ?? const AssetViewOptions(imageFit: BoxFit.cover),
+                preload: preload,
               ),
               Positioned(
                 left: 12,

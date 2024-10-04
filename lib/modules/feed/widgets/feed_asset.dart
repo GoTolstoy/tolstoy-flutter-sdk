@@ -5,6 +5,15 @@ import 'package:tolstoy_flutter_sdk/modules/assets/widgets.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
 import 'feed_overlay.dart';
+import 'dart:async';
+
+class FeedAssetOptions {
+  final double overlayBottomPadding;
+
+  const FeedAssetOptions({
+    this.overlayBottomPadding = 0.0,
+  });
+}
 
 class FeedAssetView extends StatefulWidget {
   const FeedAssetView({
@@ -16,6 +25,8 @@ class FeedAssetView extends StatefulWidget {
     this.options = const AssetViewOptions(),
     required this.products,
     this.onProductClick,
+    this.preload = true,
+    this.feedAssetOptions = const FeedAssetOptions(),
   });
 
   final Asset asset;
@@ -25,57 +36,51 @@ class FeedAssetView extends StatefulWidget {
   final Function(Asset) onPlayClick;
   final Function(Asset) onMuteClick;
   final void Function(Product)? onProductClick;
+  final bool preload;
+  final FeedAssetOptions? feedAssetOptions;
 
   @override
   State<FeedAssetView> createState() => _FeedAssetViewState();
 }
 
 class _FeedAssetViewState extends State<FeedAssetView> {
-  final ValueNotifier<double> _progressNotifier = ValueNotifier(0.0);
+  final StreamController<double> _progressStreamController = StreamController<double>.broadcast();
 
   void _handleProgressUpdate(Asset asset, Duration progress, Duration duration) {
-    _progressNotifier.value = progress.inMilliseconds / duration.inMilliseconds;
+    _progressStreamController.add(progress.inMilliseconds / duration.inMilliseconds);
   }
 
   @override
   void dispose() {
-    _progressNotifier.dispose();
+    _progressStreamController.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
+      fit: StackFit.expand,
       children: [
-        SizedBox.expand(
-          child: AssetView(
-            asset: widget.asset,
-            config: widget.config,
-            options: widget.options,
-            onProgressUpdate: _handleProgressUpdate,
-          ),
-        ),
-        FeedAssetOverlay(
-          products: widget.products,
-          isPlaying: widget.options.isPlaying,
-          isMuted: widget.options.isMuted,
-          onProductClick: widget.onProductClick,
-          onPlayPause: () => widget.onPlayClick(widget.asset),
-          onMuteUnmute: () => widget.onMuteClick(widget.asset),
+        AssetView(
+          asset: widget.asset,
+          config: widget.config,
+          options: widget.options,
+          preload: widget.preload,
+          onProgressUpdate: _handleProgressUpdate,
         ),
         Positioned(
           left: 0,
           right: 0,
-          bottom: 0,
-          child: ValueListenableBuilder<double>(
-            valueListenable: _progressNotifier,
-            builder: (context, value, child) {
-              return LinearProgressIndicator(
-                value: value,
-                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFF15B56)),
-                backgroundColor: Colors.transparent,
-              );
-            },
+          top: 0,
+          bottom: widget.feedAssetOptions?.overlayBottomPadding ?? 0,
+          child: FeedAssetOverlay(
+            products: widget.products,
+            isPlaying: widget.options.isPlaying,
+            isMuted: widget.options.isMuted,
+            onProductClick: widget.onProductClick,
+            onPlayPause: () => widget.onPlayClick(widget.asset),
+            onMuteUnmute: () => widget.onMuteClick(widget.asset),
+            progressStream: _progressStreamController.stream,
           ),
         ),
       ],
