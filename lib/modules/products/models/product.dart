@@ -52,7 +52,9 @@ class Product {
       appUrl: json['appUrl'],
       currencyCode: json['currencyCode'],
       currencySymbol: json['currencySymbol'],
-      yotpoReview: json['yotpo'] != null ? YotpoReview.fromJson(json['yotpo']) : null,
+      yotpoReview: json['yotpo'] != null && json['yotpo']['reviews'] > 0
+          ? YotpoReview.fromJson(json['yotpo'])
+          : null,
     );
   }
 
@@ -75,6 +77,10 @@ class Product {
       'currencySymbol': currencySymbol,
       'yotpo': yotpoReview?.toJson(),
     };
+  }
+
+  bool hasReviews() {
+    return yotpoReview != null && yotpoReview!.reviews > 0;
   }
 }
 
