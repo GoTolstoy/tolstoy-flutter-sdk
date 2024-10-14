@@ -54,14 +54,29 @@ class FeedProductCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: options.imageWidth,
-              height: options.height,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.horizontal(left: Radius.circular(options.borderRadius)),
-                image: DecorationImage(
-                  image: NetworkImage(product.imageUrl),
-                  fit: options.imageFit,
+            ClipRRect(
+              borderRadius: BorderRadius.horizontal(left: Radius.circular(options.borderRadius)),
+              child: SizedBox(
+                width: options.imageWidth,
+                height: options.height,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Container(color: Colors.grey[300]),
+                    Image.network(
+                      product.imageUrl,
+                      fit: options.imageFit,
+                      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                        if (wasSynchronouslyLoaded) return child;
+                        return AnimatedOpacity(
+                          opacity: frame == null ? 0 : 1,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          child: child,
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
