@@ -11,8 +11,7 @@ class FeedProductListOptions {
 
   const FeedProductListOptions({
     this.backgroundColor = Colors.transparent,
-    this.padding = const EdgeInsets.symmetric(
-        vertical: 24), // Changed to 24px padding top and bottom
+    this.padding = const EdgeInsets.symmetric(vertical: 24),
     this.itemPadding = const EdgeInsets.symmetric(horizontal: 8),
     this.itemHeight = 88,
   });
