@@ -99,9 +99,9 @@ class FeedProductCard extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                             overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
+                            maxLines: product.hasReviews() ? 1 : 2,
                           ),
-                          if (product.yotpoReview != null) ...[
+                          if (product.hasReviews()) ...[
                             const SizedBox(height: 4),
                             FeedProductReview(review: product.yotpoReview!),
                           ],
