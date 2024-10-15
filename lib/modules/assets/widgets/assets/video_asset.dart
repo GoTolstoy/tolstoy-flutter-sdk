@@ -43,6 +43,7 @@ class _VideoAssetState extends State<VideoAsset> {
   bool _hasWatched = false;
   Duration _lastPosition = Duration.zero;
   bool _isVideoInitialized = false;
+  bool _isVideoReady = false;
 
   @override
   void initState() {
@@ -65,10 +66,18 @@ class _VideoAssetState extends State<VideoAsset> {
       Uri.parse(url),
     )..initialize().then((_) {
         _isVideoInitialized = true;
+        _controller!.setLooping(true);
         _updateControllerState();
-        _controller!.setLooping(widget.options.shouldLoop);
         _controller!.addListener(_videoPlayerListener);
         setState(() {});
+        // Add a small delay before setting _isVideoReady to true
+        Future.delayed(const Duration(milliseconds: 50), () {
+          if (mounted) {
+            setState(() {
+              _isVideoReady = true;
+            });
+          }
+        });
       });
   }
 
@@ -168,35 +177,35 @@ class _VideoAssetState extends State<VideoAsset> {
 
   @override
   Widget build(BuildContext context) {
-    if (_controller == null || !_isVideoInitialized ||
-        (!_controller!.value.isPlaying &&
-            _controller!.value.position == Duration.zero)) {
-      return Image.network(
-        _thumbnailUrl,
-        fit: BoxFit.cover,
-        width: double.infinity,
-        height: double.infinity,
-        errorBuilder: (context, error, stackTrace) {
-          return const Center(child: CircularProgressIndicator());
-        },
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return const Center(child: CircularProgressIndicator());
-        },
-      );
-    }
-
     return Stack(
       fit: StackFit.expand,
       children: [
-        FittedBox(
+        Image.network(
+          _thumbnailUrl,
           fit: BoxFit.cover,
-          child: SizedBox(
-            height: _controller!.value.size.height,
-            width: _controller!.value.size.width,
-            child: VideoPlayer(_controller!),
-          ),
+          width: double.infinity,
+          height: double.infinity,
+          errorBuilder: (context, error, stackTrace) {
+            return const Center(child: CircularProgressIndicator());
+          },
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return const Center(child: CircularProgressIndicator());
+          },
         ),
+        if (_controller != null && _isVideoInitialized)
+          AnimatedOpacity(
+            opacity: _isVideoReady ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 300),
+            child: FittedBox(
+              fit: BoxFit.cover,
+              child: SizedBox(
+                height: _controller!.value.size.height,
+                width: _controller!.value.size.width,
+                child: VideoPlayer(_controller!),
+              ),
+            ),
+          ),
       ],
     );
   }
