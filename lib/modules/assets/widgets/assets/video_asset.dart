@@ -57,7 +57,9 @@ class _VideoAssetState extends State<VideoAsset> {
   }
 
   void _initializeVideoController() {
-    final url = AssetService.getAssetUrl(widget.asset);
+    final url = widget.options.playMode == AssetViewOptionsPlayMode.preview
+        ? AssetService.getPreviewUrl(widget.asset)
+        : AssetService.getAssetUrl(widget.asset);
 
     _controller = VideoPlayerController.networkUrl(
       Uri.parse(url),

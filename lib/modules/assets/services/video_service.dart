@@ -12,6 +12,16 @@ class VideoService {
     return asset.uploadType.contains('aiVideo') ?  _getAiVideoUrl(asset, size) : _getVideoUrl(asset, size);
   }
 
+  static String getPreviewUrl(Asset asset) {
+    final previewUrl = asset.stockAsset?.previewUrl;
+    if (previewUrl != null) {
+      return previewUrl;
+    }
+
+    bool isAiVideo = asset.uploadType.contains('aiVideo');
+    return '${_getBaseVideoUrl(asset, isAiVideo: isAiVideo)}_preview.mp4';
+  }
+
   static String getPosterUrl(Asset asset) {
     final stockPosterUrl = asset.stockAsset?.posterUrl;
     if (stockPosterUrl != null) {
@@ -22,11 +32,15 @@ class VideoService {
   }
 
   static String _getVideoUrl(Asset asset, AssetSize size) {
-    return '${AppConfig.baseUrl}/public/${asset.owner}/${asset.id}/${asset.id}${getSuffix(size)}.mp4';
+    return '${_getBaseVideoUrl(asset)}${getSuffix(size)}.mp4';
   }
 
   static String _getAiVideoUrl(Asset asset, AssetSize size) {
-    return '${AppConfig.baseUrl}/public/${asset.owner}/${asset.id}/${asset.id}_w_${getSuffix(size)}.mp4';
+    return '${_getBaseVideoUrl(asset, isAiVideo: true)}_w_${getSuffix(size)}.mp4';
+  }
+
+  static String _getBaseVideoUrl(Asset asset, {bool isAiVideo = false}) {
+    return '${AppConfig.baseUrl}/public/${asset.owner}/${asset.id}/${asset.id}${isAiVideo ? '_w' : ''}';
   }
 
   static String getSuffix(AssetSize size) {

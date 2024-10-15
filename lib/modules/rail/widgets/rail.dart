@@ -103,36 +103,45 @@ class _RailState extends State<Rail> {
       },
       child: SizedBox(
         height: widget.options.itemHeight,
-        child: ListView.separated(
+        child: ListView.builder(
           controller: _scrollController,
           scrollDirection: Axis.horizontal,
           itemCount: widget.config.assets.length.clamp(0, maxVisibleItems),
-          separatorBuilder: (context, index) => SizedBox(width: widget.options.itemGap),
           itemBuilder: (context, index) {
             final asset = widget.config.assets[index];
-            return RailAsset(
-              asset: asset,
-              config: widget.config,
-              onTap: () {
-                widget.onAssetClick?.call(asset);
-                _analytics.sendVideoClicked(widget.config, { 'videoId': asset.id });
-              },
-              onPlayClick: () {
-                widget.onPlayClick?.call(asset);
-                _analytics.sendVideoWatched(widget.config, { 'videoId': asset.id });
-              },
-              onVideoEnded: (asset) {
-                _playNextVideo();
-              },
-              width: widget.options.itemWidth,
-              height: widget.options.itemHeight,
-              options: AssetViewOptions(
-                isPlaying: index == _currentPlayingIndex,
-                isMuted: true,
-                shouldLoop: false,
-                imageFit: BoxFit.cover,
+            final isFirstItem = index == 0;
+            final isLastItem = index == widget.config.assets.length.clamp(0, maxVisibleItems) - 1;
+            
+            return Padding(
+              padding: EdgeInsets.only(
+                left: isFirstItem ? widget.options.xPadding : widget.options.itemGap / 2,
+                right: isLastItem ? widget.options.xPadding : widget.options.itemGap / 2,
               ),
-              preload: _shouldPreload(index),
+              child: RailAsset(
+                asset: asset,
+                config: widget.config,
+                onTap: () {
+                  widget.onAssetClick?.call(asset);
+                  _analytics.sendVideoClicked(widget.config, { 'videoId': asset.id });
+                },
+                onPlayClick: () {
+                  widget.onPlayClick?.call(asset);
+                  _analytics.sendVideoWatched(widget.config, { 'videoId': asset.id });
+                },
+                onVideoEnded: (asset) {
+                  _playNextVideo();
+                },
+                width: widget.options.itemWidth,
+                height: widget.options.itemHeight,
+                options: AssetViewOptions(
+                  isPlaying: index == _currentPlayingIndex,
+                  isMuted: true,
+                  shouldLoop: false,
+                  imageFit: BoxFit.cover,
+                  playMode: AssetViewOptionsPlayMode.preview,
+                ),
+                preload: _shouldPreload(index),
+              ),
             );
           },
         ),
