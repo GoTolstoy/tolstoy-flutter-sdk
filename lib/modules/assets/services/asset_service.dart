@@ -21,4 +21,13 @@ class AssetService {
         return VideoService.getPosterUrl(asset);
     }
   }
+
+  static String getPreviewUrl(Asset asset) {
+    switch (asset.type) {
+      case AssetType.image:
+        return ImageService.getImageUrl(asset, size: AssetSize.m);
+      case AssetType.video:
+        return VideoService.getPreviewUrl(asset);
+    }
+  }
 }
