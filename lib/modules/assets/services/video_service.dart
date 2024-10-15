@@ -40,7 +40,7 @@ class VideoService {
   }
 
   static String _getBaseVideoUrl(Asset asset, {bool isAiVideo = false}) {
-    return '${AppConfig.baseUrl}/public/${asset.owner}/${asset.id}/${asset.id}${isAiVideo ? '_w' : ''}';
+    return '${AppConfig.baseUrl}/public/${asset.owner}/${asset.id}/${asset.id}${isAiVideo ? '_w_' : ''}';
   }
 
   static String getSuffix(AssetSize size) {
