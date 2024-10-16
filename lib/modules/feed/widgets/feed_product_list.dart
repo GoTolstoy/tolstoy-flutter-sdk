@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/feed/widgets/product_card/feed_product_card.dart';
-import 'package:tolstoy_flutter_sdk/modules/products/services.dart';
-
-int _precacheCount = 2;
 
 class FeedProductListOptions {
   final Color backgroundColor;
