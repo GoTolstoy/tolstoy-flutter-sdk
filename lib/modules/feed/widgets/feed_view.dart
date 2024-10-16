@@ -48,7 +48,7 @@ class FeedView extends StatefulWidget {
   State<FeedView> createState() => _FeedViewState();
 }
 
-class _FeedViewState extends State<FeedView> {
+class _FeedViewState extends State<FeedView> with AutomaticKeepAliveClientMixin {
   late PageController _pageViewController;
   bool isPlaying = true;
   bool isMuted = false;
@@ -57,6 +57,9 @@ class _FeedViewState extends State<FeedView> {
   bool _isVisible = true;
   late Analytics _analytics;
   double _footerHeight = 0.0;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -156,29 +159,30 @@ class _FeedViewState extends State<FeedView> {
 
     Asset asset = widget.config.assets[index];
 
-    // Compile list of products from productsMap
     List<Product> products = asset.products
         .map((productRef) => widget.config.productsMap.getProductById(productRef.id))
         .where((product) => product != null)
         .cast<Product>()
         .toList();
 
-    return FeedAssetView(
-      asset: asset,
-      config: widget.config,
-      options: AssetViewOptions(
-        isPlaying: isPlaying && isActive,
-        isMuted: isMuted,
-        shouldLoop: true,
-        withMuteButton: asset.type != AssetType.image,
-        trackAnalytics: true,
-      ),
-      onPlayClick: _onPlayClick,
-      onMuteClick: _onMuteClick,
-      products: products,
-      onProductClick: _onProductClick,
-      feedAssetOptions: FeedAssetOptions(
-        overlayBottomPadding: _footerHeight,
+    return KeepAliveWrapper(
+      child: FeedAssetView(
+        asset: asset,
+        config: widget.config,
+        options: AssetViewOptions(
+          isPlaying: isPlaying && isActive,
+          isMuted: isMuted,
+          shouldLoop: true,
+          withMuteButton: asset.type != AssetType.image,
+          trackAnalytics: true,
+        ),
+        onPlayClick: _onPlayClick,
+        onMuteClick: _onMuteClick,
+        products: products,
+        onProductClick: _onProductClick,
+        feedAssetOptions: FeedAssetOptions(
+          overlayBottomPadding: _footerHeight,
+        ),
       ),
     );
   }
@@ -221,4 +225,24 @@ class _FeedViewState extends State<FeedView> {
       ),
     );
   }
+}
+
+class KeepAliveWrapper extends StatefulWidget {
+  final Widget child;
+
+  const KeepAliveWrapper({super.key, required this.child});
+
+  @override
+  State<KeepAliveWrapper> createState() => _KeepAliveWrapperState();
+}
+
+class _KeepAliveWrapperState extends State<KeepAliveWrapper> with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }

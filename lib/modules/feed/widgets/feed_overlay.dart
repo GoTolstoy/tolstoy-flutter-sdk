@@ -38,7 +38,7 @@ class FeedAssetOverlay extends StatelessWidget {
               child: !isPlaying
                   ? Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFF222222).withOpacity(0.8),
+                        color: const Color(0xFF222222).withAlpha(204),
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
@@ -68,7 +68,7 @@ class FeedAssetOverlay extends StatelessWidget {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFF222222).withOpacity(0.8),
+                        color: const Color(0xFF222222).withAlpha(204),
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(

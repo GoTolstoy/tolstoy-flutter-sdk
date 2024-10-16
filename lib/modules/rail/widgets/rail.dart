@@ -129,6 +129,10 @@ class _RailState extends State<Rail> {
                   _analytics.sendVideoWatched(widget.config, { 'videoId': asset.id });
                 },
                 onVideoEnded: (asset) {
+                  if (index != _currentPlayingIndex) {
+                    return;
+                  }
+
                   _playNextVideo();
                 },
                 width: widget.options.itemWidth,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/products/services/product_utils.dart';
+import 'package:tolstoy_flutter_sdk/modules/products/services.dart';
 
 import 'feed_product_reviews.dart';
 
@@ -11,6 +11,7 @@ class FeedProductCardOptions {
   final double borderRadius;
   final double imageWidth;
   final BoxFit imageFit;
+  final Duration imageLoadDelay;
 
   const FeedProductCardOptions({
     this.maxWidthFactor = 0.75,
@@ -18,6 +19,7 @@ class FeedProductCardOptions {
     this.borderRadius = 8.0,
     this.imageWidth = 72,
     this.imageFit = BoxFit.cover,
+    this.imageLoadDelay = Duration.zero,
   });
 }
 
@@ -63,18 +65,13 @@ class FeedProductCard extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     Container(color: Colors.grey[300]),
-                    Image.network(
-                      product.imageUrl,
+                    DelayedImage(
+                      url: ProductUtils.getOptimizedImageUrl(
+                        product,
+                        width: options.imageWidth.toInt(),
+                      ),
                       fit: options.imageFit,
-                      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                        if (wasSynchronouslyLoaded) return child;
-                        return AnimatedOpacity(
-                          opacity: frame == null ? 0 : 1,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                          child: child,
-                        );
-                      },
+                      delay: options.imageLoadDelay,
                     ),
                   ],
                 ),
@@ -122,6 +119,44 @@ class FeedProductCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class DelayedImage extends StatelessWidget {
+  final String url;
+  final BoxFit fit;
+  final Duration delay;
+
+  const DelayedImage({
+    super.key,
+    required this.url,
+    required this.fit,
+    required this.delay,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: Future.delayed(delay),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return Container(color: Colors.grey[300]);
+        }
+        return Image.network(
+          url,
+          fit: fit,
+          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+            if (wasSynchronouslyLoaded) return child;
+            return AnimatedOpacity(
+              opacity: frame == null ? 0 : 1,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              child: child,
+            );
+          },
+        );
+      },
     );
   }
 }
