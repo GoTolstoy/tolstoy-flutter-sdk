@@ -66,7 +66,7 @@ class _VideoAssetState extends State<VideoAsset> {
       Uri.parse(url),
     )..initialize().then((_) {
         _isVideoInitialized = true;
-        _controller!.setLooping(true);
+        _controller!.setLooping(widget.options.shouldLoop);
         _updateControllerState();
         _controller!.addListener(_videoPlayerListener);
         setState(() {});
