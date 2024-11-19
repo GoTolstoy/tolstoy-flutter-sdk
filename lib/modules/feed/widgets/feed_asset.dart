@@ -44,10 +44,13 @@ class FeedAssetView extends StatefulWidget {
 }
 
 class _FeedAssetViewState extends State<FeedAssetView> {
-  final StreamController<double> _progressStreamController = StreamController<double>.broadcast();
+  final StreamController<double> _progressStreamController =
+      StreamController<double>.broadcast();
 
-  void _handleProgressUpdate(Asset asset, Duration progress, Duration duration) {
-    _progressStreamController.add(progress.inMilliseconds / duration.inMilliseconds);
+  void _handleProgressUpdate(
+      Asset asset, Duration progress, Duration duration) {
+    _progressStreamController
+        .add(progress.inMilliseconds / duration.inMilliseconds);
   }
 
   @override

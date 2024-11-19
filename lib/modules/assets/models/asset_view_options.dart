@@ -41,7 +41,8 @@ class AssetViewOptions {
       isMuted: isMuted ?? this.isMuted,
       shouldLoop: shouldLoop ?? this.shouldLoop,
       withMuteButton: withMuteButton ?? this.withMuteButton,
-      shouldImageEmulatePlaying: shouldImageEmulatePlaying ?? this.shouldImageEmulatePlaying,
+      shouldImageEmulatePlaying:
+          shouldImageEmulatePlaying ?? this.shouldImageEmulatePlaying,
       imagePlaytimeSec: imagePlaytimeSec ?? this.imagePlaytimeSec,
       imageFit: imageFit ?? this.imageFit,
       trackAnalytics: trackAnalytics ?? this.trackAnalytics,

@@ -19,8 +19,9 @@ void main() async {
 
   // Pull latest changes
   print('Pulling latest changes...');
-  final pullResult = await Process.run('git', ['pull', gitUri], workingDirectory: packagePath);
-  
+  final pullResult =
+      await Process.run('git', ['pull', gitUri], workingDirectory: packagePath);
+
   if (pullResult.exitCode != 0) {
     print('Error pulling latest changes:');
     print(pullResult.stderr);
@@ -30,7 +31,7 @@ void main() async {
   // Run pub get
   print('Running flutter pub get...');
   final pubGetResult = await Process.run('flutter', ['pub', 'get']);
-  
+
   if (pubGetResult.exitCode != 0) {
     print('Error running flutter pub get:');
     print(pubGetResult.stderr);
@@ -43,7 +44,8 @@ void main() async {
 Future<String?> getPackagePath() async {
   final packageConfigFile = File('.dart_tool/package_config.json');
   if (!await packageConfigFile.exists()) {
-    print('package_config.json not found. Make sure you\'re in the root of your Flutter project.');
+    print(
+        'package_config.json not found. Make sure you\'re in the root of your Flutter project.');
     return null;
   }
 

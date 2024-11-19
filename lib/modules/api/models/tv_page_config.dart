@@ -49,14 +49,17 @@ class TvPageConfig {
     required this.productsMap, // New parameter
   });
 
-  factory TvPageConfig.fromJson(Map<String, dynamic> json, ProductsMap productsMap) {
+  factory TvPageConfig.fromJson(
+      Map<String, dynamic> json, ProductsMap productsMap) {
     return TvPageConfig(
       publishId: json['publishId'],
       // fastForwardEnabled: json['fastForwardEnabled'],
       // feedIsAnyStepShoppable: json['feedIsAnyStepShoppable'],
       appUrl: json['appUrl'],
       userId: json['userId'],
-      assets: (json['steps'] as List).map((step) => Asset.fromStepJson(step)).toList(),
+      assets: (json['steps'] as List)
+          .map((step) => Asset.fromStepJson(step))
+          .toList(),
       // chatLandingPage: json['chatLandingPage'],
       // autoplay: json['autoplay'],
       // feed: json['feed'],

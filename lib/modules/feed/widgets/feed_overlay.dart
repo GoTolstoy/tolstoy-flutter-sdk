@@ -94,8 +94,8 @@ class FeedAssetOverlay extends StatelessWidget {
                 builder: (context, snapshot) {
                   return LinearProgressIndicator(
                     value: snapshot.data ?? 0.0,
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                        Color(0xFFF15B56)),
+                    valueColor:
+                        const AlwaysStoppedAnimation<Color>(Color(0xFFF15B56)),
                     backgroundColor: Colors.grey,
                   );
                 },

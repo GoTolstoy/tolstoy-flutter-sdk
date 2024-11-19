@@ -1,4 +1,4 @@
-import 'package:collection/collection.dart'; // needed for .firstWhereOrNull 
+import 'package:collection/collection.dart'; // needed for .firstWhereOrNull
 
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 
@@ -28,27 +28,28 @@ class ProductUtils {
     return null;
   }
 
-  static String getOptimizedImageUrl(Product product, {int? width, int? height}) {
+  static String getOptimizedImageUrl(Product product,
+      {int? width, int? height}) {
     final originalUrl = product.imageUrl;
-    
+
     if (originalUrl.contains('cdn.shopify.com')) {
       return _optimizeShopifyImageUrl(originalUrl, width, height);
     }
-    
+
     return originalUrl;
   }
 
   static String _optimizeShopifyImageUrl(String url, int? width, int? height) {
     final Uri uri = Uri.parse(url);
     final queryParams = <String, String>{};
-    
+
     if (width != null) queryParams['width'] = width.toString();
     if (height != null) queryParams['height'] = height.toString();
-    
+
     if (queryParams.isNotEmpty) {
       return uri.replace(queryParameters: queryParams).toString();
     }
-    
+
     return url;
   }
 }

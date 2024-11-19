@@ -57,41 +57,55 @@ class Analytics {
   }
 
   void sendPageView(TvPageConfig config) {
-    Map<String, dynamic> params = _getAnalyticsParams(config, { 'eventName': AnalyticsEventType.pageView.name });
+    Map<String, dynamic> params = _getAnalyticsParams(
+        config, {'eventName': AnalyticsEventType.pageView.name});
     _sendEvent(params);
   }
 
   void sendEmbedView(TvPageConfig config) {
-    Map<String, dynamic> params = _getAnalyticsParams(config, { 'eventName': AnalyticsEventType.embedView.name });
+    Map<String, dynamic> params = _getAnalyticsParams(
+        config, {'eventName': AnalyticsEventType.embedView.name});
     _sendEvent(params);
   }
 
   void sendSessionStart(TvPageConfig config) {
-    Map<String, dynamic> params = _getAnalyticsParams(config, { 'eventName': AnalyticsEventType.sessionStart.name });
+    Map<String, dynamic> params = _getAnalyticsParams(
+        config, {'eventName': AnalyticsEventType.sessionStart.name});
     _sendEvent(params);
   }
 
-  void sendVideoClicked(TvPageConfig config, Map<String, dynamic> dynamicParams) {
-    Map<String, dynamic> params = _getAnalyticsParams(config, { 'eventName': AnalyticsEventType.videoClicked.name, ...dynamicParams });
+  void sendVideoClicked(
+      TvPageConfig config, Map<String, dynamic> dynamicParams) {
+    Map<String, dynamic> params = _getAnalyticsParams(config,
+        {'eventName': AnalyticsEventType.videoClicked.name, ...dynamicParams});
     _sendEvent(params);
   }
 
-  void sendVideoLoaded(TvPageConfig config, Map<String, dynamic> dynamicParams) {
-    Map<String, dynamic> params = _getAnalyticsParams(config, { 'eventName': AnalyticsEventType.videoLoaded.name, ...dynamicParams });
+  void sendVideoLoaded(
+      TvPageConfig config, Map<String, dynamic> dynamicParams) {
+    Map<String, dynamic> params = _getAnalyticsParams(config,
+        {'eventName': AnalyticsEventType.videoLoaded.name, ...dynamicParams});
     _sendEvent(params);
   }
 
-  void sendVideoWatched(TvPageConfig config, Map<String, dynamic> dynamicParams) {
-    Map<String, dynamic> params = _getAnalyticsParams(config, { 'eventName': AnalyticsEventType.videoWatched.name, ...dynamicParams });
+  void sendVideoWatched(
+      TvPageConfig config, Map<String, dynamic> dynamicParams) {
+    Map<String, dynamic> params = _getAnalyticsParams(config,
+        {'eventName': AnalyticsEventType.videoWatched.name, ...dynamicParams});
     _sendEvent(params);
   }
 
-  void sendProductClicked(TvPageConfig config, Map<String, dynamic> dynamicParams) {
-    Map<String, dynamic> params = _getAnalyticsParams(config, { 'eventName': AnalyticsEventType.clickViewProduct.name, ...dynamicParams });
+  void sendProductClicked(
+      TvPageConfig config, Map<String, dynamic> dynamicParams) {
+    Map<String, dynamic> params = _getAnalyticsParams(config, {
+      'eventName': AnalyticsEventType.clickViewProduct.name,
+      ...dynamicParams
+    });
     _sendEvent(params);
   }
 
-  Map<String, dynamic> _getAnalyticsParams(TvPageConfig config, Map<String, dynamic> dynamicParams) {
+  Map<String, dynamic> _getAnalyticsParams(
+      TvPageConfig config, Map<String, dynamic> dynamicParams) {
     return {
       'appKey': config.appKey,
       'publishId': config.publishId,
