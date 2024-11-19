@@ -3,7 +3,8 @@ import 'package:collection/collection.dart'; // needed for .firstWhereOrNull
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 
 class ProductUtils {
-  static String? getProductPrice(Product product, {String? variantId}) {
+  static String? getUnformatedProductPrice(Product product,
+      {String? variantId}) {
     // Extract the price from the first variant if no variantId is provided
     String? price =
         product.variants.isNotEmpty ? product.variants[0].price : null;
@@ -18,6 +19,18 @@ class ProductUtils {
 
     // Return the price of the found variant or the default price
     return variant?.price ?? price;
+  }
+
+  static String? getProductPrice(Product product, {String? variantId}) {
+    String? price = getUnformatedProductPrice(product, variantId: variantId);
+
+    if (price != null) {
+      if (price.endsWith('.00') || price.endsWith(',00')) {
+        price = price.substring(0, price.length - 3);
+      }
+    }
+
+    return price;
   }
 
   static String? getProductPriceLabel(Product product, {String? variantId}) {
