@@ -50,44 +50,55 @@ class _RailState extends State<Rail> {
 
   void _playNextVideo() {
     setState(() {
-      _currentPlayingIndex = (_currentPlayingIndex + 1) % widget.config.assets.length.clamp(0, maxVisibleItems);
+      _currentPlayingIndex = (_currentPlayingIndex + 1) %
+          widget.config.assets.length.clamp(0, maxVisibleItems);
     });
     _scrollToCurrentVideo();
   }
 
   void _scrollToCurrentVideo() {
     if (_scrollController.hasClients) {
-      final railWidth = context.size?.width ?? MediaQuery.of(context).size.width;
+      final railWidth =
+          context.size?.width ?? MediaQuery.of(context).size.width;
       final itemWidth = widget.options.itemWidth + widget.options.itemGap;
-      final visibleItemCount = widget.config.assets.length.clamp(0, maxVisibleItems);
+      final visibleItemCount =
+          widget.config.assets.length.clamp(0, maxVisibleItems);
       final remainingItems = (visibleItemCount + 1) - _currentPlayingIndex;
       final remainingWidth = remainingItems * itemWidth;
 
       if (remainingWidth > railWidth) {
         final targetOffset = _currentPlayingIndex * itemWidth;
-        final maxOffset = (visibleItemCount * itemWidth) - railWidth - widget.options.itemGap;
-        final clampedOffset = targetOffset.clamp(0.0, maxOffset);
+        final maxOffset =
+            (visibleItemCount * itemWidth) - railWidth - widget.options.itemGap;
 
-        _scrollController.animateTo(
-          clampedOffset,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
+        if (maxOffset > 0.0) {
+          final clampedOffset = targetOffset.clamp(0.0, maxOffset);
+
+          _scrollController.animateTo(
+            clampedOffset,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        }
       }
     }
   }
 
   bool _shouldPreload(int index) {
-    final visibleItemCount = widget.config.assets.length.clamp(0, maxVisibleItems);
+    final visibleItemCount =
+        widget.config.assets.length.clamp(0, maxVisibleItems);
     if (_currentPlayingIndex == 0) {
       // if first playing: preload first and second items
       return index == 0 || index == 1;
     } else if (_currentPlayingIndex == visibleItemCount - 1) {
       // if last playing: second last items, preload last and first items
-      return index == visibleItemCount - 2 || index == visibleItemCount - 1 || index == 0;
+      return index == visibleItemCount - 2 ||
+          index == visibleItemCount - 1 ||
+          index == 0;
     } else {
       // if non edge item playing: preload current and adjacent items
-      return index >= _currentPlayingIndex - 1 && index <= _currentPlayingIndex + 1;
+      return index >= _currentPlayingIndex - 1 &&
+          index <= _currentPlayingIndex + 1;
     }
   }
 
@@ -110,23 +121,30 @@ class _RailState extends State<Rail> {
           itemBuilder: (context, index) {
             final asset = widget.config.assets[index];
             final isFirstItem = index == 0;
-            final isLastItem = index == widget.config.assets.length.clamp(0, maxVisibleItems) - 1;
-            
+            final isLastItem = index ==
+                widget.config.assets.length.clamp(0, maxVisibleItems) - 1;
+
             return Padding(
               padding: EdgeInsets.only(
-                left: isFirstItem ? widget.options.xPadding : widget.options.itemGap / 2,
-                right: isLastItem ? widget.options.xPadding : widget.options.itemGap / 2,
+                left: isFirstItem
+                    ? widget.options.xPadding
+                    : widget.options.itemGap / 2,
+                right: isLastItem
+                    ? widget.options.xPadding
+                    : widget.options.itemGap / 2,
               ),
               child: RailAsset(
                 asset: asset,
                 config: widget.config,
                 onTap: () {
                   widget.onAssetClick?.call(asset);
-                  _analytics.sendVideoClicked(widget.config, { 'videoId': asset.id });
+                  _analytics
+                      .sendVideoClicked(widget.config, {'videoId': asset.id});
                 },
                 onPlayClick: () {
                   widget.onPlayClick?.call(asset);
-                  _analytics.sendVideoWatched(widget.config, { 'videoId': asset.id });
+                  _analytics
+                      .sendVideoWatched(widget.config, {'videoId': asset.id});
                 },
                 onVideoEnded: (asset) {
                   if (index != _currentPlayingIndex) {
