@@ -48,7 +48,8 @@ class FeedView extends StatefulWidget {
   State<FeedView> createState() => _FeedViewState();
 }
 
-class _FeedViewState extends State<FeedView> with AutomaticKeepAliveClientMixin {
+class _FeedViewState extends State<FeedView>
+    with AutomaticKeepAliveClientMixin {
   late PageController _pageViewController;
   bool isPlaying = true;
   bool isMuted = false;
@@ -69,13 +70,14 @@ class _FeedViewState extends State<FeedView> with AutomaticKeepAliveClientMixin 
 
     isPlaying = widget.options.isAutoplay;
     isMuted = widget.options.isMutedByDefault;
-    
+
     int initialPage = 0;
     if (widget.initialAssetId != null) {
-      initialPage = widget.config.assets.indexWhere((asset) => asset.id == widget.initialAssetId);
+      initialPage = widget.config.assets
+          .indexWhere((asset) => asset.id == widget.initialAssetId);
       initialPage = initialPage != -1 ? initialPage : 0;
     }
-    
+
     _pageViewController = PageController(initialPage: initialPage);
     activePageIndex = initialPage;
     _focusNode = FocusNode();
@@ -89,12 +91,13 @@ class _FeedViewState extends State<FeedView> with AutomaticKeepAliveClientMixin 
   void _calculateFooterHeight() {
     if (widget.footer != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final RenderBox? footerBox = widget.footerKey.currentContext?.findRenderObject() as RenderBox?;
+        final RenderBox? footerBox =
+            widget.footerKey.currentContext?.findRenderObject() as RenderBox?;
         if (footerBox != null) {
           setState(() {
             _footerHeight = footerBox.size.height;
           });
-        } 
+        }
       });
     }
   }
@@ -149,9 +152,12 @@ class _FeedViewState extends State<FeedView> with AutomaticKeepAliveClientMixin 
     }
 
     bool isActive = activePageIndex == index;
-    int threshold = min(widget.config.assets.length, widget.options.pageThreshold);
+    int threshold =
+        min(widget.config.assets.length, widget.options.pageThreshold);
 
-    if (isActive && activePageIndex == widget.config.assets.length - threshold && !widget.options.isLoadingNextPage) {
+    if (isActive &&
+        activePageIndex == widget.config.assets.length - threshold &&
+        !widget.options.isLoadingNextPage) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         widget.onLoadNextPage?.call();
       });
@@ -160,7 +166,8 @@ class _FeedViewState extends State<FeedView> with AutomaticKeepAliveClientMixin 
     Asset asset = widget.config.assets[index];
 
     List<Product> products = asset.products
-        .map((productRef) => widget.config.productsMap.getProductById(productRef.id))
+        .map((productRef) =>
+            widget.config.productsMap.getProductById(productRef.id))
         .where((product) => product != null)
         .cast<Product>()
         .toList();
@@ -203,7 +210,8 @@ class _FeedViewState extends State<FeedView> with AutomaticKeepAliveClientMixin 
               onPageChanged: _onPageChanged,
               allowImplicitScrolling: true,
             ),
-            if (activePageIndex == widget.config.assets.length - 1 && widget.options.isLoadingNextPage)
+            if (activePageIndex == widget.config.assets.length - 1 &&
+                widget.options.isLoadingNextPage)
               const Positioned(
                 bottom: 0,
                 left: 0,
@@ -236,7 +244,8 @@ class KeepAliveWrapper extends StatefulWidget {
   State<KeepAliveWrapper> createState() => _KeepAliveWrapperState();
 }
 
-class _KeepAliveWrapperState extends State<KeepAliveWrapper> with AutomaticKeepAliveClientMixin {
+class _KeepAliveWrapperState extends State<KeepAliveWrapper>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);

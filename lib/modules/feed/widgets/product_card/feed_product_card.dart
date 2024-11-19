@@ -57,7 +57,8 @@ class FeedProductCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.horizontal(left: Radius.circular(options.borderRadius)),
+              borderRadius: BorderRadius.horizontal(
+                  left: Radius.circular(options.borderRadius)),
               child: SizedBox(
                 width: options.imageWidth,
                 height: options.height,
@@ -81,7 +82,8 @@ class FeedProductCard extends StatelessWidget {
               child: SizedBox(
                 height: options.height,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

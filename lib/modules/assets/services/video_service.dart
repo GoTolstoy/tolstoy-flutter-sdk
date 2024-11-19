@@ -9,7 +9,9 @@ class VideoService {
       return videoUrl;
     }
 
-    return asset.uploadType.contains('aiVideo') ?  _getAiVideoUrl(asset, size) : _getVideoUrl(asset, size);
+    return asset.uploadType.contains('aiVideo')
+        ? _getAiVideoUrl(asset, size)
+        : _getVideoUrl(asset, size);
   }
 
   static String getPreviewUrl(Asset asset) {

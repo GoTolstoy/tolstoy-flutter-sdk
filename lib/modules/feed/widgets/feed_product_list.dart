@@ -55,7 +55,8 @@ class _FeedProductListState extends State<FeedProductList> {
                 options: FeedProductCardOptions(
                   height: widget.options.itemHeight,
                   imageWidth: widget.options.imageWidth,
-                  imageLoadDelay: Duration(milliseconds: (200 * index).clamp(0, 500)),
+                  imageLoadDelay:
+                      Duration(milliseconds: (200 * index).clamp(0, 500)),
                 ),
                 onProductClick: widget.onProductClick,
               ),

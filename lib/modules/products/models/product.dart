@@ -41,9 +41,12 @@ class Product {
       handle: json['handle'],
       title: json['title'],
       imageUrl: json['imageUrl'],
-      variants: (json['variants'] as List).map((v) => Variant.fromJson(v)).toList(),
+      variants:
+          (json['variants'] as List).map((v) => Variant.fromJson(v)).toList(),
       options: json['options'],
-      images: (json['images'] as List).map((i) => ProductImage.fromJson(i)).toList(),
+      images: (json['images'] as List)
+          .map((i) => ProductImage.fromJson(i))
+          .toList(),
       tags: json['tags'],
       descriptionHtml: json['descriptionHtml'],
       templateSuffix: json['templateSuffix'],

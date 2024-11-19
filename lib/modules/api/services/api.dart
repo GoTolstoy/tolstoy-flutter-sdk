@@ -8,31 +8,35 @@ const String _baseUrl = 'https://api.gotolstoy.com';
 
 class ApiService {
   static Future<TvPageConfig> getTvPageConfig(String publishId) async {
-    Uri url = Uri.parse('$_baseUrl/settings/$publishId/player?feedShowUnviewedStepsFirst=false');
+    Uri url = Uri.parse(
+        '$_baseUrl/settings/$publishId/player?feedShowUnviewedStepsFirst=false');
     http.Response response = await http.get(url);
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = json.decode(response.body);
 
       List<String> vodAssetIds = (jsonData['steps'] as List<dynamic>?)
-          ?.map((step) => step['videoId'] as String)
-          .toList() ?? [];
+              ?.map((step) => step['videoId'] as String)
+              .toList() ??
+          [];
       String appUrl = jsonData['appUrl'] as String? ?? '';
       String appKey = jsonData['appKey'] as String? ?? '';
 
-      ProductsMap productsMap = await getProductsByVodAssetIds(vodAssetIds, appUrl, appKey);
+      ProductsMap productsMap =
+          await getProductsByVodAssetIds(vodAssetIds, appUrl, appKey);
 
       TvPageConfig config = TvPageConfig.fromJson(jsonData, productsMap);
-      
+
       return config;
     } else {
       throw Exception('Failed to load TV page config');
     }
   }
 
-  static Future<ProductsMap> getProductsByVodAssetIds(List<String> vodAssetIds, String appUrl, String appKey) async {
+  static Future<ProductsMap> getProductsByVodAssetIds(
+      List<String> vodAssetIds, String appUrl, String appKey) async {
     Uri url = Uri.parse('$_baseUrl/products/actions/v2/get-by-vod-asset-ids');
-    
+
     Map<String, dynamic> requestBody = {
       'vodAssetIds': vodAssetIds,
       'appUrl': appUrl,
@@ -54,7 +58,8 @@ class ApiService {
 
       return products;
     } else {
-      throw Exception('Failed to load actions by VOD asset IDs. Status code: ${response.statusCode}');
+      throw Exception(
+          'Failed to load actions by VOD asset IDs. Status code: ${response.statusCode}');
     }
   }
 

@@ -166,11 +166,14 @@ class _VideoAssetState extends State<VideoAsset> {
   @override
   void didUpdateWidget(VideoAsset oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.preload != widget.preload && widget.preload && _controller == null) {
+    if (oldWidget.preload != widget.preload &&
+        widget.preload &&
+        _controller == null) {
       _initializeVideoController();
     }
-    if (_controller != null && (oldWidget.options.isPlaying != widget.options.isPlaying ||
-        oldWidget.options.isMuted != widget.options.isMuted)) {
+    if (_controller != null &&
+        (oldWidget.options.isPlaying != widget.options.isPlaying ||
+            oldWidget.options.isMuted != widget.options.isMuted)) {
       _updateControllerState();
     }
   }

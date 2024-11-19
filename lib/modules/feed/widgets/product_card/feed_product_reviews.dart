@@ -35,9 +35,11 @@ class StarRating extends StatelessWidget {
         if (index < rating.floor()) {
           return const Icon(Icons.star, color: Color(0xFFEE610F), size: 16);
         } else if (index < rating.ceil() && rating % 1 != 0) {
-          return const Icon(Icons.star_half, color: Color(0xFFEE610F), size: 16);
+          return const Icon(Icons.star_half,
+              color: Color(0xFFEE610F), size: 16);
         } else {
-          return const Icon(Icons.star_border, color: Color(0xFFEE610F), size: 16);
+          return const Icon(Icons.star_border,
+              color: Color(0xFFEE610F), size: 16);
         }
       }),
     );

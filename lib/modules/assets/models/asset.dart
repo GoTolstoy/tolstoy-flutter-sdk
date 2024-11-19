@@ -34,8 +34,13 @@ class Asset {
       uploadType: json['uploadType'],
       type: type,
       createdAt: DateTime.parse(json['videoCreatedAt']),
-      stockAsset: json['stockAsset'] != null ? StockAsset.fromJson(json['stockAsset']) : null,
-      products: (json['products'] as List?)?.map((product) => ProductReference.fromJson(product)).toList() ?? [],
+      stockAsset: json['stockAsset'] != null
+          ? StockAsset.fromJson(json['stockAsset'])
+          : null,
+      products: (json['products'] as List?)
+              ?.map((product) => ProductReference.fromJson(product))
+              .toList() ??
+          [],
     );
   }
 }
