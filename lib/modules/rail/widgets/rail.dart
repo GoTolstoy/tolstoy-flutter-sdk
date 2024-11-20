@@ -28,6 +28,7 @@ class Rail extends StatefulWidget {
 
 class _RailState extends State<Rail> {
   late final Analytics _analytics;
+  bool _isVisible = false;
   bool _hasBeenVisible = false;
   int _currentPlayingIndex = 0;
   bool _currentVideoEnded = false;
@@ -181,6 +182,10 @@ class _RailState extends State<Rail> {
             _hasBeenVisible = true;
             _analytics.sendEmbedView(widget.config);
           }
+
+          setState(() {
+            _isVisible = visibilityInfo.visibleFraction > 0.5;
+          });
         },
         child: SizedBox(
           height: widget.options.itemHeight,
@@ -225,8 +230,9 @@ class _RailState extends State<Rail> {
                   width: widget.options.itemWidth,
                   height: widget.options.itemHeight,
                   options: AssetViewOptions(
-                    isPlaying:
-                        index == _currentPlayingIndex && !_currentVideoEnded,
+                    isPlaying: index == _currentPlayingIndex &&
+                        _isVisible &&
+                        !_currentVideoEnded,
                     isMuted: true,
                     shouldLoop: false,
                     imageFit: BoxFit.cover,
