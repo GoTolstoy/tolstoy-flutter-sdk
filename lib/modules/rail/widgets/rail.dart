@@ -102,7 +102,9 @@ class _RailState extends State<Rail> {
         _currentVideoEnded = false;
       });
     } else {
-      _currentVideoEnded = true;
+      setState(() {
+        _currentVideoEnded = true;
+      });
     }
   }
 
@@ -223,7 +225,8 @@ class _RailState extends State<Rail> {
                   width: widget.options.itemWidth,
                   height: widget.options.itemHeight,
                   options: AssetViewOptions(
-                    isPlaying: index == _currentPlayingIndex,
+                    isPlaying:
+                        index == _currentPlayingIndex && !_currentVideoEnded,
                     isMuted: true,
                     shouldLoop: false,
                     imageFit: BoxFit.cover,
