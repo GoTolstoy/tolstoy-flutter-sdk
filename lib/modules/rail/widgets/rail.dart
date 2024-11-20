@@ -32,6 +32,7 @@ class _RailState extends State<Rail> {
   late final Analytics _analytics;
   bool _hasBeenVisible = false;
   int _currentPlayingIndex = 0;
+  bool _currentVideoEnded = false;
   late final ScrollController _scrollController;
 
   @override
@@ -90,27 +91,48 @@ class _RailState extends State<Rail> {
     return null;
   }
 
-  void _playNextVideoIfInView() {
+  void _onCurrentVideoEnded() {
     final nextIndex = _currentPlayingIndex + 1;
 
     if (nextIndex < visibleItemCount && __isVideoFullyInView(nextIndex)) {
       setState(() {
         _currentPlayingIndex = nextIndex;
+        _currentVideoEnded = false;
       });
+    } else {
+      _currentVideoEnded = true;
     }
   }
 
   void _onScrollEnd() {
-    // if current video is still in view, continue playing
-    if (__isVideoFullyInView(_currentPlayingIndex)) {
+    final currentVideoInView = __isVideoFullyInView(_currentPlayingIndex);
+
+    // if current video is still in view and playing, continue playing
+    if (currentVideoInView && !_currentVideoEnded) {
       return;
     }
 
+    // if current video is still in view and has ended, try to play next video
+    if (currentVideoInView && _currentVideoEnded) {
+      final nextIndex = _currentPlayingIndex + 1;
+
+      if (nextIndex < visibleItemCount && __isVideoFullyInView(nextIndex)) {
+        setState(() {
+          _currentPlayingIndex = nextIndex;
+          _currentVideoEnded = false;
+        });
+
+        return;
+      }
+    }
+
+    // Play first video in view
     final firstVideoInView = _getFirstVideoFullyInView();
 
     if (firstVideoInView != null) {
       setState(() {
         _currentPlayingIndex = firstVideoInView;
+        _currentVideoEnded = false;
       });
     }
   }
@@ -171,7 +193,7 @@ class _RailState extends State<Rail> {
                       return;
                     }
 
-                    _playNextVideoIfInView();
+                    _onCurrentVideoEnded();
                   },
                   width: widget.options.itemWidth,
                   height: widget.options.itemHeight,
