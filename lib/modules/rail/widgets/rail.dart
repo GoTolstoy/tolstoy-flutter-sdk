@@ -13,14 +13,12 @@ const maxVisibleItems = 6;
 class Rail extends StatefulWidget {
   final TvPageConfig config;
   final Function(Asset)? onAssetClick;
-  final Function(Asset)? onPlayClick;
   final RailOptions options;
 
   const Rail({
     super.key,
     required this.config,
     this.onAssetClick,
-    this.onPlayClick,
     this.options = const RailOptions(),
   });
 
@@ -53,16 +51,32 @@ class _RailState extends State<Rail> {
     return widget.config.assets.length.clamp(0, maxVisibleItems);
   }
 
+  double get railWidth {
+    return context.size?.width ?? MediaQuery.of(context).size.width;
+  }
+
+  double get itemScrollStep {
+    return widget.options.itemWidth + widget.options.itemGap;
+  }
+
+  double get totalContentWidth {
+    return itemScrollStep * visibleItemCount -
+        widget.options.itemGap +
+        2 * widget.options.xPadding;
+  }
+
+  double get maxScrollOffset {
+    return totalContentWidth - railWidth;
+  }
+
   bool _shouldPreload(int index) {
     return index == _currentPlayingIndex || index == _currentPlayingIndex + 1;
   }
 
   bool __isVideoFullyInView(int index) {
-    final railWidth = context.size?.width ?? MediaQuery.of(context).size.width;
-    final itemWidth = widget.options.itemWidth + widget.options.itemGap;
     final currentScrollOffset = _scrollController.position.pixels;
 
-    final itemStartOffset = index * itemWidth;
+    final itemStartOffset = widget.options.xPadding + index * itemScrollStep;
     final itemEndOffset = itemStartOffset + widget.options.itemWidth;
 
     return itemStartOffset >= currentScrollOffset &&
@@ -125,6 +139,29 @@ class _RailState extends State<Rail> {
     }
   }
 
+  void _scrollToCurrentVideo() {
+    if (_scrollController.hasClients) {
+      final targetOffset = widget.options.xPadding +
+          _currentPlayingIndex * itemScrollStep -
+          0.5 * (railWidth - widget.options.itemWidth);
+
+      _scrollController.animateTo(
+        targetOffset.clamp(0.0, maxScrollOffset),
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void _playVideo(int index) {
+    setState(() {
+      _currentPlayingIndex = index;
+      _currentVideoEnded = false;
+    });
+
+    _scrollToCurrentVideo();
+  }
+
   @override
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
@@ -172,7 +209,7 @@ class _RailState extends State<Rail> {
                         .sendVideoClicked(widget.config, {'videoId': asset.id});
                   },
                   onPlayClick: () {
-                    widget.onPlayClick?.call(asset);
+                    _playVideo(index);
                     _analytics
                         .sendVideoWatched(widget.config, {'videoId': asset.id});
                   },
