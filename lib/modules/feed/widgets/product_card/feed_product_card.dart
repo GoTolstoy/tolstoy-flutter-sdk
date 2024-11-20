@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/services.dart';
@@ -66,13 +67,15 @@ class FeedProductCard extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     Container(color: Colors.grey[300]),
-                    DelayedImage(
-                      url: ProductUtils.getOptimizedImageUrl(
+                    CachedNetworkImage(
+                      imageUrl: ProductUtils.getOptimizedImageUrl(
                         product,
                         width: options.imageWidth.toInt(),
                       ),
                       fit: options.imageFit,
-                      delay: options.imageLoadDelay,
+                      placeholder: (context, url) =>
+                          Container(color: Colors.grey[300]),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ],
                 ),
@@ -121,44 +124,6 @@ class FeedProductCard extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class DelayedImage extends StatelessWidget {
-  final String url;
-  final BoxFit fit;
-  final Duration delay;
-
-  const DelayedImage({
-    super.key,
-    required this.url,
-    required this.fit,
-    required this.delay,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Future.delayed(delay),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return Container(color: Colors.grey[300]);
-        }
-        return Image.network(
-          url,
-          fit: fit,
-          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-            if (wasSynchronouslyLoaded) return child;
-            return AnimatedOpacity(
-              opacity: frame == null ? 0 : 1,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              child: child,
-            );
-          },
-        );
-      },
     );
   }
 }
