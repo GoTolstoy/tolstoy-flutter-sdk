@@ -84,9 +84,14 @@ class _VideoAssetState extends State<VideoAsset> {
   void _videoPlayerListener() {
     final currentPosition = _controller!.value.position;
 
-    if (widget.onAssetEnded != null &&
-        currentPosition >= _controller!.value.duration) {
-      widget.onAssetEnded!(widget.asset);
+    if (currentPosition >= _controller!.value.duration) {
+      if (!_controller!.value.isLooping) {
+        _controller!.seekTo(Duration.zero);
+      }
+
+      if (widget.onAssetEnded != null) {
+        widget.onAssetEnded!(widget.asset);
+      }
     }
 
     if (!_controller!.value.isPlaying) {
