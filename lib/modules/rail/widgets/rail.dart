@@ -54,19 +54,7 @@ class _RailState extends State<Rail> {
   }
 
   bool _shouldPreload(int index) {
-    if (_currentPlayingIndex == 0) {
-      // if first playing: preload first and second items
-      return index == 0 || index == 1;
-    } else if (_currentPlayingIndex == visibleItemCount - 1) {
-      // if last playing: second last items, preload last and first items
-      return index == visibleItemCount - 2 ||
-          index == visibleItemCount - 1 ||
-          index == 0;
-    } else {
-      // if non edge item playing: preload current and adjacent items
-      return index >= _currentPlayingIndex - 1 &&
-          index <= _currentPlayingIndex + 1;
-    }
+    return index == _currentPlayingIndex || index == _currentPlayingIndex + 1;
   }
 
   bool __isVideoFullyInView(int index) {
