@@ -14,11 +14,6 @@ class RailScreen extends StatelessWidget {
     print('Asset clicked: ${asset.id}');
   }
 
-  void _handlePlayClick(Asset asset) {
-    // Implement logic for play button click
-    print('Play clicked for asset: ${asset.id}');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +34,6 @@ class RailScreen extends StatelessWidget {
               return Rail(
                 config: config,
                 onAssetClick: _handleAssetClick,
-                onPlayClick: _handlePlayClick,
                 options: const RailOptions(
                   itemWidth: 160,
                   itemHeight: 240,

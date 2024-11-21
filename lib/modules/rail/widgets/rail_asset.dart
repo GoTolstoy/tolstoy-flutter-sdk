@@ -58,7 +58,7 @@ class RailAsset extends StatelessWidget {
                   child: const Icon(
                     Icons.play_arrow,
                     color: Colors.white,
-                    size: 18,
+                    size: 24,
                   ),
                 ),
               ),
