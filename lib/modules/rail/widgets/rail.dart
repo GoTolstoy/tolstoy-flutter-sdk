@@ -131,7 +131,6 @@ class _RailState extends State<Rail> {
       }
     }
 
-    // Play first video in view
     final firstVideoInView = _getFirstVideoFullyInView();
 
     if (firstVideoInView != null) {
