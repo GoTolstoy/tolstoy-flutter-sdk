@@ -51,7 +51,7 @@ class FeedView extends StatefulWidget {
 class _FeedViewState extends State<FeedView>
     with AutomaticKeepAliveClientMixin {
   late PageController _pageViewController;
-  bool isPlaying = true;
+  bool isPlayingEnabled = true;
   bool isMuted = false;
   int activePageIndex = 0;
   late FocusNode _focusNode;
@@ -68,7 +68,7 @@ class _FeedViewState extends State<FeedView>
     _analytics = Analytics();
     _analytics.sendSessionStart(widget.config);
 
-    isPlaying = widget.options.isAutoplay;
+    isPlayingEnabled = widget.options.isAutoplay;
     isMuted = widget.options.isMutedByDefault;
 
     int initialPage = 0;
@@ -114,7 +114,6 @@ class _FeedViewState extends State<FeedView>
     if (mounted) {
       setState(() {
         _isVisible = _focusNode.hasFocus;
-        isPlaying = _isVisible && widget.options.isAutoplay;
       });
     }
   }
@@ -127,7 +126,7 @@ class _FeedViewState extends State<FeedView>
 
   void _onPlayClick(Asset asset) {
     setState(() {
-      isPlaying = !isPlaying;
+      isPlayingEnabled = !isPlayingEnabled;
     });
   }
 
@@ -177,7 +176,8 @@ class _FeedViewState extends State<FeedView>
         asset: asset,
         config: widget.config,
         options: AssetViewOptions(
-          isPlaying: isPlaying && isActive,
+          isPlaying: isPlayingEnabled && isActive && _isVisible,
+          isPlayingEnabled: isPlayingEnabled,
           isMuted: isMuted,
           shouldLoop: true,
           withMuteButton: asset.type != AssetType.image,
@@ -196,6 +196,8 @@ class _FeedViewState extends State<FeedView>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Focus(
       focusNode: _focusNode,
       child: Container(

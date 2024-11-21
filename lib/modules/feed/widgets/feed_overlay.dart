@@ -5,8 +5,15 @@ import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 
 import 'feed_product_list.dart';
 
+enum DotsMenuOption { report }
+
 class FeedAssetOverlay extends StatelessWidget {
-  final bool isPlaying;
+  static const buttonBackgroundColor = Color(0xCC222222);
+  static const iconColor = Colors.white;
+  static const menuBackgroundColor = Color.fromRGBO(9, 10, 25, 0.8);
+  static const menuErrorColor = Color.fromARGB(255, 226, 80, 109);
+
+  final bool isPlayingEnabled;
   final bool isMuted;
   final List<Product> products;
   final VoidCallback onPlayPause;
@@ -16,7 +23,7 @@ class FeedAssetOverlay extends StatelessWidget {
 
   const FeedAssetOverlay({
     super.key,
-    required this.isPlaying,
+    required this.isPlayingEnabled,
     required this.isMuted,
     required this.products,
     required this.onPlayPause,
@@ -35,17 +42,17 @@ class FeedAssetOverlay extends StatelessWidget {
           child: Container(
             color: Colors.transparent,
             child: Center(
-              child: !isPlaying
+              child: !isPlayingEnabled
                   ? Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFF222222).withAlpha(204),
+                        color: buttonBackgroundColor,
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
                         icon: const Icon(
                           Icons.play_arrow,
                           size: 64,
-                          color: Colors.white,
+                          color: iconColor,
                         ),
                         onPressed: onPlayPause,
                       ),
@@ -67,15 +74,33 @@ class FeedAssetOverlay extends StatelessWidget {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xFF222222).withAlpha(204),
+                      color: buttonBackgroundColor,
                       shape: BoxShape.circle,
                     ),
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.more_vert,
-                        color: Colors.white,
-                      ),
-                      onPressed: onMuteUnmute,
+                    child: PopupMenuButton<DotsMenuOption>(
+                      color: menuBackgroundColor,
+                      icon: Icon(Icons.more_vert),
+                      iconColor: iconColor,
+                      onSelected: (value) {
+                        if (value == DotsMenuOption.report) {
+                          // Handle menu item selection
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: DotsMenuOption.report,
+                          child: Container(
+                            constraints: BoxConstraints(minWidth: 150),
+                            child: ListTile(
+                              leading: Icon(Icons.report),
+                              title: Text('Report'),
+                              iconColor: menuErrorColor,
+                              textColor: menuErrorColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                      offset: Offset(-55, -10),
                     ),
                   ),
                 ],
@@ -97,13 +122,13 @@ class FeedAssetOverlay extends StatelessWidget {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFF222222).withAlpha(204),
+                        color: buttonBackgroundColor,
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
                         icon: Icon(
                           isMuted ? Icons.volume_off : Icons.volume_up,
-                          color: Colors.white,
+                          color: iconColor,
                         ),
                         onPressed: onMuteUnmute,
                       ),
