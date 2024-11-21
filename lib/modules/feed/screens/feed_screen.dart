@@ -16,13 +16,26 @@ class FeedScreen extends StatelessWidget {
   final TvPageConfig config;
   final void Function(Product)? onProductClick;
   final String? initialAssetId;
-  final PreferredSizeWidget? Function(BuildContext)? buildFeedHeader;
-  final Widget? Function(BuildContext)? buildFeedFooter;
+  final PreferredSizeWidget? Function({
+    required BuildContext context,
+    required TvPageConfig config,
+    required void Function() openTolstoyMenu,
+  })? buildFeedHeader;
+  final Widget? Function({
+    required BuildContext context,
+    required TvPageConfig config,
+  })? buildFeedFooter;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildFeedHeader?.call(context),
+      appBar: buildFeedHeader?.call(
+        context: context,
+        config: config,
+        openTolstoyMenu: () => {
+          print('Open Tolstoy menu for ${config.name}'),
+        },
+      ),
       body: FeedView(
         config: config,
         onProductClick: onProductClick,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tolstoy_flutter_sdk/modules/rail/widgets.dart';
+import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 
 const String publishId = 'YOUR_PUBLISH_ID';
@@ -19,7 +20,11 @@ class _MyHomePageState extends State<MyHomePage> {
     print('product clicked: ${product.title}');
   }
 
-  PreferredSizeWidget? _buildFeedHeader(BuildContext context) {
+  PreferredSizeWidget? _buildFeedHeader({
+    required BuildContext context,
+    required TvPageConfig config,
+    required void Function() openTolstoyMenu,
+  }) {
     return AppBar(
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
@@ -29,7 +34,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget? _buildFeedFooter(BuildContext context) {
+  Widget? _buildFeedFooter({
+    required BuildContext context,
+    required TvPageConfig config,
+  }) {
     return Container(
       height: 60,
       color: Colors.black.withOpacity(0.6),

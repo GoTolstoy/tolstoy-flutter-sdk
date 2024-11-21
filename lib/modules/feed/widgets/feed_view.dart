@@ -31,7 +31,10 @@ class FeedView extends StatefulWidget {
   final Function()? onLoadNextPage;
   final void Function(Product)? onProductClick;
   final String? initialAssetId;
-  final Widget? Function(BuildContext)? buildFeedFooter;
+  final Widget? Function({
+    required BuildContext context,
+    required TvPageConfig config,
+  })? buildFeedFooter;
   final GlobalKey footerKey;
 
   FeedView({
@@ -198,7 +201,10 @@ class _FeedViewState extends State<FeedView>
   Widget build(BuildContext context) {
     super.build(context);
 
-    final footer = widget.buildFeedFooter?.call(context);
+    final footer = widget.buildFeedFooter?.call(
+      context: context,
+      config: widget.config,
+    );
 
     return Focus(
       focusNode: _focusNode,

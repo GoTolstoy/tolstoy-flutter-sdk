@@ -3,6 +3,7 @@ import 'package:tolstoy_flutter_sdk/modules/rail/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/feed/screens.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
+import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/widgets/tv_config_provider.dart';
 
 import 'rail.dart';
@@ -11,8 +12,15 @@ class RailWithFeed extends StatelessWidget {
   final String publishId;
   final RailOptions railOptions;
   final void Function(Product)? onProductClick;
-  final PreferredSizeWidget? Function(BuildContext)? buildFeedHeader;
-  final Widget? Function(BuildContext)? buildFeedFooter;
+  final PreferredSizeWidget? Function({
+    required BuildContext context,
+    required TvPageConfig config,
+    required void Function() openTolstoyMenu,
+  })? buildFeedHeader;
+  final Widget? Function({
+    required BuildContext context,
+    required TvPageConfig config,
+  })? buildFeedFooter;
 
   const RailWithFeed({
     super.key,
