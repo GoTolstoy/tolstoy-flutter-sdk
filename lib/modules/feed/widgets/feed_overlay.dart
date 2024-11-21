@@ -12,6 +12,8 @@ class FeedAssetOverlay extends StatelessWidget {
   static const iconColor = Colors.white;
   static const menuBackgroundColor = Color.fromRGBO(9, 10, 25, 0.8);
   static const menuErrorColor = Color.fromARGB(255, 226, 80, 109);
+  static const modalBackgroundColor = Color.fromRGBO(255, 255, 255, 1);
+  static const modalErrorColor = Color.fromARGB(255, 226, 80, 109);
 
   final bool isPlayingEnabled;
   final bool isMuted;
@@ -83,7 +85,53 @@ class FeedAssetOverlay extends StatelessWidget {
                       iconColor: iconColor,
                       onSelected: (value) {
                         if (value == DotsMenuOption.report) {
-                          // Handle menu item selection
+                          showModalBottomSheet(
+                            context: context,
+                            backgroundColor: modalBackgroundColor,
+                            builder: (BuildContext context) {
+                              return Container(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20, 50, 20, 50),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.feedback_outlined,
+                                              color: modalErrorColor,
+                                              size: 32,
+                                            ),
+                                            const SizedBox(width: 20),
+                                            const Text(
+                                              'Report',
+                                              style: TextStyle(
+                                                color: modalErrorColor,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.close,
+                                            color: modalErrorColor,
+                                          ),
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
                         }
                       },
                       itemBuilder: (context) => [
