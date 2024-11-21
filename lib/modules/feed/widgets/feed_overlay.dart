@@ -5,13 +5,9 @@ import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 
 import 'feed_product_list.dart';
 
-enum DotsMenuOption { report }
-
 class FeedAssetOverlay extends StatelessWidget {
   static const buttonBackgroundColor = Color(0xCC222222);
   static const iconColor = Colors.white;
-  static const menuBackgroundColor = Color.fromRGBO(9, 10, 25, 0.8);
-  static const menuErrorColor = Color.fromARGB(255, 226, 80, 109);
   static const modalBackgroundColor = Color.fromRGBO(255, 255, 255, 1);
   static const modalErrorColor = Color.fromARGB(255, 226, 80, 109);
 
@@ -79,76 +75,56 @@ class FeedAssetOverlay extends StatelessWidget {
                       color: buttonBackgroundColor,
                       shape: BoxShape.circle,
                     ),
-                    child: PopupMenuButton<DotsMenuOption>(
-                      color: menuBackgroundColor,
-                      icon: Icon(Icons.more_vert),
-                      iconColor: iconColor,
-                      onSelected: (value) {
-                        if (value == DotsMenuOption.report) {
-                          showModalBottomSheet(
-                            context: context,
-                            backgroundColor: modalBackgroundColor,
-                            builder: (BuildContext context) {
-                              return Container(
-                                padding:
-                                    const EdgeInsets.fromLTRB(20, 50, 20, 50),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.feedback_outlined,
-                                              color: modalErrorColor,
-                                              size: 32,
-                                            ),
-                                            const SizedBox(width: 20),
-                                            const Text(
-                                              'Report',
-                                              style: TextStyle(
-                                                color: modalErrorColor,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(
-                                            Icons.close,
+                    child: IconButton(
+                      icon: Icon(Icons.more_vert, color: iconColor),
+                      onPressed: () => {
+                        showModalBottomSheet(
+                          context: context,
+                          backgroundColor: modalBackgroundColor,
+                          builder: (BuildContext context) {
+                            return Container(
+                              padding:
+                                  const EdgeInsets.fromLTRB(20, 50, 20, 50),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.feedback_outlined,
                                             color: modalErrorColor,
+                                            size: 32,
                                           ),
-                                          onPressed: () =>
-                                              Navigator.pop(context),
+                                          const SizedBox(width: 20),
+                                          const Text(
+                                            'Report',
+                                            style: TextStyle(
+                                              color: modalErrorColor,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: modalErrorColor,
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        }
+                                        onPressed: () => Navigator.pop(context),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        )
                       },
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          value: DotsMenuOption.report,
-                          child: Container(
-                            constraints: BoxConstraints(minWidth: 150),
-                            child: ListTile(
-                              leading: Icon(Icons.report),
-                              title: Text('Report'),
-                              iconColor: menuErrorColor,
-                              textColor: menuErrorColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                      offset: Offset(-55, -10),
                     ),
                   ),
                 ],
