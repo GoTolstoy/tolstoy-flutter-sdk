@@ -4,6 +4,9 @@ import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/feed/widgets/feed_view.dart';
 
 class FeedScreen extends StatelessWidget {
+  static const modalBackgroundColor = Color.fromRGBO(255, 255, 255, 1);
+  static const modalErrorColor = Color.fromARGB(255, 226, 80, 109);
+
   const FeedScreen({
     super.key,
     required this.config,
@@ -33,7 +36,50 @@ class FeedScreen extends StatelessWidget {
         context: context,
         config: config,
         openTolstoyMenu: () => {
-          print('Open Tolstoy menu for ${config.name}'),
+          showModalBottomSheet(
+            context: context,
+            backgroundColor: modalBackgroundColor,
+            builder: (BuildContext context) {
+              return Container(
+                padding: const EdgeInsets.fromLTRB(20, 50, 20, 50),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.feedback_outlined,
+                              color: modalErrorColor,
+                              size: 32,
+                            ),
+                            const SizedBox(width: 20),
+                            const Text(
+                              'Report',
+                              style: TextStyle(
+                                color: modalErrorColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.close,
+                            color: modalErrorColor,
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          )
         },
       ),
       body: FeedView(

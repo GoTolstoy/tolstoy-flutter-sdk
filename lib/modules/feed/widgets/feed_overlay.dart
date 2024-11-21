@@ -8,8 +8,6 @@ import 'feed_product_list.dart';
 class FeedAssetOverlay extends StatelessWidget {
   static const buttonBackgroundColor = Color(0xCC222222);
   static const iconColor = Colors.white;
-  static const modalBackgroundColor = Color.fromRGBO(255, 255, 255, 1);
-  static const modalErrorColor = Color.fromARGB(255, 226, 80, 109);
 
   final bool isPlayingEnabled;
   final bool isMuted;
@@ -58,79 +56,6 @@ class FeedAssetOverlay extends StatelessWidget {
                   : const SizedBox.shrink(),
             ),
           ),
-        ),
-        Positioned(
-          left: 0,
-          right: 0,
-          top: 0,
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 60.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: buttonBackgroundColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      icon: Icon(Icons.more_vert, color: iconColor),
-                      onPressed: () => {
-                        showModalBottomSheet(
-                          context: context,
-                          backgroundColor: modalBackgroundColor,
-                          builder: (BuildContext context) {
-                            return Container(
-                              padding:
-                                  const EdgeInsets.fromLTRB(20, 50, 20, 50),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.feedback_outlined,
-                                            color: modalErrorColor,
-                                            size: 32,
-                                          ),
-                                          const SizedBox(width: 20),
-                                          const Text(
-                                            'Report',
-                                            style: TextStyle(
-                                              color: modalErrorColor,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.close,
-                                          color: modalErrorColor,
-                                        ),
-                                        onPressed: () => Navigator.pop(context),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        )
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ]),
         ),
         Positioned(
           left: 0,
