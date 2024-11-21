@@ -9,25 +9,25 @@ class FeedScreen extends StatelessWidget {
     required this.config,
     this.onProductClick,
     this.initialAssetId,
-    this.header,
-    this.footer,
+    this.buildFeedHeader,
+    this.buildFeedFooter,
   });
 
   final TvPageConfig config;
   final void Function(Product)? onProductClick;
   final String? initialAssetId;
-  final PreferredSizeWidget? header;
-  final Widget? footer;
+  final PreferredSizeWidget? Function(BuildContext)? buildFeedHeader;
+  final Widget? Function(BuildContext)? buildFeedFooter;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: header,
+      appBar: buildFeedHeader?.call(context),
       body: FeedView(
         config: config,
         onProductClick: onProductClick,
         initialAssetId: initialAssetId,
-        footer: footer,
+        buildFeedFooter: buildFeedFooter,
         options: const FeedViewOptions(
           pageThreshold: 10,
           isMutedByDefault: true,

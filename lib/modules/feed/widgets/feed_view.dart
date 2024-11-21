@@ -31,7 +31,7 @@ class FeedView extends StatefulWidget {
   final Function()? onLoadNextPage;
   final void Function(Product)? onProductClick;
   final String? initialAssetId;
-  final Widget? footer;
+  final Widget? Function(BuildContext)? buildFeedFooter;
   final GlobalKey footerKey;
 
   FeedView({
@@ -41,7 +41,7 @@ class FeedView extends StatefulWidget {
     this.options = const FeedViewOptions(),
     this.onProductClick,
     this.initialAssetId,
-    this.footer,
+    this.buildFeedFooter,
   }) : footerKey = GlobalKey();
 
   @override
@@ -89,9 +89,9 @@ class _FeedViewState extends State<FeedView>
   }
 
   void _calculateFooterHeight() {
-    if (widget.footer != null) {
+    if (widget.buildFeedFooter != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final RenderBox? footerBox =
+        final footerBox =
             widget.footerKey.currentContext?.findRenderObject() as RenderBox?;
         if (footerBox != null) {
           setState(() {
@@ -198,6 +198,8 @@ class _FeedViewState extends State<FeedView>
   Widget build(BuildContext context) {
     super.build(context);
 
+    final footer = widget.buildFeedFooter?.call(context);
+
     return Focus(
       focusNode: _focusNode,
       child: Container(
@@ -220,14 +222,14 @@ class _FeedViewState extends State<FeedView>
                 right: 0,
                 child: LinearProgressIndicator(),
               ),
-            if (widget.footer != null)
+            if (footer != null)
               Positioned(
                 bottom: 0,
                 left: 0,
                 right: 0,
                 child: KeyedSubtree(
                   key: widget.footerKey,
-                  child: widget.footer!,
+                  child: footer,
                 ),
               ),
           ],
