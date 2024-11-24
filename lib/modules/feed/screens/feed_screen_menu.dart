@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class FeedScreenMenu extends StatelessWidget {
+class FeedScreenMenu extends StatefulWidget {
+  const FeedScreenMenu({super.key});
+
+  @override
+  State<FeedScreenMenu> createState() => _FeedScreenMenuState();
+}
+
+class _FeedScreenMenuState extends State<FeedScreenMenu> {
   static const padding = EdgeInsets.fromLTRB(20, 30, 20, 40);
-  static const backgroundColor = Color.fromRGBO(255, 255, 255, 1);
   static const errorColor = Color.fromARGB(255, 226, 80, 109);
   static const subtitleColor = Color.fromRGBO(90, 90, 90, 1);
   static const noticeColor = Color.fromRGBO(120, 120, 120, 1);
@@ -16,12 +22,26 @@ class FeedScreenMenu extends StatelessWidget {
         'The individuals featured may have received an incentive in connection with this content, which may have been created or curated by the brand',
   });
 
-  const FeedScreenMenu({super.key});
+  bool _showReportMenu = false;
 
   @override
   Widget build(BuildContext context) {
+    return IntrinsicHeight(
+      child: AnimatedCrossFade(
+        duration: const Duration(milliseconds: 300),
+        crossFadeState: _showReportMenu
+            ? CrossFadeState.showSecond
+            : CrossFadeState.showFirst,
+        firstChild: _buildMainContent(),
+        secondChild: _buildReportContent(),
+      ),
+    );
+  }
+
+  Widget _buildMainContent() {
     return Container(
       padding: padding,
+      width: double.infinity,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,23 +109,26 @@ class FeedScreenMenu extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 30),
-          Row(
-            children: [
-              Icon(
-                Icons.report,
-                color: errorColor,
-                size: 30,
-              ),
-              const SizedBox(width: 12),
-              Text(
-                lang['report'],
-                style: TextStyle(
+          GestureDetector(
+            onTap: () => setState(() => _showReportMenu = true),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.report,
                   color: errorColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
+                  size: 30,
                 ),
-              ),
-            ],
+                const SizedBox(width: 12),
+                Text(
+                  lang['report'],
+                  style: TextStyle(
+                    color: errorColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 40),
           Text(
@@ -114,6 +137,30 @@ class FeedScreenMenu extends StatelessWidget {
               fontSize: 16,
               color: noticeColor,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReportContent() {
+    return Container(
+      padding: padding,
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Report Content',
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 120),
+          TextButton(
+            onPressed: () => setState(() => _showReportMenu = false),
+            child: const Text('Back'),
           ),
         ],
       ),
