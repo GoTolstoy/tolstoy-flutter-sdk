@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/feed/widgets/feed_view.dart';
-import 'package:tolstoy_flutter_sdk/modules/feed/screens/feed_screen_menu.dart';
+import 'feed_screen_menu.dart';
 
 class FeedScreen extends StatelessWidget {
   static const modalBackgroundColor = Color.fromRGBO(255, 255, 255, 1);
