@@ -52,11 +52,23 @@ class _FeedScreenState extends State<FeedScreen> {
                 onReport: ({required String id, required String title}) async =>
                     {
                       await ApiService.sendEvent({
-                        'eventName': 'feedReportSubmit',
-                        'videoId': _currentAssetId,
+                        'accountId': widget.config.owner,
+                        'appKey': widget.config.appKey,
+                        'appUrl': widget.config.appUrl,
                         'contentReport': {'key': id, 'description': title},
-                        'formData':
-                            jsonEncode({'key': id, 'description': title}),
+                        'eventName': 'feedReportSubmit',
+                        'formData': jsonEncode({
+                          'key': id,
+                          'description': title,
+                        }),
+                        'isMobile': true,
+                        'playerType': 'flutter',
+                        'playlist': widget.config.name,
+                        'projectId': widget.config.id,
+                        'publishId': widget.config.publishId,
+                        'stepName': widget.config.startStep,
+                        'timestamp': DateTime.now().toUtc().toIso8601String(),
+                        'videoId': _currentAssetId,
                       }),
                     }),
             isScrollControlled: true,
