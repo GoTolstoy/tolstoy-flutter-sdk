@@ -31,6 +31,7 @@ class FeedView extends StatefulWidget {
   final Function()? onLoadNextPage;
   final void Function(Product)? onProductClick;
   final String? initialAssetId;
+  final void Function(String assetId)? onAssetIdChange;
   final Widget? Function({
     required BuildContext context,
     required TvPageConfig config,
@@ -44,6 +45,7 @@ class FeedView extends StatefulWidget {
     this.options = const FeedViewOptions(),
     this.onProductClick,
     this.initialAssetId,
+    this.onAssetIdChange,
     this.buildFeedFooter,
   }) : footerKey = GlobalKey();
 
@@ -124,6 +126,7 @@ class _FeedViewState extends State<FeedView>
   _onPageChanged(int index) {
     setState(() {
       activePageIndex = index;
+      widget.onAssetIdChange?.call(widget.config.assets[index].id);
     });
   }
 
