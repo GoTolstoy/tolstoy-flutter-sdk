@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class FeedScreenReportMenu extends StatefulWidget {
   final VoidCallback onCancel;
-  final void Function({required String id, required String title}) onReport;
+  final Future<void> Function({required String id, required String title})
+      onReport;
 
   const FeedScreenReportMenu({
     super.key,
@@ -19,6 +20,7 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
 
   String? _selectedId;
   String? _selectedTitle;
+  bool _isSubmitting = false;
 
   static final _lang = Map.unmodifiable({
     'title': 'Why are you reporting this content?',
@@ -93,7 +95,7 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
               itemBuilder: (context, index) {
                 final reason = _reportReasons[index];
 
-                return RadioListTile(
+                return RadioListTile<String?>(
                   title: Text(
                     reason['title']!,
                     style: const TextStyle(fontSize: 14),
@@ -104,10 +106,12 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
                   ),
                   value: reason['id'],
                   groupValue: _selectedId,
-                  onChanged: (value) => setState(() {
-                    _selectedId = reason['id'];
-                    _selectedTitle = reason['title'];
-                  }),
+                  onChanged: _isSubmitting
+                      ? null
+                      : (value) => setState(() {
+                            _selectedId = reason['id'];
+                            _selectedTitle = reason['title'];
+                          }),
                 );
               },
             ),
@@ -117,22 +121,35 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
             children: [
               Expanded(
                 child: TextButton(
-                  onPressed: widget.onCancel,
+                  onPressed: _isSubmitting ? null : widget.onCancel,
                   child: Text(_lang['cancel']),
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: _selectedId != null
-                      ? () => {
-                            widget.onReport(
+                  onPressed: _selectedId == null || _isSubmitting
+                      ? null
+                      : () async {
+                          setState(() => _isSubmitting = true);
+                          try {
+                            await widget.onReport(
                               id: _selectedId!,
                               title: _selectedTitle!,
-                            ),
+                            );
+                          } finally {
+                            if (mounted) {
+                              setState(() => _isSubmitting = false);
+                            }
                           }
-                      : null,
-                  child: Text(_lang['report']),
+                        },
+                  child: _isSubmitting
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(_lang['report']),
                 ),
               ),
             ],

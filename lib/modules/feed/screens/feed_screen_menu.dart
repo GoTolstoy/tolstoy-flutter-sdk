@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'feed_screen_main_menu.dart';
 import 'feed_screen_report_menu.dart';
+// import 'package:tolstoy_flutter_sdk/modules/api/services/api.dart';
 
 class FeedScreenMenu extends StatefulWidget {
   const FeedScreenMenu({super.key});
@@ -24,9 +25,11 @@ class _FeedScreenMenuState extends State<FeedScreenMenu> {
           ? FeedScreenReportMenu(
               key: _mainMenuKey,
               onCancel: () => setState(() => _showReportMenu = false),
-              onReport: ({required String id, required String title}) => {
+              onReport: ({required String id, required String title}) async => {
+                // await ApiService.sendEvent({}),
+                await Future.delayed(const Duration(seconds: 2)),
                 print('id: $id, title: $title'),
-                Navigator.pop(context),
+                if (mounted) Navigator.pop(this.context),
               },
             )
           : FeedScreenMainMenu(
