@@ -5,8 +5,7 @@ import 'package:tolstoy_flutter_sdk/modules/feed/widgets/feed_view.dart';
 import 'feed_screen_menu.dart';
 
 class FeedScreen extends StatelessWidget {
-  static const modalBackgroundColor = Color.fromRGBO(255, 255, 255, 1);
-  static const modalErrorColor = Color.fromARGB(255, 226, 80, 109);
+  static const _modalBackgroundColor = Color.fromRGBO(255, 255, 255, 1);
 
   const FeedScreen({
     super.key,
@@ -39,7 +38,7 @@ class FeedScreen extends StatelessWidget {
         openTolstoyMenu: () => {
           showModalBottomSheet(
             context: context,
-            backgroundColor: modalBackgroundColor,
+            backgroundColor: _modalBackgroundColor,
             builder: (BuildContext context) => const FeedScreenMenu(),
           )
         },

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class FeedScreenMainMenu extends StatelessWidget {
-  static const padding = EdgeInsets.fromLTRB(20, 30, 20, 40);
-  static const errorColor = Color.fromARGB(255, 226, 80, 109);
-  static const subtitleColor = Color.fromRGBO(90, 90, 90, 1);
-  static const noticeColor = Color.fromRGBO(120, 120, 120, 1);
-  static final lang = Map.unmodifiable({
+  static const _padding = EdgeInsets.fromLTRB(20, 30, 20, 40);
+  static const _errorColor = Color.fromARGB(255, 226, 80, 109);
+  static const _subtitleColor = Color.fromRGBO(90, 90, 90, 1);
+  static const _noticeColor = Color.fromRGBO(120, 120, 120, 1);
+  static final _lang = Map.unmodifiable({
     'title': 'Tolstoy: Shoppable Videos',
     'subtitle': 'See products in action with shoppable videos',
     'share': 'Share',
@@ -25,7 +25,7 @@ class FeedScreenMainMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding,
+      padding: _padding,
       width: double.infinity,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -55,7 +55,7 @@ class FeedScreenMainMenu extends StatelessWidget {
                     const SizedBox(width: 14),
                     Expanded(
                       child: Text(
-                        lang['title'],
+                        _lang['title'],
                         softWrap: true,
                         style: TextStyle(
                           fontSize: 20,
@@ -78,16 +78,16 @@ class FeedScreenMainMenu extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            lang['subtitle'],
+            _lang['subtitle'],
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: subtitleColor,
+              color: _subtitleColor,
             ),
           ),
           const SizedBox(height: 40),
           Text(
-            lang['share'],
+            _lang['share'],
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
@@ -100,14 +100,14 @@ class FeedScreenMainMenu extends StatelessWidget {
               children: [
                 Icon(
                   Icons.report,
-                  color: errorColor,
+                  color: _errorColor,
                   size: 30,
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  lang['report'],
+                  _lang['report'],
                   style: TextStyle(
-                    color: errorColor,
+                    color: _errorColor,
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                   ),
@@ -117,10 +117,10 @@ class FeedScreenMainMenu extends StatelessWidget {
           ),
           const SizedBox(height: 40),
           Text(
-            lang['notice'],
+            _lang['notice'],
             style: TextStyle(
               fontSize: 16,
-              color: noticeColor,
+              color: _noticeColor,
             ),
           ),
         ],

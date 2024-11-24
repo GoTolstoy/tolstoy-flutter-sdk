@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class FeedScreenReportMenu extends StatelessWidget {
-  static const padding = EdgeInsets.fromLTRB(20, 30, 20, 40);
-  static final lang = Map.unmodifiable({});
+  static const _padding = EdgeInsets.fromLTRB(20, 30, 20, 40);
 
   final VoidCallback onCancel;
   final VoidCallback onReport;
@@ -16,7 +15,7 @@ class FeedScreenReportMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding,
+      padding: _padding,
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
