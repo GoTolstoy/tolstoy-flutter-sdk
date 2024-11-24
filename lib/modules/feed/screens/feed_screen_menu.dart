@@ -24,7 +24,10 @@ class _FeedScreenMenuState extends State<FeedScreenMenu> {
           ? FeedScreenReportMenu(
               key: _mainMenuKey,
               onCancel: () => setState(() => _showReportMenu = false),
-              onReport: () => setState(() => _showReportMenu = false),
+              onReport: ({required String id, required String title}) => {
+                print('id: $id, title: $title'),
+                Navigator.pop(context),
+              },
             )
           : FeedScreenMainMenu(
               key: _reportMenuKey,

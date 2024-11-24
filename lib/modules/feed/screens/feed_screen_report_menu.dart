@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class FeedScreenReportMenu extends StatefulWidget {
   final VoidCallback onCancel;
-  final VoidCallback onReport;
+  final void Function({required String id, required String title}) onReport;
 
   const FeedScreenReportMenu({
     super.key,
@@ -17,7 +17,8 @@ class FeedScreenReportMenu extends StatefulWidget {
 class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
   static const _padding = EdgeInsets.fromLTRB(20, 30, 20, 40);
 
-  String? _selectedReason;
+  String? _selectedId;
+  String? _selectedTitle;
 
   static final _lang = Map.unmodifiable({
     'title': 'Why are you reporting this content?',
@@ -27,33 +28,40 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
 
   static final _reportReasons = const [
     {
+      'id': 'bullyingHarrassment',
       'title': "It's bullying or harassment",
       'subtitle': 'It attacks an individual or a group of people.',
     },
     {
+      'id': 'conflictOfInterest',
       'title': "It's a conflict of interest",
       'subtitle':
           "It's from someone affiliated with the Shop Store or a competitor's store.",
     },
     {
+      'id': 'copyright',
       'title': "It's a copyright issue",
       'subtitle': 'It violates or infringes a copyright',
     },
     {
+      'id': 'offensive',
       'title': "It's offensive",
       'subtitle':
           'It contains inappropriate, sexually explicit, or violent content.',
     },
     {
+      'id': 'fraudOrScam',
       'title': "It's fraud or scam",
       'subtitle': 'It has allegations about improper store or buyer behavior.',
     },
     {
+      'id': 'hateSpeech',
       'title': "It's hate speech",
       'subtitle':
           'It contains harmful content based on an individual or group identity.',
     },
     {
+      'id': 'illegalActivities',
       'title': 'It\'s about illegal activities or regulated goods',
       'subtitle':
           'It references items that go against Shop Merchant Guidelines.',
@@ -94,9 +102,12 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
                     reason['subtitle']!,
                     style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
-                  value: reason['title'],
-                  groupValue: _selectedReason,
-                  onChanged: (value) => setState(() => _selectedReason = value),
+                  value: reason['id'],
+                  groupValue: _selectedId,
+                  onChanged: (value) => setState(() {
+                    _selectedId = reason['id'];
+                    _selectedTitle = reason['title'];
+                  }),
                 );
               },
             ),
@@ -113,7 +124,14 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
               const SizedBox(width: 16),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: _selectedReason != null ? widget.onReport : null,
+                  onPressed: _selectedId != null
+                      ? () => {
+                            widget.onReport(
+                              id: _selectedId!,
+                              title: _selectedTitle!,
+                            ),
+                          }
+                      : null,
                   child: Text(_lang['report']),
                 ),
               ),
