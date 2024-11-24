@@ -40,6 +40,7 @@ class FeedScreen extends StatelessWidget {
             context: context,
             backgroundColor: _modalBackgroundColor,
             builder: (BuildContext context) => const FeedScreenMenu(),
+            isScrollControlled: true,
           )
         },
       ),
