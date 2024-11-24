@@ -7,15 +7,6 @@ import 'feed_screen_menu.dart';
 import 'dart:convert';
 
 class FeedScreen extends StatefulWidget {
-  const FeedScreen({
-    super.key,
-    required this.config,
-    this.onProductClick,
-    this.initialAssetId,
-    this.buildFeedHeader,
-    this.buildFeedFooter,
-  });
-
   final TvPageConfig config;
   final void Function(Product)? onProductClick;
   final String? initialAssetId;
@@ -28,6 +19,19 @@ class FeedScreen extends StatefulWidget {
     required BuildContext context,
     required TvPageConfig config,
   })? buildFeedFooter;
+  final bool hideReportButton;
+  final bool hideShareButton;
+
+  const FeedScreen({
+    super.key,
+    required this.config,
+    this.onProductClick,
+    this.initialAssetId,
+    this.buildFeedHeader,
+    this.buildFeedFooter,
+    this.hideReportButton = false,
+    this.hideShareButton = false,
+  });
 
   @override
   State<FeedScreen> createState() => _FeedScreenState();
@@ -49,28 +53,30 @@ class _FeedScreenState extends State<FeedScreen> {
             context: context,
             backgroundColor: _modalBackgroundColor,
             builder: (BuildContext context) => FeedScreenMenu(
-                onReport: ({required String id, required String title}) async =>
-                    {
-                      await ApiService.sendEvent({
-                        'accountId': widget.config.owner,
-                        'appKey': widget.config.appKey,
-                        'appUrl': widget.config.appUrl,
-                        'contentReport': {'key': id, 'description': title},
-                        'eventName': 'feedReportSubmit',
-                        'formData': jsonEncode({
-                          'key': id,
-                          'description': title,
-                        }),
-                        'isMobile': true,
-                        'playerType': 'flutter',
-                        'playlist': widget.config.name,
-                        'projectId': widget.config.id,
-                        'publishId': widget.config.publishId,
-                        'stepName': widget.config.startStep,
-                        'timestamp': DateTime.now().toUtc().toIso8601String(),
-                        'videoId': _currentAssetId,
-                      }),
-                    }),
+              onReport: ({required String id, required String title}) async => {
+                await ApiService.sendEvent({
+                  'accountId': widget.config.owner,
+                  'appKey': widget.config.appKey,
+                  'appUrl': widget.config.appUrl,
+                  'contentReport': {'key': id, 'description': title},
+                  'eventName': 'feedReportSubmit',
+                  'formData': jsonEncode({
+                    'key': id,
+                    'description': title,
+                  }),
+                  'isMobile': true,
+                  'playerType': 'flutter',
+                  'playlist': widget.config.name,
+                  'projectId': widget.config.id,
+                  'publishId': widget.config.publishId,
+                  'stepName': widget.config.startStep,
+                  'timestamp': DateTime.now().toUtc().toIso8601String(),
+                  'videoId': _currentAssetId,
+                }),
+              },
+              hideReportButton: widget.hideReportButton,
+              hideShareButton: widget.hideShareButton,
+            ),
             isScrollControlled: true,
           )
         },

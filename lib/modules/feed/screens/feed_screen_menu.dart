@@ -5,10 +5,14 @@ import 'feed_screen_report_menu.dart';
 class FeedScreenMenu extends StatefulWidget {
   final Future<void> Function({required String id, required String title})
       onReport;
+  final bool hideReportButton;
+  final bool hideShareButton;
 
   const FeedScreenMenu({
     super.key,
     required this.onReport,
+    this.hideReportButton = false,
+    this.hideShareButton = false,
   });
 
   @override
@@ -37,7 +41,10 @@ class _FeedScreenMenuState extends State<FeedScreenMenu> {
             )
           : FeedScreenMainMenu(
               key: _reportMenuKey,
-              onReport: () => setState(() => _showReportMenu = true)),
+              onReport: () => setState(() => _showReportMenu = true),
+              hideReportButton: widget.hideReportButton,
+              hideShareButton: widget.hideShareButton,
+            ),
     );
   }
 }

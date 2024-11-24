@@ -16,10 +16,14 @@ class FeedScreenMainMenu extends StatelessWidget {
   });
 
   final VoidCallback onReport;
+  final bool hideReportButton;
+  final bool hideShareButton;
 
   const FeedScreenMainMenu({
     super.key,
     required this.onReport,
+    this.hideReportButton = false,
+    this.hideShareButton = false,
   });
 
   @override
@@ -86,36 +90,39 @@ class FeedScreenMainMenu extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 40),
-          Text(
-            _lang['share'],
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
+          if (!hideShareButton)
+            Text(
+              _lang['share'],
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          const SizedBox(height: 30),
-          GestureDetector(
-            onTap: onReport,
-            child: Row(
-              children: [
-                Icon(
-                  Icons.report,
-                  color: _errorColor,
-                  size: 30,
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  _lang['report'],
-                  style: TextStyle(
+          if (!hideShareButton) const SizedBox(height: 30),
+          if (!hideReportButton)
+            GestureDetector(
+              onTap: onReport,
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.report,
                     color: _errorColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
+                    size: 30,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 12),
+                  Text(
+                    _lang['report'],
+                    style: TextStyle(
+                      color: _errorColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 40),
+          if (!hideReportButton) const SizedBox(height: 30),
+          const SizedBox(height: 10),
           Text(
             _lang['notice'],
             style: TextStyle(
