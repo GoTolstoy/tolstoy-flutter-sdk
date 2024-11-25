@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tolstoy_flutter_sdk/modules/rail/widgets.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
+import 'package:tolstoy_flutter_sdk/modules/api/widgets/tv_config_provider.dart';
 
 const String publishId = 'YOUR_PUBLISH_ID';
 
@@ -53,11 +54,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: RailWithFeed(
+        child: TvConfigProvider(
           publishId: publishId,
-          onProductClick: onProductClick,
-          buildFeedHeader: _buildFeedHeader,
-          buildFeedFooter: _buildFeedFooter,
+          builder: (context, config) {
+            return RailWithFeed(
+              config: config,
+              onProductClick: onProductClick,
+              buildFeedHeader: _buildFeedHeader,
+              buildFeedFooter: _buildFeedFooter,
+            );
+          },
         ),
       ),
     );

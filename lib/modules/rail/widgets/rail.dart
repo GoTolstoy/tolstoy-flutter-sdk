@@ -95,6 +95,10 @@ class _RailState extends State<Rail> {
   }
 
   void _onCurrentVideoEnded() {
+    if (!mounted) {
+      return;
+    }
+
     final nextIndex = _currentPlayingIndex + 1;
 
     if (nextIndex < visibleItemCount && __isVideoFullyInView(nextIndex)) {
@@ -177,6 +181,10 @@ class _RailState extends State<Rail> {
       child: VisibilityDetector(
         key: Key('rail-${widget.config.publishId}'),
         onVisibilityChanged: (visibilityInfo) {
+          if (!mounted) {
+            return;
+          }
+
           if (visibilityInfo.visibleFraction > 0.5 && !_hasBeenVisible) {
             _hasBeenVisible = true;
             _analytics.sendEmbedView(widget.config);
