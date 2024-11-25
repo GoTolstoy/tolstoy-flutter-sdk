@@ -42,18 +42,21 @@ class FeedScreenMainMenu extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CachedNetworkImage(
-                      imageUrl:
-                          'https://tolstoy-files-dev-output.s3.us-east-1.amazonaws.com/public/flutter-sdk/tolstoy_icon.png',
-                      width: 64,
-                      height: 64,
-                      fit: BoxFit.contain,
-                      placeholder: (context, url) =>
-                          Container(color: Colors.transparent),
-                      errorWidget: (context, url, error) => Icon(
-                        Icons.broken_image_rounded,
-                        size: 40,
-                        color: Colors.grey[400],
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            'https://tolstoy-mobile-assets.s3.us-east-1.amazonaws.com/TolstoyLogo.png',
+                        width: 64,
+                        height: 64,
+                        fit: BoxFit.contain,
+                        placeholder: (context, url) =>
+                            Container(color: Colors.transparent),
+                        errorWidget: (context, url, error) => Icon(
+                          Icons.broken_image_rounded,
+                          size: 40,
+                          color: Colors.grey[400],
+                        ),
                       ),
                     ),
                     const SizedBox(width: 14),
