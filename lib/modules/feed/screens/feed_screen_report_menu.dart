@@ -36,7 +36,7 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
       'id': 'conflictOfInterest',
       'title': "It's a conflict of interest",
       'subtitle':
-          "It's from someone affiliated with the Shop Store or a competitor's store.",
+          "It's from someone affiliated with the brand or a competitor's brand.",
     },
     {
       'id': 'copyright',
@@ -63,8 +63,7 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
     {
       'id': 'illegalActivities',
       'title': 'It\'s about illegal activities or regulated goods',
-      'subtitle':
-          'It references items that go against Shop Merchant Guidelines.',
+      'subtitle': 'It references items that go against guidelines.',
     },
   ];
 
@@ -98,6 +97,8 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
                     ),
                     value: reason['id'],
                     groupValue: _selectedId,
+                    controlAffinity: ListTileControlAffinity.trailing,
+                    contentPadding: EdgeInsets.zero,
                     onChanged: _isSubmitting
                         ? null
                         : (value) => setState(() {

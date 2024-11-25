@@ -20,10 +20,7 @@ class RailWithFeed extends StatelessWidget {
     required BuildContext context,
     required TvPageConfig config,
   })? buildFeedFooter;
-  final bool hideReportButton;
-  final bool hideShareButton;
   final String? customMenuTitle;
-  final String? customMenuSubtitle;
   final String? customMenuLogoUrl;
 
   const RailWithFeed({
@@ -33,10 +30,7 @@ class RailWithFeed extends StatelessWidget {
     this.onProductClick,
     this.buildFeedHeader,
     this.buildFeedFooter,
-    this.hideReportButton = false,
-    this.hideShareButton = false,
     this.customMenuTitle,
-    this.customMenuSubtitle,
     this.customMenuLogoUrl,
   });
 
@@ -54,10 +48,7 @@ class RailWithFeed extends StatelessWidget {
               onProductClick: onProductClick,
               buildFeedHeader: buildFeedHeader,
               buildFeedFooter: buildFeedFooter,
-              hideReportButton: hideReportButton,
-              hideShareButton: hideShareButton,
               customMenuTitle: customMenuTitle,
-              customMenuSubtitle: customMenuSubtitle,
               customMenuLogoUrl: customMenuLogoUrl,
             ),
           ),

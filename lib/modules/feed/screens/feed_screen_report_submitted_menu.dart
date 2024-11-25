@@ -6,7 +6,7 @@ class FeedScreenReportSubmittedMenu extends StatelessWidget {
   static final _lang = Map.unmodifiable({
     'title': 'Thanks for reporting',
     'description':
-        "We'll check this content to see if it goes against any Shop Policies and will take action if needed.",
+        "We'll check this content to see if it goes against any of our policies and will take action if needed.",
     'close': 'Close',
   });
 

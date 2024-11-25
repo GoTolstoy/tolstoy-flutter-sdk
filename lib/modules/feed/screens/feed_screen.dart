@@ -19,10 +19,7 @@ class FeedScreen extends StatefulWidget {
     required BuildContext context,
     required TvPageConfig config,
   })? buildFeedFooter;
-  final bool hideReportButton;
-  final bool hideShareButton;
   final String? customMenuTitle;
-  final String? customMenuSubtitle;
   final String? customMenuLogoUrl;
 
   const FeedScreen({
@@ -32,10 +29,7 @@ class FeedScreen extends StatefulWidget {
     this.initialAssetId,
     this.buildFeedHeader,
     this.buildFeedFooter,
-    this.hideReportButton = false,
-    this.hideShareButton = false,
     this.customMenuTitle,
-    this.customMenuSubtitle,
     this.customMenuLogoUrl,
   });
 
@@ -107,10 +101,7 @@ class _FeedScreenState extends State<FeedScreen> {
                             'videoId': _currentAssetId,
                           });
                         },
-                        hideReportButton: widget.hideReportButton,
-                        hideShareButton: widget.hideShareButton,
                         customMenuTitle: widget.customMenuTitle,
-                        customMenuSubtitle: widget.customMenuSubtitle,
                         customMenuLogoUrl: widget.customMenuLogoUrl,
                       ),
                     ),

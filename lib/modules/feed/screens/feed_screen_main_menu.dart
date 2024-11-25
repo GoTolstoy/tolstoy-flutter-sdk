@@ -3,11 +3,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class FeedScreenMainMenu extends StatelessWidget {
   static const _errorColor = Color.fromARGB(255, 226, 80, 109);
-  static const _subtitleColor = Color.fromRGBO(90, 90, 90, 1);
   static const _noticeColor = Color.fromRGBO(120, 120, 120, 1);
   static final _lang = Map.unmodifiable({
     'title': 'Tolstoy: Shoppable Videos',
-    'subtitle': 'See products in action with shoppable videos',
     'share': 'Share',
     'report': 'Report',
     'notice':
@@ -15,19 +13,13 @@ class FeedScreenMainMenu extends StatelessWidget {
   });
 
   final VoidCallback onReport;
-  final bool hideReportButton;
-  final bool hideShareButton;
   final String? customMenuTitle;
-  final String? customMenuSubtitle;
   final String? customMenuLogoUrl;
 
   const FeedScreenMainMenu({
     super.key,
     required this.onReport,
-    this.hideReportButton = false,
-    this.hideShareButton = false,
     this.customMenuTitle,
-    this.customMenuSubtitle,
     this.customMenuLogoUrl,
   });
 
@@ -85,37 +77,19 @@ class FeedScreenMainMenu extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 15),
-        Text(
-          customMenuSubtitle ?? _lang['subtitle'],
-          style: TextStyle(
-            fontSize: 14,
-            color: _subtitleColor,
-          ),
-        ),
-        const SizedBox(height: 30),
-        if (!hideShareButton)
-          Text(
-            _lang['share'],
+        const SizedBox(height: 25),
+        GestureDetector(
+          onTap: onReport,
+          child: Text(
+            _lang['report'],
             style: TextStyle(
-              fontSize: 20,
+              color: _errorColor,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
           ),
-        if (!hideShareButton) const SizedBox(height: 30),
-        if (!hideReportButton)
-          GestureDetector(
-            onTap: onReport,
-            child: Text(
-              _lang['report'],
-              style: TextStyle(
-                color: _errorColor,
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        if (!hideReportButton) const SizedBox(height: 30),
+        ),
+        const SizedBox(height: 25),
         Text(
           _lang['notice'],
           style: TextStyle(
