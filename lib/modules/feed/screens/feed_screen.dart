@@ -55,39 +55,60 @@ class _FeedScreenState extends State<FeedScreen> {
         context: context,
         config: widget.config,
         openTolstoyMenu: () => {
-          showModalBottomSheet(
+          showDialog(
             context: context,
-            backgroundColor: _modalBackgroundColor,
-            builder: (BuildContext context) => FeedScreenMenu(
-              onReport: ({required String id, required String title}) async => {
-                await ApiService.sendEvent({
-                  'accountId': widget.config.owner,
-                  'appKey': widget.config.appKey,
-                  'appUrl': widget.config.appUrl,
-                  'contentReport': {'key': id, 'description': title},
-                  'eventName': 'feedReportSubmit',
-                  'formData': jsonEncode({
-                    'key': id,
-                    'description': title,
-                  }),
-                  'isMobile': true,
-                  'playerType': 'flutter',
-                  'playlist': widget.config.name,
-                  'projectId': widget.config.id,
-                  'publishId': widget.config.publishId,
-                  'stepName': widget.config.startStep,
-                  'timestamp': DateTime.now().toUtc().toIso8601String(),
-                  'videoId': _currentAssetId,
-                }),
-              },
-              hideReportButton: widget.hideReportButton,
-              hideShareButton: widget.hideShareButton,
-              customMenuTitle: widget.customMenuTitle,
-              customMenuSubtitle: widget.customMenuSubtitle,
-              customMenuLogoUrl: widget.customMenuLogoUrl,
+            builder: (BuildContext context) => Material(
+              color: Colors.transparent,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                  decoration: const BoxDecoration(
+                    color: _modalBackgroundColor,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+                    child: FeedScreenMenu(
+                      onReport: ({
+                        required String id,
+                        required String title,
+                      }) async =>
+                          {
+                        await ApiService.sendEvent({
+                          'accountId': widget.config.owner,
+                          'appKey': widget.config.appKey,
+                          'appUrl': widget.config.appUrl,
+                          'contentReport': {'key': id, 'description': title},
+                          'eventName': 'feedReportSubmit',
+                          'formData': jsonEncode({
+                            'key': id,
+                            'description': title,
+                          }),
+                          'isMobile': true,
+                          'playerType': 'flutter',
+                          'playlist': widget.config.name,
+                          'projectId': widget.config.id,
+                          'publishId': widget.config.publishId,
+                          'stepName': widget.config.startStep,
+                          'timestamp': DateTime.now().toUtc().toIso8601String(),
+                          'videoId': _currentAssetId,
+                        }),
+                      },
+                      hideReportButton: widget.hideReportButton,
+                      hideShareButton: widget.hideShareButton,
+                      customMenuTitle: widget.customMenuTitle,
+                      customMenuSubtitle: widget.customMenuSubtitle,
+                      customMenuLogoUrl: widget.customMenuLogoUrl,
+                    ),
+                  ),
+                ),
+              ),
             ),
-            isScrollControlled: true,
-          )
+          ),
         },
       ),
       body: FeedView(
