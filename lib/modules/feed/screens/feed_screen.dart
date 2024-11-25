@@ -21,6 +21,9 @@ class FeedScreen extends StatefulWidget {
   })? buildFeedFooter;
   final bool hideReportButton;
   final bool hideShareButton;
+  final String? customMenuTitle;
+  final String? customMenuSubtitle;
+  final String? customMenuLogoUrl;
 
   const FeedScreen({
     super.key,
@@ -31,6 +34,9 @@ class FeedScreen extends StatefulWidget {
     this.buildFeedFooter,
     this.hideReportButton = false,
     this.hideShareButton = false,
+    this.customMenuTitle,
+    this.customMenuSubtitle,
+    this.customMenuLogoUrl,
   });
 
   @override
@@ -76,6 +82,9 @@ class _FeedScreenState extends State<FeedScreen> {
               },
               hideReportButton: widget.hideReportButton,
               hideShareButton: widget.hideShareButton,
+              customMenuTitle: widget.customMenuTitle,
+              customMenuSubtitle: widget.customMenuSubtitle,
+              customMenuLogoUrl: widget.customMenuLogoUrl,
             ),
             isScrollControlled: true,
           )

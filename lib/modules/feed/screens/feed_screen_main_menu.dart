@@ -18,12 +18,18 @@ class FeedScreenMainMenu extends StatelessWidget {
   final VoidCallback onReport;
   final bool hideReportButton;
   final bool hideShareButton;
+  final String? customMenuTitle;
+  final String? customMenuSubtitle;
+  final String? customMenuLogoUrl;
 
   const FeedScreenMainMenu({
     super.key,
     required this.onReport,
     this.hideReportButton = false,
     this.hideShareButton = false,
+    this.customMenuTitle,
+    this.customMenuSubtitle,
+    this.customMenuLogoUrl,
   });
 
   @override
@@ -45,7 +51,7 @@ class FeedScreenMainMenu extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: CachedNetworkImage(
-                        imageUrl:
+                        imageUrl: customMenuLogoUrl ??
                             'https://tolstoy-mobile-assets.s3.us-east-1.amazonaws.com/TolstoyLogo.png',
                         width: 64,
                         height: 64,
@@ -62,7 +68,7 @@ class FeedScreenMainMenu extends StatelessWidget {
                     const SizedBox(width: 14),
                     Expanded(
                       child: Text(
-                        _lang['title'],
+                        customMenuTitle ?? _lang['title'],
                         softWrap: true,
                         style: TextStyle(
                           fontSize: 20,
@@ -85,7 +91,7 @@ class FeedScreenMainMenu extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            _lang['subtitle'],
+            customMenuSubtitle ?? _lang['subtitle'],
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,

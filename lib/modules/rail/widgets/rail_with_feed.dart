@@ -22,6 +22,9 @@ class RailWithFeed extends StatelessWidget {
   })? buildFeedFooter;
   final bool hideReportButton;
   final bool hideShareButton;
+  final String? customMenuTitle;
+  final String? customMenuSubtitle;
+  final String? customMenuLogoUrl;
 
   const RailWithFeed({
     super.key,
@@ -32,6 +35,9 @@ class RailWithFeed extends StatelessWidget {
     this.buildFeedFooter,
     this.hideReportButton = false,
     this.hideShareButton = false,
+    this.customMenuTitle,
+    this.customMenuSubtitle,
+    this.customMenuLogoUrl,
   });
 
   @override
@@ -50,6 +56,9 @@ class RailWithFeed extends StatelessWidget {
               buildFeedFooter: buildFeedFooter,
               hideReportButton: hideReportButton,
               hideShareButton: hideShareButton,
+              customMenuTitle: customMenuTitle,
+              customMenuSubtitle: customMenuSubtitle,
+              customMenuLogoUrl: customMenuLogoUrl,
             ),
           ),
         );
