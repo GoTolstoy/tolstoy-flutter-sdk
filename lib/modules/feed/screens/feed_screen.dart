@@ -66,49 +66,53 @@ class _FeedScreenState extends State<FeedScreen> {
               onTap: () => Navigator.pop(context),
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: Container(
-                  margin: EdgeInsets.fromLTRB(
-                    16 + safeArea.left,
-                    16 + safeArea.top,
-                    16 + safeArea.right,
-                    16 + safeArea.bottom,
-                  ),
-                  decoration: const BoxDecoration(
-                    color: _modalBackgroundColor,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: FeedScreenMenu(
-                      onReport: ({
-                        required String id,
-                        required String title,
-                      }) async {
-                        return await ApiService.sendEvent({
-                          'accountId': widget.config.owner,
-                          'appKey': widget.config.appKey,
-                          'appUrl': widget.config.appUrl,
-                          'contentReport': {'key': id, 'description': title},
-                          'eventName': 'feedReportSubmit',
-                          'formData': jsonEncode({
-                            'key': id,
-                            'description': title,
-                          }),
-                          'isMobile': true,
-                          'playerType': 'flutter',
-                          'playlist': widget.config.name,
-                          'projectId': widget.config.id,
-                          'publishId': widget.config.publishId,
-                          'stepName': widget.config.startStep,
-                          'timestamp': DateTime.now().toUtc().toIso8601String(),
-                          'videoId': _currentAssetId,
-                        });
-                      },
-                      hideReportButton: widget.hideReportButton,
-                      hideShareButton: widget.hideShareButton,
-                      customMenuTitle: widget.customMenuTitle,
-                      customMenuSubtitle: widget.customMenuSubtitle,
-                      customMenuLogoUrl: widget.customMenuLogoUrl,
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(
+                      16 + safeArea.left,
+                      16 + safeArea.top,
+                      16 + safeArea.right,
+                      16 + safeArea.bottom,
+                    ),
+                    decoration: const BoxDecoration(
+                      color: _modalBackgroundColor,
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: FeedScreenMenu(
+                        onReport: ({
+                          required String id,
+                          required String title,
+                        }) async {
+                          return await ApiService.sendEvent({
+                            'accountId': widget.config.owner,
+                            'appKey': widget.config.appKey,
+                            'appUrl': widget.config.appUrl,
+                            'contentReport': {'key': id, 'description': title},
+                            'eventName': 'feedReportSubmit',
+                            'formData': jsonEncode({
+                              'key': id,
+                              'description': title,
+                            }),
+                            'isMobile': true,
+                            'playerType': 'flutter',
+                            'playlist': widget.config.name,
+                            'projectId': widget.config.id,
+                            'publishId': widget.config.publishId,
+                            'stepName': widget.config.startStep,
+                            'timestamp':
+                                DateTime.now().toUtc().toIso8601String(),
+                            'videoId': _currentAssetId,
+                          });
+                        },
+                        hideReportButton: widget.hideReportButton,
+                        hideShareButton: widget.hideShareButton,
+                        customMenuTitle: widget.customMenuTitle,
+                        customMenuSubtitle: widget.customMenuSubtitle,
+                        customMenuLogoUrl: widget.customMenuLogoUrl,
+                      ),
                     ),
                   ),
                 ),
