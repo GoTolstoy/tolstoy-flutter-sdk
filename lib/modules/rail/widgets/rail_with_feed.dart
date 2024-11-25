@@ -3,6 +3,7 @@ import 'package:tolstoy_flutter_sdk/modules/rail/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/feed/screens.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
+import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/widgets/tv_config_provider.dart';
 
 import 'rail.dart';
@@ -11,16 +12,27 @@ class RailWithFeed extends StatelessWidget {
   final String publishId;
   final RailOptions railOptions;
   final void Function(Product)? onProductClick;
-  final PreferredSizeWidget? header;
-  final Widget? footer;
+  final PreferredSizeWidget? Function({
+    required BuildContext context,
+    required TvPageConfig config,
+    required void Function() openTolstoyMenu,
+  })? buildFeedHeader;
+  final Widget? Function({
+    required BuildContext context,
+    required TvPageConfig config,
+  })? buildFeedFooter;
+  final bool hideReportButton;
+  final bool hideShareButton;
 
   const RailWithFeed({
     super.key,
     required this.publishId,
     this.railOptions = const RailOptions(),
     this.onProductClick,
-    this.header,
-    this.footer,
+    this.buildFeedHeader,
+    this.buildFeedFooter,
+    this.hideReportButton = false,
+    this.hideShareButton = false,
   });
 
   @override
@@ -38,8 +50,10 @@ class RailWithFeed extends StatelessWidget {
                   config: config,
                   initialAssetId: asset.id,
                   onProductClick: onProductClick,
-                  header: header,
-                  footer: footer,
+                  buildFeedHeader: buildFeedHeader,
+                  buildFeedFooter: buildFeedFooter,
+                  hideReportButton: hideReportButton,
+                  hideShareButton: hideShareButton,
                 ),
               ),
             );

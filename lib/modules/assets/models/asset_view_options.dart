@@ -4,6 +4,7 @@ enum AssetViewOptionsPlayMode { full, preview }
 
 class AssetViewOptions {
   final bool isPlaying;
+  final bool isPlayingEnabled;
   final bool isMuted;
   final bool shouldLoop;
   final bool withMuteButton;
@@ -15,6 +16,7 @@ class AssetViewOptions {
 
   const AssetViewOptions({
     this.isPlaying = false,
+    this.isPlayingEnabled = true,
     this.isMuted = false,
     this.shouldLoop = false,
     this.withMuteButton = true,
@@ -27,6 +29,7 @@ class AssetViewOptions {
 
   AssetViewOptions copyWith({
     bool? isPlaying,
+    bool? isPlayingEnabled,
     bool? isMuted,
     bool? shouldLoop,
     bool? withMuteButton,
@@ -38,6 +41,7 @@ class AssetViewOptions {
   }) {
     return AssetViewOptions(
       isPlaying: isPlaying ?? this.isPlaying,
+      isPlayingEnabled: isPlayingEnabled ?? this.isPlayingEnabled,
       isMuted: isMuted ?? this.isMuted,
       shouldLoop: shouldLoop ?? this.shouldLoop,
       withMuteButton: withMuteButton ?? this.withMuteButton,

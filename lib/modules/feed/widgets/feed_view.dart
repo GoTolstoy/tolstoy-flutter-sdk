@@ -31,7 +31,11 @@ class FeedView extends StatefulWidget {
   final Function()? onLoadNextPage;
   final void Function(Product)? onProductClick;
   final String? initialAssetId;
-  final Widget? footer;
+  final void Function(String assetId)? onAssetIdChange;
+  final Widget? Function({
+    required BuildContext context,
+    required TvPageConfig config,
+  })? buildFeedFooter;
   final GlobalKey footerKey;
 
   FeedView({
@@ -41,7 +45,8 @@ class FeedView extends StatefulWidget {
     this.options = const FeedViewOptions(),
     this.onProductClick,
     this.initialAssetId,
-    this.footer,
+    this.onAssetIdChange,
+    this.buildFeedFooter,
   }) : footerKey = GlobalKey();
 
   @override
@@ -51,7 +56,7 @@ class FeedView extends StatefulWidget {
 class _FeedViewState extends State<FeedView>
     with AutomaticKeepAliveClientMixin {
   late PageController _pageViewController;
-  bool isPlaying = true;
+  bool isPlayingEnabled = true;
   bool isMuted = false;
   int activePageIndex = 0;
   late FocusNode _focusNode;
@@ -68,7 +73,7 @@ class _FeedViewState extends State<FeedView>
     _analytics = Analytics();
     _analytics.sendSessionStart(widget.config);
 
-    isPlaying = widget.options.isAutoplay;
+    isPlayingEnabled = widget.options.isAutoplay;
     isMuted = widget.options.isMutedByDefault;
 
     int initialPage = 0;
@@ -89,9 +94,9 @@ class _FeedViewState extends State<FeedView>
   }
 
   void _calculateFooterHeight() {
-    if (widget.footer != null) {
+    if (widget.buildFeedFooter != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final RenderBox? footerBox =
+        final footerBox =
             widget.footerKey.currentContext?.findRenderObject() as RenderBox?;
         if (footerBox != null) {
           setState(() {
@@ -114,7 +119,6 @@ class _FeedViewState extends State<FeedView>
     if (mounted) {
       setState(() {
         _isVisible = _focusNode.hasFocus;
-        isPlaying = _isVisible && widget.options.isAutoplay;
       });
     }
   }
@@ -122,12 +126,13 @@ class _FeedViewState extends State<FeedView>
   _onPageChanged(int index) {
     setState(() {
       activePageIndex = index;
+      widget.onAssetIdChange?.call(widget.config.assets[index].id);
     });
   }
 
   void _onPlayClick(Asset asset) {
     setState(() {
-      isPlaying = !isPlaying;
+      isPlayingEnabled = !isPlayingEnabled;
     });
   }
 
@@ -177,7 +182,8 @@ class _FeedViewState extends State<FeedView>
         asset: asset,
         config: widget.config,
         options: AssetViewOptions(
-          isPlaying: isPlaying && isActive,
+          isPlaying: isPlayingEnabled && isActive && _isVisible,
+          isPlayingEnabled: isPlayingEnabled,
           isMuted: isMuted,
           shouldLoop: true,
           withMuteButton: asset.type != AssetType.image,
@@ -196,6 +202,13 @@ class _FeedViewState extends State<FeedView>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
+    final footer = widget.buildFeedFooter?.call(
+      context: context,
+      config: widget.config,
+    );
+
     return Focus(
       focusNode: _focusNode,
       child: Container(
@@ -218,14 +231,14 @@ class _FeedViewState extends State<FeedView>
                 right: 0,
                 child: LinearProgressIndicator(),
               ),
-            if (widget.footer != null)
+            if (footer != null)
               Positioned(
                 bottom: 0,
                 left: 0,
                 right: 0,
                 child: KeyedSubtree(
                   key: widget.footerKey,
-                  child: widget.footer!,
+                  child: footer,
                 ),
               ),
           ],

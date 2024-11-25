@@ -75,7 +75,11 @@ class FeedProductCard extends StatelessWidget {
                       fit: options.imageFit,
                       placeholder: (context, url) =>
                           Container(color: Colors.grey[300]),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      errorWidget: (context, url, error) => Icon(
+                        Icons.broken_image_rounded,
+                        size: 40,
+                        color: Colors.grey[400],
+                      ),
                     ),
                   ],
                 ),
