@@ -105,23 +105,13 @@ class FeedScreenMainMenu extends StatelessWidget {
           if (!hideReportButton)
             GestureDetector(
               onTap: onReport,
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.report,
-                    color: _errorColor,
-                    size: 30,
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    _lang['report'],
-                    style: TextStyle(
-                      color: _errorColor,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+              child: Text(
+                _lang['report'],
+                style: TextStyle(
+                  color: _errorColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           if (!hideReportButton) const SizedBox(height: 30),
