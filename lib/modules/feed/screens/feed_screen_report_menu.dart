@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class FeedScreenReportMenu extends StatefulWidget {
   final VoidCallback onCancel;
-  final Future<void> Function({required String id, required String title})
+  final Future<bool> Function({required String id, required String title})
       onReport;
 
   const FeedScreenReportMenu({

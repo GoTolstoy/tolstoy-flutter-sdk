@@ -63,8 +63,8 @@ class ApiService {
     }
   }
 
-  static Future<void> sendEvent(Map<String, dynamic> params) async {
-    await http.post(
+  static Future<bool> sendEvent(Map<String, dynamic> params) async {
+    final result = await http.post(
       Uri.parse('$_baseUrl/events/event'),
       headers: {
         'Accept': 'application/json',
@@ -72,5 +72,7 @@ class ApiService {
       },
       body: jsonEncode(params),
     );
+
+    return result.statusCode == 200;
   }
 }

@@ -83,9 +83,8 @@ class _FeedScreenState extends State<FeedScreen> {
                       onReport: ({
                         required String id,
                         required String title,
-                      }) async =>
-                          {
-                        await ApiService.sendEvent({
+                      }) async {
+                        return await ApiService.sendEvent({
                           'accountId': widget.config.owner,
                           'appKey': widget.config.appKey,
                           'appUrl': widget.config.appUrl,
@@ -103,7 +102,7 @@ class _FeedScreenState extends State<FeedScreen> {
                           'stepName': widget.config.startStep,
                           'timestamp': DateTime.now().toUtc().toIso8601String(),
                           'videoId': _currentAssetId,
-                        }),
+                        });
                       },
                       hideReportButton: widget.hideReportButton,
                       hideShareButton: widget.hideShareButton,

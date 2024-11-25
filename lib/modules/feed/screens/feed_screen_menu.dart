@@ -4,7 +4,7 @@ import 'feed_screen_report_menu.dart';
 import 'feed_screen_report_submitted_menu.dart';
 
 class FeedScreenMenu extends StatefulWidget {
-  final Future<void> Function({required String id, required String title})
+  final Future<bool> Function({required String id, required String title})
       onReport;
   final bool hideReportButton;
   final bool hideShareButton;
@@ -53,11 +53,13 @@ class _FeedScreenMenuState extends State<FeedScreenMenu> {
               key: _mainMenuKey,
               onCancel: () => setState(() => _selectedScreen = Screen.main),
               onReport: ({required String id, required String title}) async {
-                await widget.onReport(id: id, title: title);
+                final reported = await widget.onReport(id: id, title: title);
 
-                if (mounted) {
+                if (reported && mounted) {
                   setState(() => _selectedScreen = Screen.reportSubmitted);
                 }
+
+                return reported;
               },
             ),
           Screen.reportSubmitted => FeedScreenReportSubmittedMenu(
