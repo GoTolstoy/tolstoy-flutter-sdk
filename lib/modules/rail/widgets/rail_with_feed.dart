@@ -4,12 +4,11 @@ import 'package:tolstoy_flutter_sdk/modules/feed/screens.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/api/widgets/tv_config_provider.dart';
 
 import 'rail.dart';
 
 class RailWithFeed extends StatelessWidget {
-  final String publishId;
+  final TvPageConfig config;
   final RailOptions railOptions;
   final void Function(Product)? onProductClick;
   final PreferredSizeWidget? Function({
@@ -26,7 +25,7 @@ class RailWithFeed extends StatelessWidget {
 
   const RailWithFeed({
     super.key,
-    required this.publishId,
+    required this.config,
     this.railOptions = const RailOptions(),
     this.onProductClick,
     this.buildFeedHeader,
@@ -37,27 +36,22 @@ class RailWithFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TvConfigProvider(
-      publishId: publishId,
-      builder: (context, config) {
-        return Rail(
-          config: config,
-          options: railOptions,
-          onAssetClick: (Asset asset) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => FeedScreen(
-                  config: config,
-                  initialAssetId: asset.id,
-                  onProductClick: onProductClick,
-                  buildFeedHeader: buildFeedHeader,
-                  buildFeedFooter: buildFeedFooter,
-                  hideReportButton: hideReportButton,
-                  hideShareButton: hideShareButton,
-                ),
-              ),
-            );
-          },
+    return Rail(
+      config: config,
+      options: railOptions,
+      onAssetClick: (Asset asset) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => FeedScreen(
+              config: config,
+              initialAssetId: asset.id,
+              onProductClick: onProductClick,
+              buildFeedHeader: buildFeedHeader,
+              buildFeedFooter: buildFeedFooter,
+              hideReportButton: hideReportButton,
+              hideShareButton: hideShareButton,
+            ),
+          ),
         );
       },
     );
