@@ -54,66 +54,68 @@ class _FeedScreenState extends State<FeedScreen> {
       appBar: widget.buildFeedHeader?.call(
         context: context,
         config: widget.config,
-        openTolstoyMenu: () => {
-          showDialog(
+        openTolstoyMenu: () {
+          final safeArea = MediaQueryData.fromView(View.of(context)).padding;
+
+          showModalBottomSheet(
             context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
             builder: (BuildContext context) => GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () => Navigator.pop(context),
-              child: Material(
-                color: Colors.transparent,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 16,
-                    ),
-                    decoration: const BoxDecoration(
-                      color: _modalBackgroundColor,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: FeedScreenMenu(
-                        onReport: ({
-                          required String id,
-                          required String title,
-                        }) async =>
-                            {
-                          await ApiService.sendEvent({
-                            'accountId': widget.config.owner,
-                            'appKey': widget.config.appKey,
-                            'appUrl': widget.config.appUrl,
-                            'contentReport': {'key': id, 'description': title},
-                            'eventName': 'feedReportSubmit',
-                            'formData': jsonEncode({
-                              'key': id,
-                              'description': title,
-                            }),
-                            'isMobile': true,
-                            'playerType': 'flutter',
-                            'playlist': widget.config.name,
-                            'projectId': widget.config.id,
-                            'publishId': widget.config.publishId,
-                            'stepName': widget.config.startStep,
-                            'timestamp':
-                                DateTime.now().toUtc().toIso8601String(),
-                            'videoId': _currentAssetId,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(
+                    16 + safeArea.left,
+                    16 + safeArea.top,
+                    16 + safeArea.right,
+                    16 + safeArea.bottom,
+                  ),
+                  decoration: const BoxDecoration(
+                    color: _modalBackgroundColor,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: FeedScreenMenu(
+                      onReport: ({
+                        required String id,
+                        required String title,
+                      }) async =>
+                          {
+                        await ApiService.sendEvent({
+                          'accountId': widget.config.owner,
+                          'appKey': widget.config.appKey,
+                          'appUrl': widget.config.appUrl,
+                          'contentReport': {'key': id, 'description': title},
+                          'eventName': 'feedReportSubmit',
+                          'formData': jsonEncode({
+                            'key': id,
+                            'description': title,
                           }),
-                        },
-                        hideReportButton: widget.hideReportButton,
-                        hideShareButton: widget.hideShareButton,
-                        customMenuTitle: widget.customMenuTitle,
-                        customMenuSubtitle: widget.customMenuSubtitle,
-                        customMenuLogoUrl: widget.customMenuLogoUrl,
-                      ),
+                          'isMobile': true,
+                          'playerType': 'flutter',
+                          'playlist': widget.config.name,
+                          'projectId': widget.config.id,
+                          'publishId': widget.config.publishId,
+                          'stepName': widget.config.startStep,
+                          'timestamp': DateTime.now().toUtc().toIso8601String(),
+                          'videoId': _currentAssetId,
+                        }),
+                      },
+                      hideReportButton: widget.hideReportButton,
+                      hideShareButton: widget.hideShareButton,
+                      customMenuTitle: widget.customMenuTitle,
+                      customMenuSubtitle: widget.customMenuSubtitle,
+                      customMenuLogoUrl: widget.customMenuLogoUrl,
                     ),
                   ),
                 ),
               ),
             ),
-          )
+          );
         },
       ),
       body: FeedView(
