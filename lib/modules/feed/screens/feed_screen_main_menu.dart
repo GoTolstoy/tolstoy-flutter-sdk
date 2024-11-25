@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class FeedScreenMainMenu extends StatelessWidget {
-  static const _padding = EdgeInsets.fromLTRB(20, 30, 20, 40);
+  static const _padding = EdgeInsets.fromLTRB(25, 25, 25, 35);
   static const _errorColor = Color.fromARGB(255, 226, 80, 109);
   static const _subtitleColor = Color.fromRGBO(90, 90, 90, 1);
   static const _noticeColor = Color.fromRGBO(120, 120, 120, 1);
@@ -53,8 +53,8 @@ class FeedScreenMainMenu extends StatelessWidget {
                       child: CachedNetworkImage(
                         imageUrl: customMenuLogoUrl ??
                             'https://tolstoy-mobile-assets.s3.us-east-1.amazonaws.com/TolstoyLogo.png',
-                        width: 64,
-                        height: 64,
+                        width: 40,
+                        height: 40,
                         fit: BoxFit.contain,
                         placeholder: (context, url) =>
                             Container(color: Colors.transparent),
@@ -71,7 +71,7 @@ class FeedScreenMainMenu extends StatelessWidget {
                         customMenuTitle ?? _lang['title'],
                         softWrap: true,
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -89,16 +89,16 @@ class FeedScreenMainMenu extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 15),
           Text(
             customMenuSubtitle ?? _lang['subtitle'],
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
               color: _subtitleColor,
             ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 30),
           if (!hideShareButton)
             Text(
               _lang['share'],
@@ -121,11 +121,10 @@ class FeedScreenMainMenu extends StatelessWidget {
               ),
             ),
           if (!hideReportButton) const SizedBox(height: 30),
-          const SizedBox(height: 10),
           Text(
             _lang['notice'],
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 12,
               color: _noticeColor,
             ),
           ),
