@@ -74,7 +74,7 @@ class _FeedScreenState extends State<FeedScreen> {
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+                      padding: const EdgeInsets.all(20),
                       child: FeedScreenMenu(
                         onReport: ({
                           required String id,

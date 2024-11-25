@@ -77,7 +77,7 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
         Text(
           _lang['title'],
           style: const TextStyle(
-            fontSize: 16,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
           ),
         ),

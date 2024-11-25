@@ -49,8 +49,8 @@ class FeedScreenMainMenu extends StatelessWidget {
                     child: CachedNetworkImage(
                       imageUrl: customMenuLogoUrl ??
                           'https://tolstoy-mobile-assets.s3.us-east-1.amazonaws.com/TolstoyLogo.png',
-                      width: 40,
-                      height: 40,
+                      width: 36,
+                      height: 36,
                       fit: BoxFit.contain,
                       placeholder: (context, url) =>
                           Container(color: Colors.transparent),
@@ -61,21 +61,21 @@ class FeedScreenMainMenu extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 14),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       customMenuTitle ?? _lang['title'],
                       softWrap: true,
                       style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: 14),
+            const SizedBox(width: 12),
             Transform.translate(
               offset: const Offset(6, -10),
               child: IconButton(
@@ -90,7 +90,6 @@ class FeedScreenMainMenu extends StatelessWidget {
           customMenuSubtitle ?? _lang['subtitle'],
           style: TextStyle(
             fontSize: 14,
-            fontWeight: FontWeight.w600,
             color: _subtitleColor,
           ),
         ),
