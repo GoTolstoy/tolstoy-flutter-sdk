@@ -19,8 +19,6 @@ class FeedScreen extends StatefulWidget {
     required BuildContext context,
     required TvPageConfig config,
   })? buildFeedFooter;
-  final String? customMenuTitle;
-  final String? customMenuLogoUrl;
 
   const FeedScreen({
     super.key,
@@ -29,8 +27,6 @@ class FeedScreen extends StatefulWidget {
     this.initialAssetId,
     this.buildFeedHeader,
     this.buildFeedFooter,
-    this.customMenuTitle,
-    this.customMenuLogoUrl,
   });
 
   @override
@@ -101,8 +97,6 @@ class _FeedScreenState extends State<FeedScreen> {
                             'videoId': _currentAssetId,
                           });
                         },
-                        customMenuTitle: widget.customMenuTitle,
-                        customMenuLogoUrl: widget.customMenuLogoUrl,
                       ),
                     ),
                   ),

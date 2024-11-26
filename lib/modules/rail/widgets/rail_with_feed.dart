@@ -20,8 +20,6 @@ class RailWithFeed extends StatelessWidget {
     required BuildContext context,
     required TvPageConfig config,
   })? buildFeedFooter;
-  final String? customMenuTitle;
-  final String? customMenuLogoUrl;
 
   const RailWithFeed({
     super.key,
@@ -30,8 +28,6 @@ class RailWithFeed extends StatelessWidget {
     this.onProductClick,
     this.buildFeedHeader,
     this.buildFeedFooter,
-    this.customMenuTitle,
-    this.customMenuLogoUrl,
   });
 
   @override
@@ -48,8 +44,6 @@ class RailWithFeed extends StatelessWidget {
               onProductClick: onProductClick,
               buildFeedHeader: buildFeedHeader,
               buildFeedFooter: buildFeedFooter,
-              customMenuTitle: customMenuTitle,
-              customMenuLogoUrl: customMenuLogoUrl,
             ),
           ),
         );

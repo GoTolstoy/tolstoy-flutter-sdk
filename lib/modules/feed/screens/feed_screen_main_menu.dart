@@ -13,14 +13,10 @@ class FeedScreenMainMenu extends StatelessWidget {
   });
 
   final VoidCallback onReport;
-  final String? customMenuTitle;
-  final String? customMenuLogoUrl;
 
   const FeedScreenMainMenu({
     super.key,
     required this.onReport,
-    this.customMenuTitle,
-    this.customMenuLogoUrl,
   });
 
   @override
@@ -39,7 +35,7 @@ class FeedScreenMainMenu extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: CachedNetworkImage(
-                      imageUrl: customMenuLogoUrl ??
+                      imageUrl:
                           'https://tolstoy-mobile-assets.s3.us-east-1.amazonaws.com/TolstoyLogo.png',
                       width: 36,
                       height: 36,
@@ -56,7 +52,7 @@ class FeedScreenMainMenu extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      customMenuTitle ?? _lang['title'],
+                      _lang['title'],
                       softWrap: true,
                       style: TextStyle(
                         fontSize: 15,
