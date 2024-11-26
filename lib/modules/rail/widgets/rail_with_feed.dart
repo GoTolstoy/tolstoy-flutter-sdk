@@ -20,8 +20,6 @@ class RailWithFeed extends StatelessWidget {
     required BuildContext context,
     required TvPageConfig config,
   })? buildFeedFooter;
-  final bool hideReportButton;
-  final bool hideShareButton;
 
   const RailWithFeed({
     super.key,
@@ -30,8 +28,6 @@ class RailWithFeed extends StatelessWidget {
     this.onProductClick,
     this.buildFeedHeader,
     this.buildFeedFooter,
-    this.hideReportButton = false,
-    this.hideShareButton = false,
   });
 
   @override
@@ -48,8 +44,6 @@ class RailWithFeed extends StatelessWidget {
               onProductClick: onProductClick,
               buildFeedHeader: buildFeedHeader,
               buildFeedFooter: buildFeedFooter,
-              hideReportButton: hideReportButton,
-              hideShareButton: hideShareButton,
             ),
           ),
         );

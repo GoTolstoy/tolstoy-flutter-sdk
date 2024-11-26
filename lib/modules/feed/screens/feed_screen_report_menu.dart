@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class FeedScreenReportMenu extends StatefulWidget {
   final VoidCallback onCancel;
-  final Future<void> Function({required String id, required String title})
+  final Future<bool> Function({required String id, required String title})
       onReport;
 
   const FeedScreenReportMenu({
@@ -16,8 +16,6 @@ class FeedScreenReportMenu extends StatefulWidget {
 }
 
 class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
-  static const _padding = EdgeInsets.fromLTRB(20, 30, 20, 40);
-
   String? _selectedId;
   String? _selectedTitle;
   bool _isSubmitting = false;
@@ -38,7 +36,7 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
       'id': 'conflictOfInterest',
       'title': "It's a conflict of interest",
       'subtitle':
-          "It's from someone affiliated with the Shop Store or a competitor's store.",
+          "It's from someone affiliated with the brand or a competitor's brand.",
     },
     {
       'id': 'copyright',
@@ -65,97 +63,93 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
     {
       'id': 'illegalActivities',
       'title': 'It\'s about illegal activities or regulated goods',
-      'subtitle':
-          'It references items that go against Shop Merchant Guidelines.',
+      'subtitle': 'It references items that go against guidelines.',
     },
   ];
 
   @override
   Widget build(BuildContext context) {
-    final safeArea = MediaQueryData.fromView(View.of(context)).padding;
-
-    return Container(
-      padding: _padding.copyWith(top: _padding.top + safeArea.top),
-      width: double.infinity,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            _lang['title'],
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          _lang['title'],
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Flexible(
+          child: SingleChildScrollView(
+            child: Column(
+              children: _reportReasons.map(
+                (reason) {
+                  return RadioListTile<String?>(
+                    title: Text(
+                      reason['title']!,
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                    subtitle: Text(
+                      reason['subtitle']!,
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                    value: reason['id'],
+                    groupValue: _selectedId,
+                    controlAffinity: ListTileControlAffinity.trailing,
+                    contentPadding: EdgeInsets.zero,
+                    onChanged: _isSubmitting
+                        ? null
+                        : (value) => setState(() {
+                              _selectedId = reason['id'];
+                              _selectedTitle = reason['title'];
+                            }),
+                  );
+                },
+              ).toList(),
             ),
           ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _reportReasons.length,
-              itemBuilder: (context, index) {
-                final reason = _reportReasons[index];
-
-                return RadioListTile<String?>(
-                  title: Text(
-                    reason['title']!,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                  subtitle: Text(
-                    reason['subtitle']!,
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                  value: reason['id'],
-                  groupValue: _selectedId,
-                  onChanged: _isSubmitting
-                      ? null
-                      : (value) => setState(() {
-                            _selectedId = reason['id'];
-                            _selectedTitle = reason['title'];
-                          }),
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: TextButton(
-                  onPressed: _isSubmitting ? null : widget.onCancel,
-                  child: Text(_lang['cancel']),
-                ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: TextButton(
+                onPressed: _isSubmitting ? null : widget.onCancel,
+                child: Text(_lang['cancel']),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: _selectedId == null || _isSubmitting
-                      ? null
-                      : () async {
-                          setState(() => _isSubmitting = true);
-                          try {
-                            await widget.onReport(
-                              id: _selectedId!,
-                              title: _selectedTitle!,
-                            );
-                          } finally {
-                            if (mounted) {
-                              setState(() => _isSubmitting = false);
-                            }
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: _selectedId == null || _isSubmitting
+                    ? null
+                    : () async {
+                        setState(() => _isSubmitting = true);
+                        try {
+                          await widget.onReport(
+                            id: _selectedId!,
+                            title: _selectedTitle!,
+                          );
+                        } finally {
+                          if (mounted) {
+                            setState(() => _isSubmitting = false);
                           }
-                        },
-                  child: _isSubmitting
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Text(_lang['report']),
-                ),
+                        }
+                      },
+                child: _isSubmitting
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(_lang['report']),
               ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

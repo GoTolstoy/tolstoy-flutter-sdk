@@ -19,8 +19,6 @@ class FeedScreen extends StatefulWidget {
     required BuildContext context,
     required TvPageConfig config,
   })? buildFeedFooter;
-  final bool hideReportButton;
-  final bool hideShareButton;
 
   const FeedScreen({
     super.key,
@@ -29,8 +27,6 @@ class FeedScreen extends StatefulWidget {
     this.initialAssetId,
     this.buildFeedHeader,
     this.buildFeedFooter,
-    this.hideReportButton = false,
-    this.hideShareButton = false,
   });
 
   @override
@@ -48,37 +44,66 @@ class _FeedScreenState extends State<FeedScreen> {
       appBar: widget.buildFeedHeader?.call(
         context: context,
         config: widget.config,
-        openTolstoyMenu: () => {
+        openTolstoyMenu: () {
+          final safeArea = MediaQueryData.fromView(View.of(context)).padding;
+
           showModalBottomSheet(
             context: context,
-            backgroundColor: _modalBackgroundColor,
-            builder: (BuildContext context) => FeedScreenMenu(
-              onReport: ({required String id, required String title}) async => {
-                await ApiService.sendEvent({
-                  'accountId': widget.config.owner,
-                  'appKey': widget.config.appKey,
-                  'appUrl': widget.config.appUrl,
-                  'contentReport': {'key': id, 'description': title},
-                  'eventName': 'feedReportSubmit',
-                  'formData': jsonEncode({
-                    'key': id,
-                    'description': title,
-                  }),
-                  'isMobile': true,
-                  'playerType': 'flutter',
-                  'playlist': widget.config.name,
-                  'projectId': widget.config.id,
-                  'publishId': widget.config.publishId,
-                  'stepName': widget.config.startStep,
-                  'timestamp': DateTime.now().toUtc().toIso8601String(),
-                  'videoId': _currentAssetId,
-                }),
-              },
-              hideReportButton: widget.hideReportButton,
-              hideShareButton: widget.hideShareButton,
-            ),
             isScrollControlled: true,
-          )
+            backgroundColor: Colors.transparent,
+            builder: (BuildContext context) => GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () => Navigator.pop(context),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(
+                      16 + safeArea.left,
+                      16 + safeArea.top,
+                      16 + safeArea.right,
+                      16 + safeArea.bottom,
+                    ),
+                    decoration: const BoxDecoration(
+                      color: _modalBackgroundColor,
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: FeedScreenMenu(
+                        onReport: ({
+                          required String id,
+                          required String title,
+                        }) async {
+                          return await ApiService.sendEvent({
+                            'accountId': widget.config.owner,
+                            'appKey': widget.config.appKey,
+                            'appUrl': widget.config.appUrl,
+                            'contentReport': {'key': id, 'description': title},
+                            'eventName': 'feedReportSubmit',
+                            'formData': jsonEncode({
+                              'key': id,
+                              'description': title,
+                            }),
+                            'isMobile': true,
+                            'playerType': 'flutter',
+                            'playlist': widget.config.name,
+                            'projectId': widget.config.id,
+                            'publishId': widget.config.publishId,
+                            'stepName': widget.config.startStep,
+                            'timestamp':
+                                DateTime.now().toUtc().toIso8601String(),
+                            'videoId': _currentAssetId,
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
         },
       ),
       body: FeedView(
