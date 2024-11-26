@@ -34,19 +34,12 @@ class FeedScreenMainMenu extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: CachedNetworkImage(
-                      imageUrl:
-                          'https://tolstoy-mobile-assets.s3.us-east-1.amazonaws.com/TolstoyLogo.png',
+                    child: Image.asset(
+                      'assets/images/TolstoyLogo.png',
+                      package: 'tolstoy_flutter_sdk',
                       width: 36,
                       height: 36,
                       fit: BoxFit.contain,
-                      placeholder: (context, url) =>
-                          Container(color: Colors.transparent),
-                      errorWidget: (context, url, error) => Icon(
-                        Icons.broken_image_rounded,
-                        size: 40,
-                        color: Colors.grey[400],
-                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
