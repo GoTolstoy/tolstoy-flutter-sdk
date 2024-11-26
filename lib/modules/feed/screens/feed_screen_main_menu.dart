@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class FeedScreenMainMenu extends StatelessWidget {
   static const _errorColor = Color.fromARGB(255, 226, 80, 109);
