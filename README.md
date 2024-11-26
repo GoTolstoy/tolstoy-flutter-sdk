@@ -52,3 +52,4 @@ The Tolstoy Flutter SDK provides the following exportable components:
 - [`TvConfigProvider`](https://github.com/GoTolstoy/tolstoy-flutter-sdk/blob/master/lib/modules/api/widgets/tv_config_provider.dart): Widget for providing Feed configuration.
 - [`AssetViewOptions`](https://github.com/GoTolstoy/tolstoy-flutter-sdk/blob/master/lib/modules/assets/models/asset_view_options.dart): Options for customizing asset views.
 - [`Product`](https://github.com/GoTolstoy/tolstoy-flutter-sdk/blob/master/lib/modules/products/models/product.dart): Model representing a product.
+- [`getTvPageConfig`](https://github.com/GoTolstoy/tolstoy-flutter-sdk/blob/master/lib/modules/api/services/api.dart): Function for fetching Feed configuration.
