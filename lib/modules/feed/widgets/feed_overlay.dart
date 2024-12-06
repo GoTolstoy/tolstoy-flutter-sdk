@@ -40,7 +40,7 @@ class FeedAssetOverlay extends StatelessWidget {
             child: Center(
               child: !isPlayingEnabled
                   ? Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: buttonBackgroundColor,
                         shape: BoxShape.circle,
                       ),
@@ -70,7 +70,7 @@ class FeedAssetOverlay extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: buttonBackgroundColor,
                         shape: BoxShape.circle,
                       ),

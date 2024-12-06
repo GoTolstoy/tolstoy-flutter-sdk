@@ -26,7 +26,7 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
     'report': 'Report',
   });
 
-  static final _reportReasons = const [
+  static const _reportReasons = [
     {
       'id': 'bullyingHarrassment',
       'title': "It's bullying or harassment",

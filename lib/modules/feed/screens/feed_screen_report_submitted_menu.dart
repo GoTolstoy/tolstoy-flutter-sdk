@@ -25,7 +25,7 @@ class FeedScreenReportSubmittedMenu extends StatelessWidget {
       children: [
         Text(
           _lang['title'],
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w600,
           ),
@@ -33,7 +33,7 @@ class FeedScreenReportSubmittedMenu extends StatelessWidget {
         const SizedBox(height: 15),
         Text(
           _lang['description'],
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 14,
             color: _subtitleColor,
           ),

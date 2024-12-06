@@ -1,7 +1,7 @@
 name: tolstoy_flutter_sdk
 description: "Tolstoy Flutter SDK"
 publish_to: 'none'
-version: 0.1.4
+version: 0.1.5
 
 environment:
   sdk: ^3.3.0
@@ -9,23 +9,21 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cached_network_image: ^3.4.0
+  cached_network_image: ^3.3.1
   cupertino_icons: ^1.0.8
   video_player: ^2.9.2
-  http: ^1.2.2
+  http: ^0.13.5
   visibility_detector: ^0.4.0+2
-  uuid: ^4.5.1
+  uuid: ^3.0.1
+  path: ^1.5.0
+  collection: ^1.14.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^4.0.0
 
 flutter:
   uses-material-design: true
   assets:
     - assets/images/TolstoyLogo.png
-
-executables:
-  update:
-    main: ./scripts/update.dart
