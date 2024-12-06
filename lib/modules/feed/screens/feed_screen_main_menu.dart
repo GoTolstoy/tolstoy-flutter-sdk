@@ -46,7 +46,7 @@ class FeedScreenMainMenu extends StatelessWidget {
                     child: Text(
                       _lang['title'],
                       softWrap: true,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
                       ),
@@ -70,7 +70,7 @@ class FeedScreenMainMenu extends StatelessWidget {
           onTap: onReport,
           child: Text(
             _lang['report'],
-            style: TextStyle(
+            style: const TextStyle(
               color: _errorColor,
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -80,7 +80,7 @@ class FeedScreenMainMenu extends StatelessWidget {
         const SizedBox(height: 25),
         Text(
           _lang['notice'],
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 12,
             color: _noticeColor,
           ),
