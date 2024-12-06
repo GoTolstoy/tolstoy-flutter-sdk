@@ -110,7 +110,7 @@ class ProductImage {
 
 class Variant {
   final String productId;
-  final int id;
+  final dynamic id;
   final String? price;
   final String? compareAtPrice;
   final String title;
