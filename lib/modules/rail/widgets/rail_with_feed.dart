@@ -20,6 +20,7 @@ class RailWithFeed extends StatelessWidget {
     required BuildContext context,
     required TvPageConfig config,
   })? buildFeedFooter;
+  final void Function(Asset)? onAssetClick;
 
   const RailWithFeed({
     super.key,
@@ -28,6 +29,7 @@ class RailWithFeed extends StatelessWidget {
     this.onProductClick,
     this.buildFeedHeader,
     this.buildFeedFooter,
+    this.onAssetClick,
   });
 
   @override
@@ -36,6 +38,8 @@ class RailWithFeed extends StatelessWidget {
       config: config,
       options: railOptions,
       onAssetClick: (Asset asset) {
+        onAssetClick?.call(asset);
+
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => FeedScreen(

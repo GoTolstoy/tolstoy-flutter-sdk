@@ -58,7 +58,7 @@ class TvPageConfig {
       appUrl: json['appUrl'] as String,
       userId: json['userId'] as String,
       assets: (json['steps'] as List)
-          .map((step) => Asset.fromStepJson(step))
+          .map((step) => Asset.fromStepJson(step as Map<String, dynamic>))
           .toList(),
       // chatLandingPage: json['chatLandingPage'],
       // autoplay: json['autoplay'],

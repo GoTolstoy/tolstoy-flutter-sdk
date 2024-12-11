@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:tolstoy_flutter_sdk/modules/assets/models/asset.dart';
 import 'package:tolstoy_flutter_sdk/modules/rail/widgets.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
@@ -17,10 +17,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  void onProductClick(Product product) {
+  void _onProductClick(Product product) {
     // Implement logic for product click
     // ignore: avoid_print
     print('product clicked: ${product.title}');
+  }
+
+  void _onAssetClick(Asset asset) {
+    // Implement logic for asset click
+    // ignore: avoid_print
+    print('asset clicked: ${asset.name}');
   }
 
   PreferredSizeWidget? _buildFeedHeader({
@@ -61,9 +67,10 @@ class _MyHomePageState extends State<MyHomePage> {
           builder: (context, config) {
             return RailWithFeed(
               config: config,
-              onProductClick: onProductClick,
+              onProductClick: _onProductClick,
               buildFeedHeader: _buildFeedHeader,
               buildFeedFooter: _buildFeedFooter,
+              onAssetClick: _onAssetClick,
             );
           },
         ),

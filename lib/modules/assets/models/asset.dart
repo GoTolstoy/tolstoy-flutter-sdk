@@ -21,7 +21,7 @@ class Asset {
     required this.type,
   });
 
-  factory Asset.fromStepJson(json) {
+  factory Asset.fromStepJson(Map<String, dynamic> json) {
     AssetType type = AssetType.values.firstWhere(
       (e) => e.toString() == 'AssetType.${json['type'] ?? 'video'}',
       orElse: () => AssetType.video,
@@ -44,6 +44,19 @@ class Asset {
           [],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'owner': owner,
+      'uploadType': uploadType,
+      'type': type,
+      'createdAt': createdAt,
+      'stockAsset': stockAsset?.toJson(),
+      'products': products.map((product) => product.toJson()).toList(),
+    };
+  }
 }
 
 class ProductReference {
@@ -55,8 +68,15 @@ class ProductReference {
   factory ProductReference.fromJson(Map<String, dynamic> json) {
     return ProductReference(
       id: json['id'] as String,
-      variantIds: (json['variantIds'] as List?)?.cast<String>(),
+      variantIds: (json['variantIds'] as List<dynamic>?)?.cast<String>(),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'variantIds': variantIds,
+    };
   }
 }
 
@@ -89,5 +109,17 @@ class StockAsset {
       shopifyPosterUrl: json['shopifyPosterUrl'] as String?,
       shopifyFileId: json['shopifyFileId'] as String?,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'previewShopifyFileId': previewShopifyFileId,
+      'previewUrl': previewUrl,
+      'posterUrl': posterUrl,
+      'videoUrl': videoUrl,
+      'hasOriginal': hasOriginal,
+      'shopifyPosterUrl': shopifyPosterUrl,
+      'shopifyFileId': shopifyFileId,
+    };
   }
 }

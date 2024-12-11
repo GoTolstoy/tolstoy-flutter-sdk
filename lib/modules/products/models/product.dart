@@ -204,6 +204,12 @@ class ProductsMap {
     return ProductsMap(products: productMap);
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'products': products.map((key, value) => MapEntry(key, value.toJson())),
+    };
+  }
+
   Product? getProductById(String dbProductId) {
     return products[dbProductId];
   }

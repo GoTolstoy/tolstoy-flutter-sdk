@@ -12,7 +12,7 @@ const maxVisibleItems = 6;
 
 class Rail extends StatefulWidget {
   final TvPageConfig config;
-  final Function(Asset)? onAssetClick;
+  final void Function(Asset)? onAssetClick;
   final RailOptions options;
 
   const Rail({
