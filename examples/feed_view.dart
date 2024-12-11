@@ -10,6 +10,7 @@ class FeedScreen extends StatelessWidget {
 
   void _handleProductClick(Product product) {
     // Implement logic for product click
+    // ignore: avoid_print
     print('Product clicked: ${product.title}');
   }
 

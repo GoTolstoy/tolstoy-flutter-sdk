@@ -18,6 +18,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   void onProductClick(Product product) {
+    // Implement logic for product click
+    // ignore: avoid_print
     print('product clicked: ${product.title}');
   }
 

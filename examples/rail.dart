@@ -11,6 +11,7 @@ class RailScreen extends StatelessWidget {
 
   void _handleAssetClick(Asset asset) {
     // Implement logic for asset click
+    // ignore: avoid_print
     print('Asset clicked: ${asset.id}');
   }
 
