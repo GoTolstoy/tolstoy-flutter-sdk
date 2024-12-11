@@ -10,6 +10,7 @@ class FeedScreen extends StatelessWidget {
 
   void _handleProductClick(Product product) {
     // Implement logic for product click
+    // ignore: avoid_print
     print('Product clicked: ${product.title}');
   }
 
@@ -28,6 +29,11 @@ class FeedScreen extends StatelessWidget {
               pageThreshold: 5,
             ),
             onProductClick: _handleProductClick,
+            onVideoError: (message, asset) {
+              // Implement logic for video error
+              // ignore: avoid_print
+              print('Video error: $message');
+            },
           );
         },
       ),

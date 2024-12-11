@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
+import 'package:tolstoy_flutter_sdk/modules/assets/models/asset.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/feed/widgets/feed_view.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/services/api.dart';
@@ -19,6 +20,7 @@ class FeedScreen extends StatefulWidget {
     required BuildContext context,
     required TvPageConfig config,
   })? buildFeedFooter;
+  final void Function(String message, Asset asset)? onVideoError;
 
   const FeedScreen({
     super.key,
@@ -27,6 +29,7 @@ class FeedScreen extends StatefulWidget {
     this.initialAssetId,
     this.buildFeedHeader,
     this.buildFeedFooter,
+    this.onVideoError,
   });
 
   @override
@@ -111,6 +114,7 @@ class _FeedScreenState extends State<FeedScreen> {
         onProductClick: widget.onProductClick,
         initialAssetId: widget.initialAssetId,
         onAssetIdChange: (assetId) => setState(() => _currentAssetId = assetId),
+        onVideoError: widget.onVideoError,
         buildFeedFooter: widget.buildFeedFooter,
         options: const FeedViewOptions(
           pageThreshold: 10,

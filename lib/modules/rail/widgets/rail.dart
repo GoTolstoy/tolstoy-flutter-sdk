@@ -12,14 +12,16 @@ const maxVisibleItems = 6;
 
 class Rail extends StatefulWidget {
   final TvPageConfig config;
-  final Function(Asset)? onAssetClick;
+  final void Function(Asset)? onAssetClick;
   final RailOptions options;
+  final void Function(String message, Asset asset)? onVideoError;
 
   const Rail({
     super.key,
     required this.config,
     this.onAssetClick,
     this.options = const RailOptions(),
+    this.onVideoError,
   });
 
   @override
@@ -234,6 +236,7 @@ class _RailState extends State<Rail> {
 
                     _onCurrentVideoEnded();
                   },
+                  onVideoError: widget.onVideoError,
                   width: widget.options.itemWidth,
                   height: widget.options.itemHeight,
                   options: AssetViewOptions(

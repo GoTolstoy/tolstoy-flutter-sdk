@@ -49,6 +49,7 @@ class Analytics {
       case AnalyticsMode.track:
         await ApiService.sendEvent(params);
       case AnalyticsMode.log:
+        // ignore: avoid_print
         print('Params: $params');
       case AnalyticsMode.notrack:
         // Do nothing

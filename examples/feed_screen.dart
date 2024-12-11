@@ -41,7 +41,8 @@ class FeedPage extends StatelessWidget {
         return FeedScreen(
           config: config,
           onProductClick: (Product product) {
-            // Handle product click
+            // Implement logic for product click
+            // ignore: avoid_print
             print('Product clicked: ${product.title}');
           },
         );

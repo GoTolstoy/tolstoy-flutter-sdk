@@ -24,7 +24,7 @@ class TvPageConfig {
   // final bool isMultipass;
   final String appKey;
   final String owner;
-  final ProductsMap productsMap; // New field
+  final ProductsMap productsMap;
 
   TvPageConfig({
     required this.publishId,
@@ -46,34 +46,34 @@ class TvPageConfig {
     // required this.isMultipass,
     required this.appKey,
     required this.owner,
-    required this.productsMap, // New parameter
+    required this.productsMap,
   });
 
   factory TvPageConfig.fromJson(
       Map<String, dynamic> json, ProductsMap productsMap) {
     return TvPageConfig(
-      publishId: json['publishId'],
+      publishId: json['publishId'] as String,
       // fastForwardEnabled: json['fastForwardEnabled'],
       // feedIsAnyStepShoppable: json['feedIsAnyStepShoppable'],
-      appUrl: json['appUrl'],
-      userId: json['userId'],
+      appUrl: json['appUrl'] as String,
+      userId: json['userId'] as String,
       assets: (json['steps'] as List)
-          .map((step) => Asset.fromStepJson(step))
+          .map((step) => Asset.fromStepJson(step as Map<String, dynamic>))
           .toList(),
       // chatLandingPage: json['chatLandingPage'],
       // autoplay: json['autoplay'],
       // feed: json['feed'],
       // baseUrl: json['baseUrl'],
       // verticalOrientation: json['verticalOrientation'],
-      name: json['name'],
+      name: json['name'] as String,
       // tolstoyType: json['tolstoyType'],
       // dynamic: json['dynamic'],
-      id: json['id'],
-      startStep: json['startStep'],
+      id: json['id'] as String,
+      startStep: json['startStep'] as String,
       // isMultipass: json['isMultipass'],
-      appKey: json['appKey'],
-      owner: json['owner'],
-      productsMap: productsMap, // Initialize new field
+      appKey: json['appKey'] as String,
+      owner: json['owner'] as String,
+      productsMap: productsMap,
     );
   }
 
@@ -87,7 +87,7 @@ class TvPageConfig {
     String? startStep,
     String? appKey,
     String? owner,
-    ProductsMap? productsMap, // New parameter
+    ProductsMap? productsMap,
   }) {
     return TvPageConfig(
       publishId: publishId ?? this.publishId,

@@ -13,6 +13,7 @@ class RailAsset extends StatelessWidget {
   final double width;
   final double height;
   final bool preload;
+  final void Function(String message, Asset asset)? onVideoError;
 
   const RailAsset({
     super.key,
@@ -25,6 +26,7 @@ class RailAsset extends StatelessWidget {
     required this.width,
     required this.height,
     this.preload = true,
+    this.onVideoError,
   });
 
   @override
@@ -49,6 +51,7 @@ class RailAsset extends StatelessWidget {
                 options:
                     options ?? const AssetViewOptions(imageFit: BoxFit.cover),
                 preload: preload,
+                onVideoError: onVideoError,
               ),
               Positioned(
                 left: 12,

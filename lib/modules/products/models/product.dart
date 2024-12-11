@@ -6,7 +6,7 @@ class Product {
   final List<Variant> variants;
   final Map<String, dynamic> options;
   final List<ProductImage> images;
-  final String tags;
+  final String? tags;
   final String? descriptionHtml;
   final String? templateSuffix;
   final String dbProductId;
@@ -37,26 +37,27 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['id'],
-      handle: json['handle'],
-      title: json['title'],
-      imageUrl: json['imageUrl'],
-      variants:
-          (json['variants'] as List).map((v) => Variant.fromJson(v)).toList(),
-      options: json['options'],
-      images: (json['images'] as List)
-          .map((i) => ProductImage.fromJson(i))
+      id: json['id'] as String,
+      handle: json['handle'] as String,
+      title: json['title'] as String,
+      imageUrl: json['imageUrl'] as String,
+      variants: (json['variants'] as List)
+          .map((variant) => Variant.fromJson(variant as Map<String, dynamic>))
           .toList(),
-      tags: json['tags'],
-      descriptionHtml: json['descriptionHtml'],
-      templateSuffix: json['templateSuffix'],
-      dbProductId: json['dbProductId'],
-      appKey: json['appKey'],
-      appUrl: json['appUrl'],
-      currencyCode: json['currencyCode'],
-      currencySymbol: json['currencySymbol'],
-      yotpoReview: json['yotpo'] != null && json['yotpo']['reviews'] > 0
-          ? YotpoReview.fromJson(json['yotpo'])
+      options: json['options'] as Map<String, dynamic>,
+      images: (json['images'] as List)
+          .map((image) => ProductImage.fromJson(image as Map<String, dynamic>))
+          .toList(),
+      tags: json['tags'] as String?,
+      descriptionHtml: json['descriptionHtml'] as String?,
+      templateSuffix: json['templateSuffix'] as String?,
+      dbProductId: json['dbProductId'] as String,
+      appKey: json['appKey'] as String,
+      appUrl: json['appUrl'] as String,
+      currencyCode: json['currencyCode'] as String,
+      currencySymbol: json['currencySymbol'] as String,
+      yotpoReview: json['yotpo'] != null && json['yotpo']['reviews'] as num > 0
+          ? YotpoReview.fromJson(json['yotpo'] as Map<String, dynamic>)
           : null,
     );
   }
@@ -95,8 +96,8 @@ class ProductImage {
 
   factory ProductImage.fromJson(Map<String, dynamic> json) {
     return ProductImage(
-      id: json['id'],
-      src: json['src'],
+      id: json['id'] as int,
+      src: json['src'] as String,
     );
   }
 
@@ -111,12 +112,12 @@ class ProductImage {
 class Variant {
   final String productId;
   final dynamic id;
-  final String? price;
-  final String? compareAtPrice;
+  final dynamic price;
+  final dynamic compareAtPrice;
   final String title;
   final Map<String, String?> selectedOptions;
   final bool isVariantAvailableForSale;
-  final String sku;
+  final String? sku;
 
   Variant({
     required this.productId,
@@ -131,14 +132,15 @@ class Variant {
 
   factory Variant.fromJson(Map<String, dynamic> json) {
     return Variant(
-      productId: json['productId'],
+      productId: json['productId'] as String,
       id: json['id'],
       price: json['price'],
       compareAtPrice: json['compareAtPrice'],
-      title: json['title'],
-      selectedOptions: Map<String, String?>.from(json['selectedOptions']),
-      isVariantAvailableForSale: json['isVariantAvailableForSale'],
-      sku: json['sku'],
+      title: json['title'] as String,
+      selectedOptions:
+          Map.from(json['selectedOptions'] as Map<String, dynamic>),
+      isVariantAvailableForSale: json['isVariantAvailableForSale'] as bool,
+      sku: json['sku'] as String?,
     );
   }
 
@@ -169,9 +171,9 @@ class YotpoReview {
 
   factory YotpoReview.fromJson(Map<String, dynamic> json) {
     return YotpoReview(
-      reviews: json['reviews'],
-      score: json['score'].toDouble(),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      reviews: json['reviews'] as int,
+      score: (json['score'] as num).toDouble(),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
   }
 
@@ -197,9 +199,15 @@ class ProductsMap {
         return;
       }
 
-      productMap[key] = Product.fromJson(value);
+      productMap[key] = Product.fromJson(value as Map<String, dynamic>);
     });
     return ProductsMap(products: productMap);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'products': products.map((key, value) => MapEntry(key, value.toJson())),
+    };
   }
 
   Product? getProductById(String dbProductId) {

@@ -21,27 +21,41 @@ class Asset {
     required this.type,
   });
 
-  factory Asset.fromStepJson(json) {
+  factory Asset.fromStepJson(Map<String, dynamic> json) {
     AssetType type = AssetType.values.firstWhere(
       (e) => e.toString() == 'AssetType.${json['type'] ?? 'video'}',
       orElse: () => AssetType.video,
     );
 
     return Asset(
-      id: json['videoId'],
-      name: json['videoName'],
-      owner: json['videoOwner'],
-      uploadType: json['uploadType'],
+      id: json['videoId'] as String,
+      name: json['videoName'] as String,
+      owner: json['videoOwner'] as String,
+      uploadType: json['uploadType'] as String,
       type: type,
-      createdAt: DateTime.parse(json['videoCreatedAt']),
+      createdAt: DateTime.parse(json['videoCreatedAt'] as String),
       stockAsset: json['stockAsset'] != null
-          ? StockAsset.fromJson(json['stockAsset'])
+          ? StockAsset.fromJson(json['stockAsset'] as Map<String, dynamic>)
           : null,
       products: (json['products'] as List?)
-              ?.map((product) => ProductReference.fromJson(product))
+              ?.map((product) =>
+                  ProductReference.fromJson(product as Map<String, dynamic>))
               .toList() ??
           [],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'owner': owner,
+      'uploadType': uploadType,
+      'type': type,
+      'createdAt': createdAt,
+      'stockAsset': stockAsset?.toJson(),
+      'products': products.map((product) => product.toJson()).toList(),
+    };
   }
 }
 
@@ -53,9 +67,16 @@ class ProductReference {
 
   factory ProductReference.fromJson(Map<String, dynamic> json) {
     return ProductReference(
-      id: json['id'],
-      variantIds: (json['variantIds'] as List?)?.cast<String>(),
+      id: json['id'] as String,
+      variantIds: (json['variantIds'] as List<dynamic>?)?.cast<String>(),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'variantIds': variantIds,
+    };
   }
 }
 
@@ -80,13 +101,25 @@ class StockAsset {
 
   factory StockAsset.fromJson(Map<String, dynamic> json) {
     return StockAsset(
-      previewShopifyFileId: json['previewShopifyFileId'],
-      previewUrl: json['previewUrl'],
-      posterUrl: json['posterUrl'],
-      videoUrl: json['videoUrl'],
-      hasOriginal: json['hasOriginal'],
-      shopifyPosterUrl: json['shopifyPosterUrl'],
-      shopifyFileId: json['shopifyFileId'],
+      previewShopifyFileId: json['previewShopifyFileId'] as String?,
+      previewUrl: json['previewUrl'] as String?,
+      posterUrl: json['posterUrl'] as String?,
+      videoUrl: json['videoUrl'] as String?,
+      hasOriginal: json['hasOriginal'] as bool?,
+      shopifyPosterUrl: json['shopifyPosterUrl'] as String?,
+      shopifyFileId: json['shopifyFileId'] as String?,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'previewShopifyFileId': previewShopifyFileId,
+      'previewUrl': previewUrl,
+      'posterUrl': posterUrl,
+      'videoUrl': videoUrl,
+      'hasOriginal': hasOriginal,
+      'shopifyPosterUrl': shopifyPosterUrl,
+      'shopifyFileId': shopifyFileId,
+    };
   }
 }

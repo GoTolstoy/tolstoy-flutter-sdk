@@ -20,6 +20,8 @@ class RailWithFeed extends StatelessWidget {
     required BuildContext context,
     required TvPageConfig config,
   })? buildFeedFooter;
+  final void Function(Asset)? onAssetClick;
+  final void Function(String message, Asset asset)? onVideoError;
 
   const RailWithFeed({
     super.key,
@@ -28,6 +30,8 @@ class RailWithFeed extends StatelessWidget {
     this.onProductClick,
     this.buildFeedHeader,
     this.buildFeedFooter,
+    this.onAssetClick,
+    this.onVideoError,
   });
 
   @override
@@ -35,7 +39,10 @@ class RailWithFeed extends StatelessWidget {
     return Rail(
       config: config,
       options: railOptions,
+      onVideoError: onVideoError,
       onAssetClick: (Asset asset) {
+        onAssetClick?.call(asset);
+
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => FeedScreen(
@@ -44,6 +51,7 @@ class RailWithFeed extends StatelessWidget {
               onProductClick: onProductClick,
               buildFeedHeader: buildFeedHeader,
               buildFeedFooter: buildFeedFooter,
+              onVideoError: onVideoError,
             ),
           ),
         );

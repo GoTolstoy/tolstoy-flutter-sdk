@@ -17,6 +17,7 @@ class VideoAsset extends StatefulWidget {
     this.onProgressUpdate,
     this.options = const AssetViewOptions(),
     this.preload = true,
+    this.onVideoError,
   });
 
   final Asset asset;
@@ -29,6 +30,7 @@ class VideoAsset extends StatefulWidget {
   )? onProgressUpdate;
   final AssetViewOptions options;
   final bool preload;
+  final void Function(String message, Asset asset)? onVideoError;
 
   @override
   State<VideoAsset> createState() => _VideoAssetState();
@@ -64,21 +66,34 @@ class _VideoAssetState extends State<VideoAsset> {
 
     _controller = VideoPlayerController.networkUrl(
       Uri.parse(url),
-    )..initialize().then((_) {
-        _isVideoInitialized = true;
-        _controller!.setLooping(widget.options.shouldLoop);
-        _updateControllerState();
-        _controller!.addListener(_videoPlayerListener);
-        setState(() {});
-        // Add a small delay before setting _isVideoReady to true
-        Future.delayed(const Duration(milliseconds: 50), () {
-          if (mounted) {
-            setState(() {
-              _isVideoReady = true;
-            });
-          }
-        });
+    );
+
+    _controller!.addListener(_videoPlayerErrorListener);
+
+    _controller!.initialize().then((_) {
+      _isVideoInitialized = true;
+      _controller!.setLooping(widget.options.shouldLoop);
+      _updateControllerState();
+      _controller!.addListener(_videoPlayerListener);
+      setState(() {});
+      // Add a small delay before setting _isVideoReady to true
+      Future.delayed(const Duration(milliseconds: 50), () {
+        if (mounted) {
+          setState(() {
+            _isVideoReady = true;
+          });
+        }
       });
+    });
+  }
+
+  void _videoPlayerErrorListener() {
+    if (_controller?.value.hasError ?? false) {
+      widget.onVideoError?.call(
+        _controller!.value.errorDescription ?? 'Unknown error',
+        widget.asset,
+      );
+    }
   }
 
   void _videoPlayerListener() {

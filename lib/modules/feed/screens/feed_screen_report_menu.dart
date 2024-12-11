@@ -20,11 +20,11 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
   String? _selectedTitle;
   bool _isSubmitting = false;
 
-  static final _lang = Map.unmodifiable({
+  static final _lang = {
     'title': 'Why are you reporting this content?',
     'cancel': 'Cancel',
     'report': 'Report',
-  });
+  };
 
   static const _reportReasons = [
     {
@@ -74,7 +74,7 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          _lang['title'],
+          _lang['title']!,
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w600,
@@ -117,7 +117,7 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
             Expanded(
               child: TextButton(
                 onPressed: _isSubmitting ? null : widget.onCancel,
-                child: Text(_lang['cancel']),
+                child: Text(_lang['cancel']!),
               ),
             ),
             const SizedBox(width: 16),
@@ -144,7 +144,7 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
                         width: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : Text(_lang['report']),
+                    : Text(_lang['report']!),
               ),
             ),
           ],

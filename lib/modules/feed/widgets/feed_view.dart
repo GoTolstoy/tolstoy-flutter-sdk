@@ -37,6 +37,7 @@ class FeedView extends StatefulWidget {
     required TvPageConfig config,
   })? buildFeedFooter;
   final GlobalKey footerKey;
+  final void Function(String message, Asset asset)? onVideoError;
 
   FeedView({
     super.key,
@@ -47,6 +48,7 @@ class FeedView extends StatefulWidget {
     this.initialAssetId,
     this.onAssetIdChange,
     this.buildFeedFooter,
+    this.onVideoError,
   }) : footerKey = GlobalKey();
 
   @override
@@ -193,6 +195,7 @@ class _FeedViewState extends State<FeedView>
         onMuteClick: _onMuteClick,
         products: products,
         onProductClick: _onProductClick,
+        onVideoError: widget.onVideoError,
         feedAssetOptions: FeedAssetOptions(
           overlayBottomPadding: _footerHeight,
         ),
