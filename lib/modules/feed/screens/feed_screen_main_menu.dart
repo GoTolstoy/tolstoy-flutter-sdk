@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 class FeedScreenMainMenu extends StatelessWidget {
   static const _errorColor = Color.fromARGB(255, 226, 80, 109);
   static const _noticeColor = Color.fromRGBO(120, 120, 120, 1);
-  static final _lang = Map.unmodifiable({
+  static const _lang = {
     'title': 'Tolstoy: Shoppable Videos',
-    'share': 'Share',
     'report': 'Report',
     'notice':
         'The individuals featured may have received an incentive in connection with this content, which may have been created or curated by the brand',
-  });
+  };
 
   final VoidCallback onReport;
 
@@ -44,7 +43,7 @@ class FeedScreenMainMenu extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      _lang['title'],
+                      _lang['title']!,
                       softWrap: true,
                       style: const TextStyle(
                         fontSize: 15,
@@ -69,7 +68,7 @@ class FeedScreenMainMenu extends StatelessWidget {
         GestureDetector(
           onTap: onReport,
           child: Text(
-            _lang['report'],
+            _lang['report']!,
             style: const TextStyle(
               color: _errorColor,
               fontSize: 16,
@@ -79,7 +78,7 @@ class FeedScreenMainMenu extends StatelessWidget {
         ),
         const SizedBox(height: 25),
         Text(
-          _lang['notice'],
+          _lang['notice']!,
           style: const TextStyle(
             fontSize: 12,
             color: _noticeColor,
