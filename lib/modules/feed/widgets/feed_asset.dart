@@ -27,6 +27,7 @@ class FeedAssetView extends StatefulWidget {
     this.onProductClick,
     this.preload = true,
     this.feedAssetOptions = const FeedAssetOptions(),
+    this.onVideoError,
   });
 
   final Asset asset;
@@ -38,6 +39,7 @@ class FeedAssetView extends StatefulWidget {
   final void Function(Product)? onProductClick;
   final bool preload;
   final FeedAssetOptions? feedAssetOptions;
+  final void Function(String message, Asset asset)? onVideoError;
 
   @override
   State<FeedAssetView> createState() => _FeedAssetViewState();
@@ -70,6 +72,7 @@ class _FeedAssetViewState extends State<FeedAssetView> {
           options: widget.options,
           preload: widget.preload,
           onProgressUpdate: _handleProgressUpdate,
+          onVideoError: widget.onVideoError,
         ),
         Positioned(
           left: 0,

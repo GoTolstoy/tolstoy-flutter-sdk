@@ -21,6 +21,7 @@ class RailWithFeed extends StatelessWidget {
     required TvPageConfig config,
   })? buildFeedFooter;
   final void Function(Asset)? onAssetClick;
+  final void Function(String message, Asset asset)? onVideoError;
 
   const RailWithFeed({
     super.key,
@@ -30,6 +31,7 @@ class RailWithFeed extends StatelessWidget {
     this.buildFeedHeader,
     this.buildFeedFooter,
     this.onAssetClick,
+    this.onVideoError,
   });
 
   @override
@@ -37,6 +39,7 @@ class RailWithFeed extends StatelessWidget {
     return Rail(
       config: config,
       options: railOptions,
+      onVideoError: onVideoError,
       onAssetClick: (Asset asset) {
         onAssetClick?.call(asset);
 
@@ -48,6 +51,7 @@ class RailWithFeed extends StatelessWidget {
               onProductClick: onProductClick,
               buildFeedHeader: buildFeedHeader,
               buildFeedFooter: buildFeedFooter,
+              onVideoError: onVideoError,
             ),
           ),
         );

@@ -29,6 +29,11 @@ class FeedScreen extends StatelessWidget {
               pageThreshold: 5,
             ),
             onProductClick: _handleProductClick,
+            onVideoError: (message, asset) {
+              // Implement logic for video error
+              // ignore: avoid_print
+              print('Video error: $message');
+            },
           );
         },
       ),
