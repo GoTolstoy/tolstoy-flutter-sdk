@@ -39,19 +39,24 @@ class FeedAssetOverlay extends StatelessWidget {
             color: Colors.transparent,
             child: Center(
               child: !isPlayingEnabled
-                  ? Container(
-                      decoration: const BoxDecoration(
-                        color: buttonBackgroundColor,
-                        shape: BoxShape.circle,
+                  ? IconButton(
+                      // Use zero padding and IconButton.styleFrom instead of BoxDecoration
+                      // to address the reported issue with misplaced circle background
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints.tightFor(
+                        width: 80,
+                        height: 80,
                       ),
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.play_arrow,
-                          size: 64,
-                          color: iconColor,
-                        ),
-                        onPressed: onPlayPause,
+                      style: IconButton.styleFrom(
+                        backgroundColor: buttonBackgroundColor,
+                        shape: const CircleBorder(),
                       ),
+                      icon: const Icon(
+                        Icons.play_arrow,
+                        size: 64,
+                        color: iconColor,
+                      ),
+                      onPressed: onPlayPause,
                     )
                   : const SizedBox.shrink(),
             ),
