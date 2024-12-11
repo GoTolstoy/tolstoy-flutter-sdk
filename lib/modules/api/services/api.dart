@@ -13,7 +13,7 @@ class ApiService {
     http.Response response = await http.get(url);
 
     if (response.statusCode == 200) {
-      Map<String, dynamic> jsonData = json.decode(response.body);
+      final jsonData = json.decode(response.body) as Map<String, dynamic>;
 
       List<String> vodAssetIds = (jsonData['steps'] as List<dynamic>?)
               ?.map((step) => step['videoId'] as String)
@@ -53,7 +53,7 @@ class ApiService {
     );
 
     if (response.statusCode == 200) {
-      Map<String, dynamic> jsonData = json.decode(response.body);
+      final jsonData = json.decode(response.body) as Map<String, dynamic>;
       ProductsMap products = ProductsMap.fromJson(jsonData);
 
       return products;

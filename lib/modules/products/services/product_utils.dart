@@ -6,8 +6,9 @@ class ProductUtils {
   static String? getUnformatedProductPrice(Product product,
       {String? variantId}) {
     // Extract the price from the first variant if no variantId is provided
-    String? price =
-        product.variants.isNotEmpty ? product.variants[0].price : null;
+    String? price = product.variants.isNotEmpty
+        ? product.variants[0].price?.toString()
+        : null;
 
     if (variantId == null) {
       return price;
@@ -18,7 +19,7 @@ class ProductUtils {
         product.variants.firstWhereOrNull((v) => v.id.toString() == variantId);
 
     // Return the price of the found variant or the default price
-    return variant?.price ?? price;
+    return variant?.price?.toString() ?? price;
   }
 
   static String? getProductPrice(Product product, {String? variantId}) {
