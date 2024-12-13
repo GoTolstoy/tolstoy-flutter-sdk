@@ -37,26 +37,26 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['id'] as String,
-      handle: json['handle'] as String,
-      title: json['title'] as String,
-      imageUrl: json['imageUrl'] as String,
-      variants: (json['variants'] as List)
-          .map((variant) => Variant.fromJson(variant as Map<String, dynamic>))
-          .toList(),
-      options: json['options'] as Map<String, dynamic>,
-      images: (json['images'] as List)
-          .map((image) => ProductImage.fromJson(image as Map<String, dynamic>))
-          .toList(),
+      id: json['id'] as String? ?? '',
+      handle: json['handle'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      imageUrl: json['imageUrl'] as String? ?? '',
+      variants: (json['variants'] as List?)
+          ?.map((variant) => Variant.fromJson(variant as Map<String, dynamic>))
+          .toList() ?? [],
+      options: json['options'] as Map<String, dynamic>? ?? {},
+      images: (json['images'] as List?)
+          ?.map((image) => ProductImage.fromJson(image as Map<String, dynamic>))
+          .toList() ?? [],
       tags: json['tags'] as String?,
       descriptionHtml: json['descriptionHtml'] as String?,
       templateSuffix: json['templateSuffix'] as String?,
-      dbProductId: json['dbProductId'] as String,
-      appKey: json['appKey'] as String,
-      appUrl: json['appUrl'] as String,
-      currencyCode: json['currencyCode'] as String,
-      currencySymbol: json['currencySymbol'] as String,
-      yotpoReview: json['yotpo'] != null && json['yotpo']['reviews'] as num > 0
+      dbProductId: json['dbProductId'] as String? ?? '',
+      appKey: json['appKey'] as String? ?? '',
+      appUrl: json['appUrl'] as String? ?? '',
+      currencyCode: json['currencyCode'] as String? ?? '',
+      currencySymbol: json['currencySymbol'] as String? ?? '',
+      yotpoReview: json['yotpo'] != null && (json['yotpo']['reviews'] as num?) != null
           ? YotpoReview.fromJson(json['yotpo'] as Map<String, dynamic>)
           : null,
     );
