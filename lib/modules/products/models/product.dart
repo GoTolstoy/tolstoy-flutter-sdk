@@ -194,12 +194,24 @@ class ProductsMap {
   factory ProductsMap.fromJson(Map<String, dynamic> json) {
     Map<String, Product> productMap = {};
     json.forEach((key, value) {
-      if (value['imageUrl'] == null) {
-        // skipping invalid products
+      final product = value as Map<String, dynamic>;
+      
+      // Skip products missing required fields
+      if (product['id'] == null ||
+          product['appKey'] == null ||
+          product['dbProductId'] == null ||
+          product['appUrl'] == null ||
+          product['imageUrl'] == null ||
+          product['title'] == null) {
         return;
       }
 
-      productMap[key] = Product.fromJson(value as Map<String, dynamic>);
+      try {
+        productMap[key] = Product.fromJson(product);
+      } catch (e) {
+        // Skip products that fail to parse
+        print('Failed to parse product: $e');
+      }
     });
     return ProductsMap(products: productMap);
   }
