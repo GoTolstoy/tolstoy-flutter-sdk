@@ -39,7 +39,7 @@ class FeedPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return TvConfigProvider(
       publishId: publishId,
-      buildProductsLoader: ({
+      createProductsLoader: ({
         required String appKey,
         required String appUrl,
         required List<Asset> assets,

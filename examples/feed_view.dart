@@ -22,7 +22,7 @@ class FeedScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Feed')),
       body: TvConfigProvider(
         publishId: publishId,
-        buildProductsLoader: ({
+        createProductsLoader: ({
           required String appKey,
           required String appUrl,
           required List<Asset> assets,

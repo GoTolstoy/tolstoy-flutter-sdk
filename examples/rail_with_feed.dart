@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SafeArea(
         child: TvConfigProvider(
           publishId: publishId,
-          buildProductsLoader: ({
+          createProductsLoader: ({
             required String appKey,
             required String appUrl,
             required List<Asset> assets,

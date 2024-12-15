@@ -13,7 +13,7 @@ class TvConfigProvider extends StatefulWidget {
     required String appKey,
     required String appUrl,
     required List<Asset> assets,
-  }) buildProductsLoader;
+  }) createProductsLoader;
 
   const TvConfigProvider({
     super.key,
@@ -21,7 +21,7 @@ class TvConfigProvider extends StatefulWidget {
     this.config,
     required this.builder,
     this.loadingWidget = const Center(child: CircularProgressIndicator()),
-    required this.buildProductsLoader,
+    required this.createProductsLoader,
   });
 
   @override
@@ -41,7 +41,7 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
     TvPageConfig config = await (widget.config ??
         ApiService.getTvPageConfig(
           widget.publishId,
-          widget.buildProductsLoader,
+          widget.createProductsLoader,
         ));
     if (mounted) {
       setState(() {

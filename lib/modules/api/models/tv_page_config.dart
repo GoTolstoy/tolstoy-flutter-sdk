@@ -18,7 +18,7 @@ class TvPageConfig {
     required String appKey,
     required String appUrl,
     required List<Asset> assets,
-  }) buildProductsLoader;
+  }) createProductsLoader;
 
   final ProductsLoader productsLoader;
 
@@ -32,8 +32,8 @@ class TvPageConfig {
     required this.startStep,
     required this.appKey,
     required this.owner,
-    required this.buildProductsLoader,
-  }) : productsLoader = buildProductsLoader(
+    required this.createProductsLoader,
+  }) : productsLoader = createProductsLoader(
           appKey: appKey,
           appUrl: appUrl,
           assets: assets,
@@ -45,7 +45,7 @@ class TvPageConfig {
       required String appKey,
       required String appUrl,
       required List<Asset> assets,
-    }) buildProductsLoader,
+    }) createProductsLoader,
   ) {
     return TvPageConfig(
       publishId: json['publishId'] as String,
@@ -59,7 +59,7 @@ class TvPageConfig {
       startStep: json['startStep'] as String,
       appKey: json['appKey'] as String,
       owner: json['owner'] as String,
-      buildProductsLoader: buildProductsLoader,
+      createProductsLoader: createProductsLoader,
     );
   }
 
@@ -77,7 +77,7 @@ class TvPageConfig {
       required String appKey,
       required String appUrl,
       required List<Asset> assets,
-    })? buildProductsLoader,
+    })? createProductsLoader,
   }) {
     return TvPageConfig(
       publishId: publishId ?? this.publishId,
@@ -89,7 +89,7 @@ class TvPageConfig {
       startStep: startStep ?? this.startStep,
       appKey: appKey ?? this.appKey,
       owner: owner ?? this.owner,
-      buildProductsLoader: buildProductsLoader ?? this.buildProductsLoader,
+      createProductsLoader: createProductsLoader ?? this.createProductsLoader,
     );
   }
 }

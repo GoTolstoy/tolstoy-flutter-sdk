@@ -14,7 +14,7 @@ class ApiService {
       required String appKey,
       required String appUrl,
       required List<Asset> assets,
-    }) buildProductsLoader,
+    }) createProductsLoader,
   ) async {
     Uri url = Uri.parse(
         '$_baseUrl/settings/$publishId/player?feedShowUnviewedStepsFirst=false');
@@ -24,7 +24,7 @@ class ApiService {
       final jsonData = json.decode(response.body) as Map<String, dynamic>;
 
       TvPageConfig config =
-          TvPageConfig.fromJson(jsonData, buildProductsLoader);
+          TvPageConfig.fromJson(jsonData, createProductsLoader);
 
       return config;
     } else {
