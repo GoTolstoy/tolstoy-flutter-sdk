@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:tolstoy_flutter_sdk/core/config.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/models/asset.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
-
-const String _baseUrl = 'https://api.gotolstoy.com';
 
 class ApiService {
   static Future<TvPageConfig> getTvPageConfig(
@@ -17,7 +16,7 @@ class ApiService {
     }) createProductsLoader,
   ) async {
     Uri url = Uri.parse(
-        '$_baseUrl/settings/$publishId/player?feedShowUnviewedStepsFirst=false');
+        '${AppConfig.apiBaseUrl}/settings/$publishId/player?feedShowUnviewedStepsFirst=false');
     http.Response response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -34,7 +33,8 @@ class ApiService {
 
   static Future<ProductsMap> getProductsByVodAssetIds(
       List<String> vodAssetIds, String appUrl, String appKey) async {
-    Uri url = Uri.parse('$_baseUrl/products/actions/v2/get-by-vod-asset-ids');
+    Uri url = Uri.parse(
+        '${AppConfig.apiBaseUrl}/products/actions/v2/get-by-vod-asset-ids');
 
     Map<String, dynamic> requestBody = {
       'vodAssetIds': vodAssetIds,
@@ -64,7 +64,7 @@ class ApiService {
 
   static Future<bool> sendEvent(Map<String, dynamic> params) async {
     final result = await http.post(
-      Uri.parse('$_baseUrl/events/event'),
+      Uri.parse('${AppConfig.apiBaseUrl}/events/event'),
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',

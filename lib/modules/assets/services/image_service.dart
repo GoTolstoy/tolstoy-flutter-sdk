@@ -6,7 +6,8 @@ const String _extension = '.webp';
 
 class ImageService {
   static String getImageUrl(Asset asset, {AssetSize size = AssetSize.m}) {
-    final route = '${AppConfig.baseUrl}/public/${asset.owner}/${asset.id}/';
+    final route =
+        '${AppConfig.videoBaseUrl}/public/${asset.owner}/${asset.id}/';
     final fileName = '${asset.id}${getSuffix(size)}$_extension';
 
     return asset.stockAsset?.posterUrl ?? '$route$fileName';
