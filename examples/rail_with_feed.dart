@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/models/asset.dart';
-import 'package:tolstoy_flutter_sdk/modules/products/loaders/simple_products_loader.dart';
+import 'package:tolstoy_flutter_sdk/modules/products/loaders/batch_products_loader.dart';
 import 'package:tolstoy_flutter_sdk/modules/rail/widgets.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
@@ -68,10 +68,12 @@ class _MyHomePageState extends State<MyHomePage> {
           buildProductsLoader: ({
             required String appKey,
             required String appUrl,
+            required List<Asset> assets,
           }) =>
-              SimpleProductsLoader(
+              BatchProductsLoader(
             appKey: appKey,
             appUrl: appUrl,
+            assets: assets,
           ),
           builder: (context, config) {
             return RailWithFeed(

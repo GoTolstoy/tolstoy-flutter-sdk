@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tolstoy_flutter_sdk/modules/products/loaders/simple_products_loader.dart';
+import 'package:tolstoy_flutter_sdk/modules/products/loaders/batch_products_loader.dart';
 import 'package:tolstoy_flutter_sdk/modules/rail/widgets/rail.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/widgets/tv_config_provider.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
@@ -35,10 +35,12 @@ class RailScreen extends StatelessWidget {
             buildProductsLoader: ({
               required String appKey,
               required String appUrl,
+              required List<Asset> assets,
             }) =>
-                SimpleProductsLoader(
+                BatchProductsLoader(
               appKey: appKey,
               appUrl: appUrl,
+              assets: assets,
             ),
             builder: (context, config) {
               return Rail(

@@ -7,6 +7,7 @@ class SimpleProductsLoader extends ProductsLoader {
   SimpleProductsLoader({
     required super.appUrl,
     required super.appKey,
+    required super.assets,
   });
 
   final Map<String, List<Product>> _productsCache = {};

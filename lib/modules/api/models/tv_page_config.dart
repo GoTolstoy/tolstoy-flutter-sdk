@@ -18,6 +18,7 @@ class TvPageConfig {
   final ProductsLoader Function({
     required String appKey,
     required String appUrl,
+    required List<Asset> assets,
   }) buildProductsLoader;
 
   ProductsLoader? _productsLoader;
@@ -40,6 +41,7 @@ class TvPageConfig {
     ProductsLoader Function({
       required String appKey,
       required String appUrl,
+      required List<Asset> assets,
     }) buildProductsLoader,
   ) {
     return TvPageConfig(
@@ -71,6 +73,7 @@ class TvPageConfig {
     ProductsLoader Function({
       required String appKey,
       required String appUrl,
+      required List<Asset> assets,
     })? buildProductsLoader,
   }) {
     return TvPageConfig(
@@ -88,7 +91,11 @@ class TvPageConfig {
   }
 
   Future<List<Product>> getProducts(Asset asset) {
-    _productsLoader ??= buildProductsLoader(appKey: appKey, appUrl: appUrl);
+    _productsLoader ??= buildProductsLoader(
+      appKey: appKey,
+      appUrl: appUrl,
+      assets: assets,
+    );
 
     return _productsLoader!.getProducts(asset);
   }

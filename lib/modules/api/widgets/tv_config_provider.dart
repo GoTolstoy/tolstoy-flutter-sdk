@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/models/tv_page_config.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/services.dart';
+import 'package:tolstoy_flutter_sdk/modules/assets/models/asset.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart';
 
 class TvConfigProvider extends StatefulWidget {
@@ -11,6 +12,7 @@ class TvConfigProvider extends StatefulWidget {
   final ProductsLoader Function({
     required String appKey,
     required String appUrl,
+    required List<Asset> assets,
   }) buildProductsLoader;
 
   const TvConfigProvider({

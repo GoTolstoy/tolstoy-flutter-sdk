@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
+import 'package:tolstoy_flutter_sdk/modules/assets/models/asset.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 
@@ -12,6 +13,7 @@ class ApiService {
     ProductsLoader Function({
       required String appKey,
       required String appUrl,
+      required List<Asset> assets,
     }) buildProductsLoader,
   ) async {
     Uri url = Uri.parse(
