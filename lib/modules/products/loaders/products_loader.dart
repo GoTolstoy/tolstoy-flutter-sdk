@@ -13,4 +13,6 @@ abstract class ProductsLoader {
   });
 
   Future<List<Product>> getProducts(Asset asset);
+
+  void preload(List<Asset> assets);
 }

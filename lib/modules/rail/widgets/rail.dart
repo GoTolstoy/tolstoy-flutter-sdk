@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:tolstoy_flutter_sdk/modules/rail/widgets/consts.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-
 import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/rail/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/analytics/analytics.dart';
-
 import 'rail_asset.dart';
-
-const maxVisibleItems = 6;
 
 class Rail extends StatefulWidget {
   final TvPageConfig config;

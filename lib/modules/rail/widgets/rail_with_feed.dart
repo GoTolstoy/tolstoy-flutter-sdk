@@ -4,7 +4,7 @@ import 'package:tolstoy_flutter_sdk/modules/feed/screens.dart';
 import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
-
+import 'package:tolstoy_flutter_sdk/modules/rail/widgets/consts.dart';
 import 'rail.dart';
 
 class RailWithFeed extends StatelessWidget {
@@ -23,7 +23,7 @@ class RailWithFeed extends StatelessWidget {
   final void Function(Asset)? onAssetClick;
   final void Function(String message, Asset asset)? onVideoError;
 
-  const RailWithFeed({
+  RailWithFeed({
     super.key,
     required this.config,
     this.railOptions = const RailOptions(),
@@ -32,7 +32,9 @@ class RailWithFeed extends StatelessWidget {
     this.buildFeedFooter,
     this.onAssetClick,
     this.onVideoError,
-  });
+  }) {
+    config.productsLoader.preload(config.assets.sublist(0, maxVisibleItems));
+  }
 
   @override
   Widget build(BuildContext context) {

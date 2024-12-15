@@ -47,6 +47,13 @@ class BatchProductsLoader extends ProductsLoader {
     return products;
   }
 
+  @override
+  void preload(List<Asset> assets) {
+    final assetIds = assets.map((asset) => asset.id).toList();
+
+    _loadSlice(assetIds);
+  }
+
   List<String> _getMinSlice(int assetIndex) {
     final startIndex = (assetIndex - minPreload).clamp(0, assets.length - 1);
 
@@ -70,6 +77,10 @@ class BatchProductsLoader extends ProductsLoader {
   void _loadSlice(List<String> slice) {
     final filteredSlice =
         slice.where((id) => !_futureProductsMapCache.containsKey(id)).toList();
+
+    if (filteredSlice.isEmpty) {
+      return;
+    }
 
     final futureProductsMap =
         ApiService.getProductsByVodAssetIds(filteredSlice, appUrl, appKey);

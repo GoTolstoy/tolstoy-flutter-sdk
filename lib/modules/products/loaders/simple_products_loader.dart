@@ -34,4 +34,9 @@ class SimpleProductsLoader extends ProductsLoader {
 
     return products;
   }
+
+  @override
+  void preload(List<Asset> assets) {
+    // Do not preload products in simple products loader
+  }
 }

@@ -1,0 +1,1 @@
+const maxVisibleItems = 6;

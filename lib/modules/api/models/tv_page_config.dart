@@ -1,6 +1,5 @@
 import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart';
-import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 
 /*
   steps from config -> assets
@@ -21,7 +20,7 @@ class TvPageConfig {
     required List<Asset> assets,
   }) buildProductsLoader;
 
-  ProductsLoader? _productsLoader;
+  final ProductsLoader productsLoader;
 
   TvPageConfig({
     required this.publishId,
@@ -34,7 +33,11 @@ class TvPageConfig {
     required this.appKey,
     required this.owner,
     required this.buildProductsLoader,
-  });
+  }) : productsLoader = buildProductsLoader(
+          appKey: appKey,
+          appUrl: appUrl,
+          assets: assets,
+        );
 
   factory TvPageConfig.fromJson(
     Map<String, dynamic> json,
@@ -88,15 +91,5 @@ class TvPageConfig {
       owner: owner ?? this.owner,
       buildProductsLoader: buildProductsLoader ?? this.buildProductsLoader,
     );
-  }
-
-  Future<List<Product>> getProducts(Asset asset) {
-    _productsLoader ??= buildProductsLoader(
-      appKey: appKey,
-      appUrl: appUrl,
-      assets: assets,
-    );
-
-    return _productsLoader!.getProducts(asset);
   }
 }
