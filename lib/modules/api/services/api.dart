@@ -1,13 +1,19 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
+import 'package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart';
 import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
 
 const String _baseUrl = 'https://api.gotolstoy.com';
 
 class ApiService {
-  static Future<TvPageConfig> getTvPageConfig(String publishId) async {
+  static Future<TvPageConfig> getTvPageConfig(
+    String publishId,
+    ProductsLoader Function({
+      required String appKey,
+      required String appUrl,
+    }) buildProductsLoader,
+  ) async {
     Uri url = Uri.parse(
         '$_baseUrl/settings/$publishId/player?feedShowUnviewedStepsFirst=false');
     http.Response response = await http.get(url);
@@ -15,17 +21,8 @@ class ApiService {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body) as Map<String, dynamic>;
 
-      List<String> vodAssetIds = (jsonData['steps'] as List<dynamic>?)
-              ?.map((step) => step['videoId'] as String)
-              .toList() ??
-          [];
-      String appUrl = jsonData['appUrl'] as String? ?? '';
-      String appKey = jsonData['appKey'] as String? ?? '';
-
-      ProductsMap productsMap =
-          await getProductsByVodAssetIds(vodAssetIds, appUrl, appKey);
-
-      TvPageConfig config = TvPageConfig.fromJson(jsonData, productsMap);
+      TvPageConfig config =
+          TvPageConfig.fromJson(jsonData, buildProductsLoader);
 
       return config;
     } else {

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/models/tv_page_config.dart';
 import 'package:tolstoy_flutter_sdk/modules/api/services.dart';
+import 'package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart';
 
 class TvConfigProvider extends StatefulWidget {
   final String publishId;
   final Future<TvPageConfig>? config;
   final Widget Function(BuildContext, TvPageConfig) builder;
   final Widget loadingWidget;
+  final ProductsLoader Function({
+    required String appKey,
+    required String appUrl,
+  }) buildProductsLoader;
 
   const TvConfigProvider({
     super.key,
@@ -14,6 +19,7 @@ class TvConfigProvider extends StatefulWidget {
     this.config,
     required this.builder,
     this.loadingWidget = const Center(child: CircularProgressIndicator()),
+    required this.buildProductsLoader,
   });
 
   @override
@@ -30,8 +36,11 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
   }
 
   _fetchConfig() async {
-    TvPageConfig config =
-        await (widget.config ?? ApiService.getTvPageConfig(widget.publishId));
+    TvPageConfig config = await (widget.config ??
+        ApiService.getTvPageConfig(
+          widget.publishId,
+          widget.buildProductsLoader,
+        ));
     if (mounted) {
       setState(() {
         _config = config;
