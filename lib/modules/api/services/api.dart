@@ -16,7 +16,7 @@ class ApiService {
     }) createProductsLoader,
   ) async {
     Uri url = Uri.parse(
-        '${AppConfig.apiBaseUrl}/settings/$publishId/player?feedShowUnviewedStepsFirst=false');
+        '${AppConfig.apiBaseUrl}/settings/$publishId${AppConfig.mobileEndpoint}/player?feedShowUnviewedStepsFirst=false');
     http.Response response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -34,7 +34,7 @@ class ApiService {
   static Future<ProductsMap> getProductsByVodAssetIds(
       List<String> vodAssetIds, String appUrl, String appKey) async {
     Uri url = Uri.parse(
-        '${AppConfig.apiBaseUrl}/products/actions/v2/get-by-vod-asset-ids');
+        '${AppConfig.apiBaseUrl}/products/actions/v2${AppConfig.mobileEndpoint}/get-by-vod-asset-ids');
 
     Map<String, dynamic> requestBody = {
       'vodAssetIds': vodAssetIds,
