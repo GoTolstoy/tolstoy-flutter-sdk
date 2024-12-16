@@ -2,11 +2,11 @@ import 'package:tolstoy_flutter_sdk/modules/assets/constants/asset_type.dart';
 
 class Asset {
   final List<ProductReference> products;
-  final String name;
+  final String? name;
   final String owner;
   final String id;
   final StockAsset? stockAsset;
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final String uploadType;
   final AssetType type;
 
@@ -29,11 +29,13 @@ class Asset {
 
     return Asset(
       id: json['videoId'] as String,
-      name: json['videoName'] as String,
+      name: json['videoName'] as String?,
       owner: json['videoOwner'] as String,
       uploadType: json['uploadType'] as String,
       type: type,
-      createdAt: DateTime.parse(json['videoCreatedAt'] as String),
+      createdAt: json['videoCreatedAt'] != null
+          ? DateTime.parse(json['videoCreatedAt'] as String)
+          : null,
       stockAsset: json['stockAsset'] != null
           ? StockAsset.fromJson(json['stockAsset'] as Map<String, dynamic>)
           : null,

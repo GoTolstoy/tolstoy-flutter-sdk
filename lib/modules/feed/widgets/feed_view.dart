@@ -172,33 +172,31 @@ class _FeedViewState extends State<FeedView>
 
     Asset asset = widget.config.assets[index];
 
-    List<Product> products = asset.products
-        .map((productRef) =>
-            widget.config.productsMap.getProductById(productRef.id))
-        .where((product) => product != null)
-        .cast<Product>()
-        .toList();
-
     return KeepAliveWrapper(
-      child: FeedAssetView(
-        asset: asset,
-        config: widget.config,
-        options: AssetViewOptions(
-          isPlaying: isPlayingEnabled && isActive && _isVisible,
-          isPlayingEnabled: isPlayingEnabled,
-          isMuted: isMuted,
-          shouldLoop: true,
-          withMuteButton: asset.type != AssetType.image,
-          trackAnalytics: true,
-        ),
-        onPlayClick: _onPlayClick,
-        onMuteClick: _onMuteClick,
-        products: products,
-        onProductClick: _onProductClick,
-        onVideoError: widget.onVideoError,
-        feedAssetOptions: FeedAssetOptions(
-          overlayBottomPadding: _footerHeight,
-        ),
+      child: FutureBuilder<List<Product>>(
+        future: widget.config.productsLoader.getProducts(asset),
+        builder: (context, snapshot) {
+          return FeedAssetView(
+            asset: asset,
+            config: widget.config,
+            options: AssetViewOptions(
+              isPlaying: isPlayingEnabled && isActive && _isVisible,
+              isPlayingEnabled: isPlayingEnabled,
+              isMuted: isMuted,
+              shouldLoop: true,
+              withMuteButton: asset.type != AssetType.image,
+              trackAnalytics: true,
+            ),
+            onPlayClick: _onPlayClick,
+            onMuteClick: _onMuteClick,
+            products: snapshot.data ?? [],
+            onProductClick: _onProductClick,
+            onVideoError: widget.onVideoError,
+            feedAssetOptions: FeedAssetOptions(
+              overlayBottomPadding: _footerHeight,
+            ),
+          );
+        },
       ),
     );
   }

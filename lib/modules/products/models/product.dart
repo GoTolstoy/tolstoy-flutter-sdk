@@ -4,7 +4,7 @@ class Product {
   final String title;
   final String imageUrl;
   final List<Variant> variants;
-  final Map<String, dynamic> options;
+  final Map<String, dynamic>? options;
   final List<ProductImage> images;
   final String? tags;
   final String? descriptionHtml;
@@ -42,12 +42,16 @@ class Product {
       title: json['title'] as String? ?? '',
       imageUrl: json['imageUrl'] as String? ?? '',
       variants: (json['variants'] as List?)
-          ?.map((variant) => Variant.fromJson(variant as Map<String, dynamic>))
-          .toList() ?? [],
+              ?.map((variant) =>
+                  Variant.fromJson(variant as Map<String, dynamic>))
+              .toList() ??
+          [],
       options: json['options'] as Map<String, dynamic>? ?? {},
       images: (json['images'] as List?)
-          ?.map((image) => ProductImage.fromJson(image as Map<String, dynamic>))
-          .toList() ?? [],
+              ?.map((image) =>
+                  ProductImage.fromJson(image as Map<String, dynamic>))
+              .toList() ??
+          [],
       tags: json['tags'] as String?,
       descriptionHtml: json['descriptionHtml'] as String?,
       templateSuffix: json['templateSuffix'] as String?,
@@ -56,9 +60,10 @@ class Product {
       appUrl: json['appUrl'] as String? ?? '',
       currencyCode: json['currencyCode'] as String? ?? '',
       currencySymbol: json['currencySymbol'] as String? ?? '',
-      yotpoReview: json['yotpo'] != null && (json['yotpo']['reviews'] as num?) != null
-          ? YotpoReview.fromJson(json['yotpo'] as Map<String, dynamic>)
-          : null,
+      yotpoReview:
+          json['yotpo'] != null && (json['yotpo']['reviews'] as num?) != null
+              ? YotpoReview.fromJson(json['yotpo'] as Map<String, dynamic>)
+              : null,
     );
   }
 
@@ -110,13 +115,13 @@ class ProductImage {
 }
 
 class Variant {
-  final String productId;
+  final String? productId;
   final dynamic id;
   final dynamic price;
   final dynamic compareAtPrice;
-  final String title;
-  final Map<String, String?> selectedOptions;
-  final bool isVariantAvailableForSale;
+  final String? title;
+  final Map<String, String?>? selectedOptions;
+  final bool? isVariantAvailableForSale;
   final String? sku;
 
   Variant({
@@ -132,14 +137,15 @@ class Variant {
 
   factory Variant.fromJson(Map<String, dynamic> json) {
     return Variant(
-      productId: json['productId'] as String,
+      productId: json['productId'] as String?,
       id: json['id'],
       price: json['price'],
       compareAtPrice: json['compareAtPrice'],
-      title: json['title'] as String,
-      selectedOptions:
-          Map.from(json['selectedOptions'] as Map<String, dynamic>),
-      isVariantAvailableForSale: json['isVariantAvailableForSale'] as bool,
+      title: json['title'] as String?,
+      selectedOptions: json['selectedOptions'] != null
+          ? Map.from(json['selectedOptions'] as Map<String, dynamic>)
+          : null,
+      isVariantAvailableForSale: json['isVariantAvailableForSale'] as bool?,
       sku: json['sku'] as String?,
     );
   }
@@ -193,14 +199,12 @@ class ProductsMap {
 
   factory ProductsMap.fromJson(Map<String, dynamic> json) {
     Map<String, Product> productMap = {};
+
     json.forEach((key, value) {
       final product = value as Map<String, dynamic>;
-      
+
       // Skip products missing required fields
       if (product['id'] == null ||
-          product['appKey'] == null ||
-          product['dbProductId'] == null ||
-          product['appUrl'] == null ||
           product['imageUrl'] == null ||
           product['title'] == null) {
         return;
@@ -208,11 +212,14 @@ class ProductsMap {
 
       try {
         productMap[key] = Product.fromJson(product);
+        // ignore: avoid_catches_without_on_clauses
       } catch (e) {
         // Skip products that fail to parse
+        // ignore: avoid_print
         print('Failed to parse product: $e');
       }
     });
+
     return ProductsMap(products: productMap);
   }
 

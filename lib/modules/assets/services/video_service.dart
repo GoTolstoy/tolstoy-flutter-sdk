@@ -30,7 +30,7 @@ class VideoService {
       return stockPosterUrl;
     }
 
-    return '${AppConfig.baseUrl}/public/${asset.owner}/${asset.id}/${asset.id}.0000000.jpg';
+    return '${AppConfig.videoBaseUrl}/public/${asset.owner}/${asset.id}/${asset.id}.0000000.jpg';
   }
 
   static String _getVideoUrl(Asset asset, AssetSize size) {
@@ -42,7 +42,7 @@ class VideoService {
   }
 
   static String _getBaseVideoUrl(Asset asset, {bool isAiVideo = false}) {
-    return '${AppConfig.baseUrl}/public/${asset.owner}/${asset.id}/${asset.id}${isAiVideo ? '_w_' : ''}';
+    return '${AppConfig.videoBaseUrl}/public/${asset.owner}/${asset.id}/${asset.id}${isAiVideo ? '_w_' : ''}';
   }
 
   static String getSuffix(AssetSize size) {
