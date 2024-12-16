@@ -15,9 +15,11 @@ class ApiService {
       required List<Asset> assets,
     }) createProductsLoader,
   ) async {
-    Uri url = Uri.parse(
-        '${AppConfig.apiBaseUrl}/settings/$publishId${AppConfig.mobileEndpoint}/player?feedShowUnviewedStepsFirst=false');
-    http.Response response = await http.get(url);
+    final Uri url = Uri.parse(
+      "${AppConfig.apilbBaseUrl}/settings${AppConfig.mobileAppFolder}/player/by-publish-id?publishId=$publishId",
+    );
+
+    final http.Response response = await http.get(url);
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body) as Map<String, dynamic>;
@@ -32,24 +34,15 @@ class ApiService {
   }
 
   static Future<ProductsMap> getProductsByVodAssetIds(
-      List<String> vodAssetIds, String appUrl, String appKey) async {
-    Uri url = Uri.parse(
-        '${AppConfig.apiBaseUrl}/products/actions/v2${AppConfig.mobileEndpoint}/get-by-vod-asset-ids');
-
-    Map<String, dynamic> requestBody = {
-      'vodAssetIds': vodAssetIds,
-      'appUrl': appUrl,
-      'appKey': appKey,
-    };
-
-    http.Response response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: json.encode(requestBody),
+    List<String> vodAssetIds,
+    String appUrl,
+    String appKey,
+  ) async {
+    final Uri url = Uri.parse(
+      "${AppConfig.apilbBaseUrl}/products/actions/v2${AppConfig.mobileAppFolder}/get-by-vod-asset-ids?appKey=$appKey&appUrl=$appUrl&vodAssetIds=${vodAssetIds.join(",")}",
     );
+
+    final http.Response response = await http.get(url);
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body) as Map<String, dynamic>;

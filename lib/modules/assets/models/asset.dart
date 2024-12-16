@@ -2,7 +2,7 @@ import 'package:tolstoy_flutter_sdk/modules/assets/constants/asset_type.dart';
 
 class Asset {
   final List<ProductReference> products;
-  final String name;
+  final String? name;
   final String owner;
   final String id;
   final StockAsset? stockAsset;
@@ -29,7 +29,7 @@ class Asset {
 
     return Asset(
       id: json['videoId'] as String,
-      name: json['videoName'] as String,
+      name: json['videoName'] as String?,
       owner: json['videoOwner'] as String,
       uploadType: json['uploadType'] as String,
       type: type,
