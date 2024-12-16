@@ -4,11 +4,11 @@ const useMobileEndpoints = true;
 
 class AppConfig {
   static const String apiBaseUrl =
-      prod ? 'https://api.gotolstoy.com' : 'https://dev-api.gotolstoy.com';
+      prod ? "https://api.gotolstoy.com" : "https://dev-api.gotolstoy.com";
 
   static const String videoBaseUrl = prod
-      ? 'https://videos.gotolstoy.com'
-      : 'https://dev-videos.gotolstoy.com';
+      ? "https://videos.gotolstoy.com"
+      : "https://dev-videos.gotolstoy.com";
 
-  static const String mobileEndpoint = useMobileEndpoints ? '/mobile' : '';
+  static const String mobileEndpoint = useMobileEndpoints ? "/mobile" : "";
 }

@@ -1,1 +1,1 @@
-export 'models/tv_page_config.dart';
+export "models/tv_page_config.dart";

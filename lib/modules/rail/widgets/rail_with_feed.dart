@@ -1,13 +1,26 @@
-import 'package:flutter/material.dart';
-import 'package:tolstoy_flutter_sdk/modules/rail/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/feed/screens.dart';
-import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/rail/widgets/consts.dart';
-import 'rail.dart';
+import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
+import "package:tolstoy_flutter_sdk/modules/feed/screens.dart";
+import "package:tolstoy_flutter_sdk/modules/products/models.dart";
+import "package:tolstoy_flutter_sdk/modules/rail/models.dart";
+import "package:tolstoy_flutter_sdk/modules/rail/widgets/consts.dart";
+import "package:tolstoy_flutter_sdk/modules/rail/widgets/rail.dart";
 
 class RailWithFeed extends StatelessWidget {
+  RailWithFeed({
+    required this.config,
+    super.key,
+    this.railOptions = const RailOptions(),
+    this.onProductClick,
+    this.buildFeedHeader,
+    this.buildFeedFooter,
+    this.onAssetClick,
+    this.onVideoError,
+  }) {
+    config.assets.sublist(0, config.assets.length.clamp(0, maxVisibleItems));
+  }
+
   final TvPageConfig config;
   final RailOptions railOptions;
   final void Function(Product)? onProductClick;
@@ -23,41 +36,26 @@ class RailWithFeed extends StatelessWidget {
   final void Function(Asset)? onAssetClick;
   final void Function(String message, Asset asset)? onVideoError;
 
-  RailWithFeed({
-    super.key,
-    required this.config,
-    this.railOptions = const RailOptions(),
-    this.onProductClick,
-    this.buildFeedHeader,
-    this.buildFeedFooter,
-    this.onAssetClick,
-    this.onVideoError,
-  }) {
-    config.assets.sublist(0, config.assets.length.clamp(0, maxVisibleItems));
-  }
-
   @override
-  Widget build(BuildContext context) {
-    return Rail(
-      config: config,
-      options: railOptions,
-      onVideoError: onVideoError,
-      onAssetClick: (Asset asset) {
-        onAssetClick?.call(asset);
+  Widget build(BuildContext context) => Rail(
+        config: config,
+        options: railOptions,
+        onVideoError: onVideoError,
+        onAssetClick: (Asset asset) {
+          onAssetClick?.call(asset);
 
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => FeedScreen(
-              config: config,
-              initialAssetId: asset.id,
-              onProductClick: onProductClick,
-              buildFeedHeader: buildFeedHeader,
-              buildFeedFooter: buildFeedFooter,
-              onVideoError: onVideoError,
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => FeedScreen(
+                config: config,
+                initialAssetId: asset.id,
+                onProductClick: onProductClick,
+                buildFeedHeader: buildFeedHeader,
+                buildFeedFooter: buildFeedFooter,
+                onVideoError: onVideoError,
+              ),
             ),
-          ),
-        );
-      },
-    );
-  }
+          );
+        },
+      );
 }

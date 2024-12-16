@@ -1,16 +1,16 @@
-import 'package:flutter/material.dart';
-import 'feed_screen_main_menu.dart';
-import 'feed_screen_report_menu.dart';
-import 'feed_screen_report_submitted_menu.dart';
+import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/modules/feed/screens/feed_screen_main_menu.dart";
+import "package:tolstoy_flutter_sdk/modules/feed/screens/feed_screen_report_menu.dart";
+import "package:tolstoy_flutter_sdk/modules/feed/screens/feed_screen_report_submitted_menu.dart";
 
 class FeedScreenMenu extends StatefulWidget {
+  const FeedScreenMenu({
+    required this.onReport,
+    super.key,
+  });
+
   final Future<bool> Function({required String id, required String title})
       onReport;
-
-  const FeedScreenMenu({
-    super.key,
-    required this.onReport,
-  });
 
   @override
   State<FeedScreenMenu> createState() => _FeedScreenMenuState();
@@ -25,8 +25,7 @@ class _FeedScreenMenuState extends State<FeedScreenMenu> {
   var _selectedScreen = Screen.main;
 
   @override
-  Widget build(BuildContext context) {
-    return AnimatedSize(
+  Widget build(BuildContext context) => AnimatedSize(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
         child: switch (_selectedScreen) {
@@ -50,6 +49,6 @@ class _FeedScreenMenuState extends State<FeedScreenMenu> {
           Screen.reportSubmitted => FeedScreenReportSubmittedMenu(
               onClose: () => Navigator.pop(this.context),
             ),
-        });
-  }
+        },
+      );
 }

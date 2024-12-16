@@ -1,15 +1,14 @@
-import 'package:flutter/material.dart';
-
-import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/assets/services.dart';
-import 'package:tolstoy_flutter_sdk/modules/analytics/analytics.dart';
+import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/services.dart";
 
 class ImageAsset extends StatefulWidget {
   const ImageAsset({
-    super.key,
     required this.asset,
     required this.config,
+    super.key,
     this.onAssetEnded,
     this.onProgressUpdate,
     this.options = const AssetViewOptions(),
@@ -54,9 +53,7 @@ class _ImageAssetState extends State<ImageAsset> {
       return;
     }
 
-    if (widget.onAssetEnded != null) {
-      widget.onAssetEnded!(widget.asset);
-    }
+    widget.onAssetEnded?.call(widget.asset);
   }
 
   void _sendImageViewedAnalytics() {
@@ -74,12 +71,12 @@ class _ImageAssetState extends State<ImageAsset> {
     _analytics.sendVideoWatched(
       widget.config,
       {
-        'videoId': widget.asset.id,
-        'text': widget.asset.name,
-        'type': widget.asset.type.name,
-        'videoLoopCount': _loopCount,
-        'videoWatchedTime': watchedSeconds,
-        'videoDuration': widget.options.imagePlaytimeSec,
+        "videoId": widget.asset.id,
+        "text": widget.asset.name,
+        "type": widget.asset.type.name,
+        "videoLoopCount": _loopCount,
+        "videoWatchedTime": watchedSeconds,
+        "videoDuration": widget.options.imagePlaytimeSec,
       },
     );
     _loopCount = 0;
@@ -88,7 +85,8 @@ class _ImageAssetState extends State<ImageAsset> {
 
   void _startPlaying() {
     const Duration tick = Duration(milliseconds: 100);
-    Duration duration = Duration(seconds: widget.options.imagePlaytimeSec);
+    final Duration duration =
+        Duration(seconds: widget.options.imagePlaytimeSec);
 
     Future.delayed(tick, () {
       if (!widget.options.isPlaying) {
@@ -102,9 +100,9 @@ class _ImageAssetState extends State<ImageAsset> {
         _analytics.sendVideoLoaded(
           widget.config,
           {
-            'videoId': widget.asset.id,
-            'text': widget.asset.name,
-            'type': widget.asset.type.name,
+            "videoId": widget.asset.id,
+            "text": widget.asset.name,
+            "type": widget.asset.type.name,
           },
         );
         _hasPlayed = true;
@@ -112,9 +110,7 @@ class _ImageAssetState extends State<ImageAsset> {
 
       _progressTime += tick;
 
-      if (widget.onProgressUpdate != null) {
-        widget.onProgressUpdate!(widget.asset, _progressTime, duration);
-      }
+      widget.onProgressUpdate?.call(widget.asset, _progressTime, duration);
 
       if (_progressTime >= duration) {
         _assetEnded();
@@ -135,16 +131,14 @@ class _ImageAssetState extends State<ImageAsset> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Image.network(
-        AssetService.getAssetUrl(widget.asset),
-        fit: widget.options.imageFit,
-        width: double.infinity,
-        height: double.infinity,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Center(
+        child: Image.network(
+          AssetService.getAssetUrl(widget.asset),
+          fit: widget.options.imageFit,
+          width: double.infinity,
+          height: double.infinity,
+        ),
+      );
 
   @override
   void dispose() {

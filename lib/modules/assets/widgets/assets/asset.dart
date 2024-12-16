@@ -1,17 +1,15 @@
-import 'package:flutter/material.dart';
-
-import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/assets/constants.dart';
-import 'package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart';
-
-import 'image_asset.dart';
-import 'video_asset.dart';
+import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/constants.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/widgets/assets/image_asset.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/widgets/assets/video_asset.dart";
+import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
 
 class AssetView extends StatefulWidget {
   const AssetView({
-    super.key,
     required this.asset,
     required this.config,
+    super.key,
     this.onAssetEnded,
     this.onProgressUpdate,
     this.options = const AssetViewOptions(),

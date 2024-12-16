@@ -1,25 +1,25 @@
-import 'package:flutter/material.dart';
-import 'package:tolstoy_flutter_sdk/modules/rail/widgets/consts.dart';
-import 'package:visibility_detector/visibility_detector.dart';
-import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/rail/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/analytics/analytics.dart';
-import 'rail_asset.dart';
+import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
+import "package:tolstoy_flutter_sdk/modules/rail/models.dart";
+import "package:tolstoy_flutter_sdk/modules/rail/widgets/consts.dart";
+import "package:tolstoy_flutter_sdk/modules/rail/widgets/rail_asset.dart";
+import "package:visibility_detector/visibility_detector.dart";
 
 class Rail extends StatefulWidget {
-  final TvPageConfig config;
-  final void Function(Asset)? onAssetClick;
-  final RailOptions options;
-  final void Function(String message, Asset asset)? onVideoError;
-
   const Rail({
-    super.key,
     required this.config,
+    super.key,
     this.onAssetClick,
     this.options = const RailOptions(),
     this.onVideoError,
   });
+
+  final TvPageConfig config;
+  final void Function(Asset)? onAssetClick;
+  final RailOptions options;
+  final void Function(String message, Asset asset)? onVideoError;
 
   @override
   State<Rail> createState() => _RailState();
@@ -47,31 +47,24 @@ class _RailState extends State<Rail> {
     super.dispose();
   }
 
-  int get visibleItemCount {
-    return widget.config.assets.length.clamp(0, maxVisibleItems);
-  }
+  int get visibleItemCount =>
+      widget.config.assets.length.clamp(0, maxVisibleItems);
 
-  double get railWidth {
-    return context.size?.width ?? MediaQuery.of(context).size.width;
-  }
+  double get railWidth =>
+      context.size?.width ?? MediaQuery.of(context).size.width;
 
-  double get itemScrollStep {
-    return widget.options.itemWidth + widget.options.itemGap;
-  }
+  double get itemScrollStep =>
+      widget.options.itemWidth + widget.options.itemGap;
 
-  double get totalContentWidth {
-    return itemScrollStep * visibleItemCount -
-        widget.options.itemGap +
-        2 * widget.options.xPadding;
-  }
+  double get totalContentWidth =>
+      itemScrollStep * visibleItemCount -
+      widget.options.itemGap +
+      2 * widget.options.xPadding;
 
-  double get maxScrollOffset {
-    return totalContentWidth - railWidth;
-  }
+  double get maxScrollOffset => totalContentWidth - railWidth;
 
-  bool _shouldPreload(int index) {
-    return index == _currentPlayingIndex || index == _currentPlayingIndex + 1;
-  }
+  bool _shouldPreload(int index) =>
+      index == _currentPlayingIndex || index == _currentPlayingIndex + 1;
 
   bool __isVideoFullyInView(int index) {
     final currentScrollOffset = _scrollController.position.pixels;
@@ -168,90 +161,92 @@ class _RailState extends State<Rail> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (scrollNotification) {
-        if (scrollNotification is ScrollEndNotification) {
-          _onScrollEnd();
-        }
-
-        return true;
-      },
-      child: VisibilityDetector(
-        key: Key('rail-${widget.config.publishId}'),
-        onVisibilityChanged: (visibilityInfo) {
-          if (!mounted) {
-            return;
+  Widget build(BuildContext context) =>
+      NotificationListener<ScrollNotification>(
+        onNotification: (scrollNotification) {
+          if (scrollNotification is ScrollEndNotification) {
+            _onScrollEnd();
           }
 
-          if (visibilityInfo.visibleFraction > 0.5 && !_hasBeenVisible) {
-            _hasBeenVisible = true;
-            _analytics.sendEmbedView(widget.config);
-          }
-
-          setState(() {
-            _isVisible = visibilityInfo.visibleFraction > 0.5;
-          });
+          return true;
         },
-        child: SizedBox(
-          height: widget.options.itemHeight,
-          child: ListView.builder(
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            itemCount: visibleItemCount,
-            itemBuilder: (context, index) {
-              final asset = widget.config.assets[index];
-              final isFirstItem = index == 0;
-              final isLastItem = index == visibleItemCount - 1;
+        child: VisibilityDetector(
+          key: Key("rail-${widget.config.publishId}"),
+          onVisibilityChanged: (visibilityInfo) {
+            if (!mounted) {
+              return;
+            }
 
-              return Padding(
-                padding: EdgeInsets.only(
-                  left: isFirstItem
-                      ? widget.options.xPadding
-                      : widget.options.itemGap / 2,
-                  right: isLastItem
-                      ? widget.options.xPadding
-                      : widget.options.itemGap / 2,
-                ),
-                child: RailAsset(
-                  asset: asset,
-                  config: widget.config,
-                  onTap: () {
-                    widget.onAssetClick?.call(asset);
-                    _analytics
-                        .sendVideoClicked(widget.config, {'videoId': asset.id});
-                  },
-                  onPlayClick: () {
-                    _playVideo(index);
-                    _analytics
-                        .sendVideoWatched(widget.config, {'videoId': asset.id});
-                  },
-                  onVideoEnded: (asset) {
-                    if (index != _currentPlayingIndex) {
-                      return;
-                    }
+            if (visibilityInfo.visibleFraction > 0.5 && !_hasBeenVisible) {
+              _hasBeenVisible = true;
+              _analytics.sendEmbedView(widget.config);
+            }
 
-                    _onCurrentVideoEnded();
-                  },
-                  onVideoError: widget.onVideoError,
-                  width: widget.options.itemWidth,
-                  height: widget.options.itemHeight,
-                  options: AssetViewOptions(
-                    isPlaying: index == _currentPlayingIndex &&
-                        _isVisible &&
-                        !_currentVideoEnded,
-                    isMuted: true,
-                    shouldLoop: false,
-                    imageFit: BoxFit.cover,
-                    playMode: AssetViewOptionsPlayMode.preview,
+            setState(() {
+              _isVisible = visibilityInfo.visibleFraction > 0.5;
+            });
+          },
+          child: SizedBox(
+            height: widget.options.itemHeight,
+            child: ListView.builder(
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              itemCount: visibleItemCount,
+              itemBuilder: (context, index) {
+                final asset = widget.config.assets[index];
+                final isFirstItem = index == 0;
+                final isLastItem = index == visibleItemCount - 1;
+
+                return Padding(
+                  padding: EdgeInsets.only(
+                    left: isFirstItem
+                        ? widget.options.xPadding
+                        : widget.options.itemGap / 2,
+                    right: isLastItem
+                        ? widget.options.xPadding
+                        : widget.options.itemGap / 2,
                   ),
-                  preload: _shouldPreload(index),
-                ),
-              );
-            },
+                  child: RailAsset(
+                    asset: asset,
+                    config: widget.config,
+                    onTap: () {
+                      widget.onAssetClick?.call(asset);
+                      _analytics.sendVideoClicked(
+                        widget.config,
+                        {"videoId": asset.id},
+                      );
+                    },
+                    onPlayClick: () {
+                      _playVideo(index);
+                      _analytics.sendVideoWatched(
+                        widget.config,
+                        {"videoId": asset.id},
+                      );
+                    },
+                    onVideoEnded: (asset) {
+                      if (index != _currentPlayingIndex) {
+                        return;
+                      }
+
+                      _onCurrentVideoEnded();
+                    },
+                    onVideoError: widget.onVideoError,
+                    width: widget.options.itemWidth,
+                    height: widget.options.itemHeight,
+                    options: AssetViewOptions(
+                      isPlaying: index == _currentPlayingIndex &&
+                          _isVisible &&
+                          !_currentVideoEnded,
+                      isMuted: true,
+                      imageFit: BoxFit.cover,
+                      playMode: AssetViewOptionsPlayMode.preview,
+                    ),
+                    preload: _shouldPreload(index),
+                  ),
+                );
+              },
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }
