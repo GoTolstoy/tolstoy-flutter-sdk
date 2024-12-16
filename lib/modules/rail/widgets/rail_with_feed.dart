@@ -33,7 +33,9 @@ class RailWithFeed extends StatelessWidget {
     this.onAssetClick,
     this.onVideoError,
   }) {
-    config.assets.sublist(0, config.assets.length.clamp(0, maxVisibleItems));
+    final initialAssets = config.assets
+        .sublist(0, config.assets.length.clamp(0, maxVisibleItems));
+    config.productsLoader.preload(initialAssets);
   }
 
   @override
