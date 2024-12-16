@@ -4,7 +4,7 @@ const useMobileEndpoints = true;
 
 class AppConfig {
   static const String apiBaseUrl =
-      prod ? 'https://api.gotolstoy.com' : 'https://dev-api.gotolstoy.com';
+      prod ? "https://api.gotolstoy.com" : "https://dev-api.gotolstoy.com";
 
   static const String apilbBaseUrl =
       prod ? "https://apilb.gotolstoy.com" : "https://dev-apilb.gotolstoy.com";

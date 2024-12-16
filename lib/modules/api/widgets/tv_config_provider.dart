@@ -1,10 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:tolstoy_flutter_sdk/modules/api/models/tv_page_config.dart';
-import 'package:tolstoy_flutter_sdk/modules/api/services.dart';
-import 'package:tolstoy_flutter_sdk/modules/assets/models/asset.dart';
-import 'package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart';
+import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_config.dart";
+import "package:tolstoy_flutter_sdk/modules/api/services.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/models/asset.dart";
+import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
 
 class TvConfigProvider extends StatefulWidget {
+  const TvConfigProvider({
+    required this.publishId,
+    required this.builder,
+    required this.createProductsLoader,
+    super.key,
+    this.config,
+    this.loadingWidget = const Center(child: CircularProgressIndicator()),
+  });
   final String publishId;
   final Future<TvPageConfig>? config;
   final Widget Function(BuildContext, TvPageConfig) builder;
@@ -14,15 +22,6 @@ class TvConfigProvider extends StatefulWidget {
     required String appUrl,
     required List<Asset> assets,
   }) createProductsLoader;
-
-  const TvConfigProvider({
-    super.key,
-    required this.publishId,
-    this.config,
-    required this.builder,
-    this.loadingWidget = const Center(child: CircularProgressIndicator()),
-    required this.createProductsLoader,
-  });
 
   @override
   State<TvConfigProvider> createState() => _TvConfigProviderState();
@@ -37,12 +36,13 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
     _fetchConfig();
   }
 
-  _fetchConfig() async {
-    TvPageConfig config = await (widget.config ??
+  Future<void> _fetchConfig() async {
+    final TvPageConfig config = await (widget.config ??
         ApiService.getTvPageConfig(
           widget.publishId,
           widget.createProductsLoader,
         ));
+
     if (mounted) {
       setState(() {
         _config = config;
