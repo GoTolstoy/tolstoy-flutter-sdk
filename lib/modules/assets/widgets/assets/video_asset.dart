@@ -1,18 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
-
-import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/assets/services.dart';
-import 'package:tolstoy_flutter_sdk/modules/analytics/analytics.dart';
+import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/services.dart";
+import "package:video_player/video_player.dart";
 
 const watchThresholdMS = 200;
 
 class VideoAsset extends StatefulWidget {
   const VideoAsset({
-    super.key,
     required this.asset,
     required this.config,
+    super.key,
     this.onAssetEnded,
     this.onProgressUpdate,
     this.options = const AssetViewOptions(),
@@ -90,7 +89,7 @@ class _VideoAssetState extends State<VideoAsset> {
   void _videoPlayerErrorListener() {
     if (_controller?.value.hasError ?? false) {
       widget.onVideoError?.call(
-        _controller!.value.errorDescription ?? 'Unknown error',
+        _controller!.value.errorDescription ?? "Unknown error",
         widget.asset,
       );
     }
@@ -104,9 +103,7 @@ class _VideoAssetState extends State<VideoAsset> {
         _controller!.seekTo(Duration.zero);
       }
 
-      if (widget.onAssetEnded != null) {
-        widget.onAssetEnded!(widget.asset);
-      }
+      widget.onAssetEnded?.call(widget.asset);
     }
 
     if (!_controller!.value.isPlaying) {
@@ -120,9 +117,9 @@ class _VideoAssetState extends State<VideoAsset> {
       _analytics.sendVideoLoaded(
         widget.config,
         {
-          'videoId': widget.asset.id,
-          'text': widget.asset.name,
-          'type': widget.asset.type.name,
+          "videoId": widget.asset.id,
+          "text": widget.asset.name,
+          "type": widget.asset.type.name,
         },
       );
       _hasPlayed = true;
@@ -139,7 +136,10 @@ class _VideoAssetState extends State<VideoAsset> {
         widget.onProgressUpdate != null &&
         currentPosition > Duration.zero) {
       widget.onProgressUpdate!(
-          widget.asset, currentPosition, _controller!.value.duration);
+        widget.asset,
+        currentPosition,
+        _controller!.value.duration,
+      );
     }
   }
 
@@ -159,12 +159,12 @@ class _VideoAssetState extends State<VideoAsset> {
     _analytics.sendVideoWatched(
       widget.config,
       {
-        'videoId': widget.asset.id,
-        'text': widget.asset.name,
-        'type': widget.asset.type.name,
-        'videoLoopCount': _loopCount,
-        'videoWatchedTime': watchedSeconds,
-        'videoDuration': _controller!.value.duration.inMicroseconds / 1000000.0,
+        "videoId": widget.asset.id,
+        "text": widget.asset.name,
+        "type": widget.asset.type.name,
+        "videoLoopCount": _loopCount,
+        "videoWatchedTime": watchedSeconds,
+        "videoDuration": _controller!.value.duration.inMicroseconds / 1000000.0,
       },
     );
     _loopCount = 0;
@@ -172,7 +172,9 @@ class _VideoAssetState extends State<VideoAsset> {
   }
 
   void _updateControllerState() {
-    if (_controller == null) return;
+    if (_controller == null) {
+      return;
+    }
     setState(() {
       if (widget.options.isPlaying) {
         _controller!.play();
@@ -199,39 +201,38 @@ class _VideoAssetState extends State<VideoAsset> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Image.network(
-          _thumbnailUrl,
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
-          errorBuilder: (context, error, stackTrace) {
-            return const Center(child: CircularProgressIndicator());
-          },
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return const Center(child: CircularProgressIndicator());
-          },
-        ),
-        if (_controller != null && _isVideoInitialized)
-          AnimatedOpacity(
-            opacity: _isVideoReady ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 300),
-            child: FittedBox(
-              fit: BoxFit.cover,
-              child: SizedBox(
-                height: _controller!.value.size.height,
-                width: _controller!.value.size.width,
-                child: VideoPlayer(_controller!),
+  Widget build(BuildContext context) => Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.network(
+            _thumbnailUrl,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+            errorBuilder: (context, error, stackTrace) =>
+                const Center(child: CircularProgressIndicator()),
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) {
+                return child;
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
+          ),
+          if (_controller != null && _isVideoInitialized)
+            AnimatedOpacity(
+              opacity: _isVideoReady ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 300),
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  height: _controller!.value.size.height,
+                  width: _controller!.value.size.width,
+                  child: VideoPlayer(_controller!),
+                ),
               ),
             ),
-          ),
-      ],
-    );
-  }
+        ],
+      );
 
   @override
   void dispose() {

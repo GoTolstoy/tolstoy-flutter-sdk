@@ -1,31 +1,41 @@
-import 'dart:math';
-import 'dart:convert';
-import 'package:flutter/material.dart';
-
-import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/assets/constants.dart';
-import 'package:tolstoy_flutter_sdk/modules/analytics/analytics.dart';
-
-import 'feed_asset.dart';
+import "dart:convert";
+import "dart:math";
+import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/constants.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
+import "package:tolstoy_flutter_sdk/modules/feed/widgets/feed_asset.dart";
+import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 
 class FeedViewOptions {
-  final bool isMutedByDefault;
-  final bool isAutoplay;
-
-  final int pageThreshold;
-  final bool isLoadingNextPage;
-
   const FeedViewOptions({
     this.isMutedByDefault = false,
     this.isAutoplay = true,
     this.pageThreshold = 10,
     this.isLoadingNextPage = false,
   });
+
+  final bool isMutedByDefault;
+  final bool isAutoplay;
+
+  final int pageThreshold;
+  final bool isLoadingNextPage;
 }
 
 class FeedView extends StatefulWidget {
+  FeedView({
+    required this.config,
+    super.key,
+    this.onLoadNextPage,
+    this.options = const FeedViewOptions(),
+    this.onProductClick,
+    this.initialAssetId,
+    this.onAssetIdChange,
+    this.buildFeedFooter,
+    this.onVideoError,
+  }) : footerKey = GlobalKey();
+
   final TvPageConfig config;
   final FeedViewOptions options;
   final Function()? onLoadNextPage;
@@ -38,18 +48,6 @@ class FeedView extends StatefulWidget {
   })? buildFeedFooter;
   final GlobalKey footerKey;
   final void Function(String message, Asset asset)? onVideoError;
-
-  FeedView({
-    super.key,
-    required this.config,
-    this.onLoadNextPage,
-    this.options = const FeedViewOptions(),
-    this.onProductClick,
-    this.initialAssetId,
-    this.onAssetIdChange,
-    this.buildFeedFooter,
-    this.onVideoError,
-  }) : footerKey = GlobalKey();
 
   @override
   State<FeedView> createState() => _FeedViewState();
@@ -64,7 +62,7 @@ class _FeedViewState extends State<FeedView>
   late FocusNode _focusNode;
   bool _isVisible = true;
   late Analytics _analytics;
-  double _footerHeight = 0.0;
+  double _footerHeight = 0;
 
   @override
   bool get wantKeepAlive => true;
@@ -112,8 +110,9 @@ class _FeedViewState extends State<FeedView>
   @override
   void dispose() {
     _pageViewController.dispose();
-    _focusNode.removeListener(_onFocusChange);
-    _focusNode.dispose();
+    _focusNode
+      ..removeListener(_onFocusChange)
+      ..dispose();
     super.dispose();
   }
 
@@ -125,7 +124,7 @@ class _FeedViewState extends State<FeedView>
     }
   }
 
-  _onPageChanged(int index) {
+  void _onPageChanged(int index) {
     setState(() {
       activePageIndex = index;
       widget.onAssetIdChange?.call(widget.config.assets[index].id);
@@ -146,9 +145,9 @@ class _FeedViewState extends State<FeedView>
 
   void _onProductClick(Product product) {
     _analytics.sendProductClicked(widget.config, {
-      'products': jsonEncode(product.toJson()),
-      'productIds': jsonEncode([product.id]),
-      'productNames': product.title,
+      "products": jsonEncode(product.toJson()),
+      "productIds": jsonEncode([product.id]),
+      "productNames": product.title,
     });
     widget.onProductClick?.call(product);
   }
@@ -158,8 +157,8 @@ class _FeedViewState extends State<FeedView>
       return null;
     }
 
-    bool isActive = activePageIndex == index;
-    int threshold =
+    final bool isActive = activePageIndex == index;
+    final int threshold =
         min(widget.config.assets.length, widget.options.pageThreshold);
 
     if (isActive &&
@@ -170,33 +169,31 @@ class _FeedViewState extends State<FeedView>
       });
     }
 
-    Asset asset = widget.config.assets[index];
+    final Asset asset = widget.config.assets[index];
 
     return KeepAliveWrapper(
       child: FutureBuilder<List<Product>>(
         future: widget.config.productsLoader.getProducts(asset),
-        builder: (context, snapshot) {
-          return FeedAssetView(
-            asset: asset,
-            config: widget.config,
-            options: AssetViewOptions(
-              isPlaying: isPlayingEnabled && isActive && _isVisible,
-              isPlayingEnabled: isPlayingEnabled,
-              isMuted: isMuted,
-              shouldLoop: true,
-              withMuteButton: asset.type != AssetType.image,
-              trackAnalytics: true,
-            ),
-            onPlayClick: _onPlayClick,
-            onMuteClick: _onMuteClick,
-            products: snapshot.data ?? [],
-            onProductClick: _onProductClick,
-            onVideoError: widget.onVideoError,
-            feedAssetOptions: FeedAssetOptions(
-              overlayBottomPadding: _footerHeight,
-            ),
-          );
-        },
+        builder: (context, snapshot) => FeedAssetView(
+          asset: asset,
+          config: widget.config,
+          options: AssetViewOptions(
+            isPlaying: isPlayingEnabled && isActive && _isVisible,
+            isPlayingEnabled: isPlayingEnabled,
+            isMuted: isMuted,
+            shouldLoop: true,
+            withMuteButton: asset.type != AssetType.image,
+            trackAnalytics: true,
+          ),
+          onPlayClick: _onPlayClick,
+          onMuteClick: _onMuteClick,
+          products: snapshot.data ?? [],
+          onProductClick: _onProductClick,
+          onVideoError: widget.onVideoError,
+          feedAssetOptions: FeedAssetOptions(
+            overlayBottomPadding: _footerHeight,
+          ),
+        ),
       ),
     );
   }
@@ -212,7 +209,7 @@ class _FeedViewState extends State<FeedView>
 
     return Focus(
       focusNode: _focusNode,
-      child: Container(
+      child: ColoredBox(
         color: Theme.of(context).colorScheme.surface,
         child: Stack(
           alignment: Alignment.bottomCenter,
@@ -250,9 +247,8 @@ class _FeedViewState extends State<FeedView>
 }
 
 class KeepAliveWrapper extends StatefulWidget {
+  const KeepAliveWrapper({required this.child, super.key});
   final Widget child;
-
-  const KeepAliveWrapper({super.key, required this.child});
 
   @override
   State<KeepAliveWrapper> createState() => _KeepAliveWrapperState();

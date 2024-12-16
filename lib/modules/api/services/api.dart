@@ -1,10 +1,10 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:tolstoy_flutter_sdk/core/config.dart';
-import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/assets/models/asset.dart';
-import 'package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart';
-import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
+import "dart:convert";
+import "package:http/http.dart" as http;
+import "package:tolstoy_flutter_sdk/core/config.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/models/asset.dart";
+import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
+import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 
 class ApiService {
   static Future<TvPageConfig> getTvPageConfig(
@@ -24,12 +24,12 @@ class ApiService {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body) as Map<String, dynamic>;
 
-      TvPageConfig config =
+      final TvPageConfig config =
           TvPageConfig.fromJson(jsonData, createProductsLoader);
 
       return config;
     } else {
-      throw Exception('Failed to load TV page config');
+      throw Exception("Failed to load TV page config");
     }
   }
 
@@ -46,21 +46,22 @@ class ApiService {
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body) as Map<String, dynamic>;
-      ProductsMap products = ProductsMap.fromJson(jsonData);
+      final ProductsMap products = ProductsMap.fromJson(jsonData);
 
       return products;
     } else {
       throw Exception(
-          'Failed to load actions by VOD asset IDs. Status code: ${response.statusCode}');
+        "Failed to load actions by VOD asset IDs. Status code: ${response.statusCode}",
+      );
     }
   }
 
   static Future<bool> sendEvent(Map<String, dynamic> params) async {
     final result = await http.post(
-      Uri.parse('${AppConfig.apiBaseUrl}/events/event'),
+      Uri.parse("${AppConfig.apiBaseUrl}/events/event"),
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
+        "Accept": "application/json",
+        "Content-Type": "application/json",
       },
       body: jsonEncode(params),
     );

@@ -1,7 +1,7 @@
-import 'package:tolstoy_flutter_sdk/modules/api/services/api.dart';
-import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart';
-import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
+import "package:tolstoy_flutter_sdk/modules/api/services/api.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
+import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
+import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 
 class SimpleProductsLoader extends ProductsLoader {
   SimpleProductsLoader({

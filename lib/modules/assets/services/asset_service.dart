@@ -1,7 +1,7 @@
-import 'package:tolstoy_flutter_sdk/modules/assets/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/assets/constants.dart';
-import 'image_service.dart';
-import 'video_service.dart';
+import "package:tolstoy_flutter_sdk/modules/assets/constants.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/services/image_service.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/services/video_service.dart";
 
 class AssetService {
   static String getAssetUrl(Asset asset, {AssetSize size = AssetSize.m}) {
@@ -25,7 +25,7 @@ class AssetService {
   static String getPreviewUrl(Asset asset) {
     switch (asset.type) {
       case AssetType.image:
-        return ImageService.getImageUrl(asset, size: AssetSize.m);
+        return ImageService.getImageUrl(asset);
       case AssetType.video:
         return VideoService.getPreviewUrl(asset);
     }

@@ -1,19 +1,8 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
 enum AssetViewOptionsPlayMode { full, preview }
 
 class AssetViewOptions {
-  final bool isPlaying;
-  final bool isPlayingEnabled;
-  final bool isMuted;
-  final bool shouldLoop;
-  final bool withMuteButton;
-  final bool shouldImageEmulatePlaying;
-  final int imagePlaytimeSec;
-  final BoxFit imageFit;
-  final bool trackAnalytics;
-  final AssetViewOptionsPlayMode playMode;
-
   const AssetViewOptions({
     this.isPlaying = false,
     this.isPlayingEnabled = true,
@@ -27,6 +16,17 @@ class AssetViewOptions {
     this.playMode = AssetViewOptionsPlayMode.full,
   });
 
+  final bool isPlaying;
+  final bool isPlayingEnabled;
+  final bool isMuted;
+  final bool shouldLoop;
+  final bool withMuteButton;
+  final bool shouldImageEmulatePlaying;
+  final int imagePlaytimeSec;
+  final BoxFit imageFit;
+  final bool trackAnalytics;
+  final AssetViewOptionsPlayMode playMode;
+
   AssetViewOptions copyWith({
     bool? isPlaying,
     bool? isPlayingEnabled,
@@ -38,19 +38,18 @@ class AssetViewOptions {
     BoxFit? imageFit,
     bool? trackAnalytics,
     AssetViewOptionsPlayMode? playMode,
-  }) {
-    return AssetViewOptions(
-      isPlaying: isPlaying ?? this.isPlaying,
-      isPlayingEnabled: isPlayingEnabled ?? this.isPlayingEnabled,
-      isMuted: isMuted ?? this.isMuted,
-      shouldLoop: shouldLoop ?? this.shouldLoop,
-      withMuteButton: withMuteButton ?? this.withMuteButton,
-      shouldImageEmulatePlaying:
-          shouldImageEmulatePlaying ?? this.shouldImageEmulatePlaying,
-      imagePlaytimeSec: imagePlaytimeSec ?? this.imagePlaytimeSec,
-      imageFit: imageFit ?? this.imageFit,
-      trackAnalytics: trackAnalytics ?? this.trackAnalytics,
-      playMode: playMode ?? this.playMode,
-    );
-  }
+  }) =>
+      AssetViewOptions(
+        isPlaying: isPlaying ?? this.isPlaying,
+        isPlayingEnabled: isPlayingEnabled ?? this.isPlayingEnabled,
+        isMuted: isMuted ?? this.isMuted,
+        shouldLoop: shouldLoop ?? this.shouldLoop,
+        withMuteButton: withMuteButton ?? this.withMuteButton,
+        shouldImageEmulatePlaying:
+            shouldImageEmulatePlaying ?? this.shouldImageEmulatePlaying,
+        imagePlaytimeSec: imagePlaytimeSec ?? this.imagePlaytimeSec,
+        imageFit: imageFit ?? this.imageFit,
+        trackAnalytics: trackAnalytics ?? this.trackAnalytics,
+        playMode: playMode ?? this.playMode,
+      );
 }

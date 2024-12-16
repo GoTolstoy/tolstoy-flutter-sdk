@@ -1,1 +1,1 @@
-export 'widgets/tv_config_provider.dart';
+export "widgets/tv_config_provider.dart";

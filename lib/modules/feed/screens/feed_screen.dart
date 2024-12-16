@@ -1,13 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:tolstoy_flutter_sdk/modules/api/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/assets/models/asset.dart';
-import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
-import 'package:tolstoy_flutter_sdk/modules/feed/widgets/feed_view.dart';
-import 'package:tolstoy_flutter_sdk/modules/api/services/api.dart';
-import 'feed_screen_menu.dart';
-import 'dart:convert';
+import "dart:convert";
+import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/api/services/api.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/models/asset.dart";
+import "package:tolstoy_flutter_sdk/modules/feed/screens/feed_screen_menu.dart";
+import "package:tolstoy_flutter_sdk/modules/feed/widgets/feed_view.dart";
+import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 
 class FeedScreen extends StatefulWidget {
+  const FeedScreen({
+    required this.config,
+    super.key,
+    this.onProductClick,
+    this.initialAssetId,
+    this.buildFeedHeader,
+    this.buildFeedFooter,
+    this.onVideoError,
+  });
+
   final TvPageConfig config;
   final void Function(Product)? onProductClick;
   final String? initialAssetId;
@@ -22,16 +32,6 @@ class FeedScreen extends StatefulWidget {
   })? buildFeedFooter;
   final void Function(String message, Asset asset)? onVideoError;
 
-  const FeedScreen({
-    super.key,
-    required this.config,
-    this.onProductClick,
-    this.initialAssetId,
-    this.buildFeedHeader,
-    this.buildFeedFooter,
-    this.onVideoError,
-  });
-
   @override
   State<FeedScreen> createState() => _FeedScreenState();
 }
@@ -42,85 +42,82 @@ class _FeedScreenState extends State<FeedScreen> {
   late String? _currentAssetId = widget.initialAssetId;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: widget.buildFeedHeader?.call(
-        context: context,
-        config: widget.config,
-        openTolstoyMenu: () {
-          final safeArea = MediaQueryData.fromView(View.of(context)).padding;
+  Widget build(BuildContext context) => Scaffold(
+        appBar: widget.buildFeedHeader?.call(
+          context: context,
+          config: widget.config,
+          openTolstoyMenu: () {
+            final safeArea = MediaQueryData.fromView(View.of(context)).padding;
 
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (BuildContext context) => GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () => Navigator.pop(context),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(
-                      16 + safeArea.left,
-                      16 + safeArea.top,
-                      16 + safeArea.right,
-                      16 + safeArea.bottom,
-                    ),
-                    decoration: const BoxDecoration(
-                      color: _modalBackgroundColor,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: FeedScreenMenu(
-                        onReport: ({
-                          required String id,
-                          required String title,
-                        }) async {
-                          return await ApiService.sendEvent({
-                            'accountId': widget.config.owner,
-                            'appKey': widget.config.appKey,
-                            'appUrl': widget.config.appUrl,
-                            'contentReport': {'key': id, 'description': title},
-                            'eventName': 'feedReportSubmit',
-                            'formData': jsonEncode({
-                              'key': id,
-                              'description': title,
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (BuildContext context) => GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () => Navigator.pop(context),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(
+                        16 + safeArea.left,
+                        16 + safeArea.top,
+                        16 + safeArea.right,
+                        16 + safeArea.bottom,
+                      ),
+                      decoration: const BoxDecoration(
+                        color: _modalBackgroundColor,
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: FeedScreenMenu(
+                          onReport: ({
+                            required String id,
+                            required String title,
+                          }) async =>
+                              ApiService.sendEvent({
+                            "accountId": widget.config.owner,
+                            "appKey": widget.config.appKey,
+                            "appUrl": widget.config.appUrl,
+                            "contentReport": {"key": id, "description": title},
+                            "eventName": "feedReportSubmit",
+                            "formData": jsonEncode({
+                              "key": id,
+                              "description": title,
                             }),
-                            'isMobile': true,
-                            'playerType': 'flutter',
-                            'playlist': widget.config.name,
-                            'projectId': widget.config.id,
-                            'publishId': widget.config.publishId,
-                            'stepName': widget.config.startStep,
-                            'timestamp':
+                            "isMobile": true,
+                            "playerType": "flutter",
+                            "playlist": widget.config.name,
+                            "projectId": widget.config.id,
+                            "publishId": widget.config.publishId,
+                            "stepName": widget.config.startStep,
+                            "timestamp":
                                 DateTime.now().toUtc().toIso8601String(),
-                            'videoId': _currentAssetId,
-                          });
-                        },
+                            "videoId": _currentAssetId,
+                          }),
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
-      ),
-      body: FeedView(
-        config: widget.config,
-        onProductClick: widget.onProductClick,
-        initialAssetId: widget.initialAssetId,
-        onAssetIdChange: (assetId) => setState(() => _currentAssetId = assetId),
-        onVideoError: widget.onVideoError,
-        buildFeedFooter: widget.buildFeedFooter,
-        options: const FeedViewOptions(
-          pageThreshold: 10,
-          isMutedByDefault: true,
+            );
+          },
         ),
-      ),
-    );
-  }
+        body: FeedView(
+          config: widget.config,
+          onProductClick: widget.onProductClick,
+          initialAssetId: widget.initialAssetId,
+          onAssetIdChange: (assetId) =>
+              setState(() => _currentAssetId = assetId),
+          onVideoError: widget.onVideoError,
+          buildFeedFooter: widget.buildFeedFooter,
+          options: const FeedViewOptions(
+            isMutedByDefault: true,
+          ),
+        ),
+      );
 }

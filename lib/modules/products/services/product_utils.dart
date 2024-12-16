@@ -1,12 +1,14 @@
-import 'package:collection/collection.dart'; // needed for .firstWhereOrNull
+import "package:collection/collection.dart"; // needed for .firstWhereOrNull
 
-import 'package:tolstoy_flutter_sdk/modules/products/models.dart';
+import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 
 class ProductUtils {
-  static String? getUnformatedProductPrice(Product product,
-      {String? variantId}) {
+  static String? getUnformatedProductPrice(
+    Product product, {
+    String? variantId,
+  }) {
     // Extract the price from the first variant if no variantId is provided
-    String? price = product.variants.isNotEmpty
+    final String? price = product.variants.isNotEmpty
         ? product.variants[0].price?.toString()
         : null;
 
@@ -15,7 +17,7 @@ class ProductUtils {
     }
 
     // Find the variant with the matching id
-    Variant? variant =
+    final Variant? variant =
         product.variants.firstWhereOrNull((v) => v.id.toString() == variantId);
 
     // Return the price of the found variant or the default price
@@ -26,7 +28,7 @@ class ProductUtils {
     String? price = getUnformatedProductPrice(product, variantId: variantId);
 
     if (price != null) {
-      if (price.endsWith('.00') || price.endsWith(',00')) {
+      if (price.endsWith(".00") || price.endsWith(",00")) {
         price = price.substring(0, price.length - 3);
       }
     }
@@ -35,18 +37,21 @@ class ProductUtils {
   }
 
   static String? getProductPriceLabel(Product product, {String? variantId}) {
-    String? price = getProductPrice(product, variantId: variantId);
+    final String? price = getProductPrice(product, variantId: variantId);
     if (price != null) {
-      return '${product.currencySymbol}$price';
+      return "${product.currencySymbol}$price";
     }
     return null;
   }
 
-  static String getOptimizedImageUrl(Product product,
-      {int? width, int? height}) {
+  static String getOptimizedImageUrl(
+    Product product, {
+    int? width,
+    int? height,
+  }) {
     final originalUrl = product.imageUrl;
 
-    if (originalUrl.contains('cdn.shopify.com')) {
+    if (originalUrl.contains("cdn.shopify.com")) {
       return _optimizeShopifyImageUrl(originalUrl, width, height);
     }
 
@@ -57,8 +62,13 @@ class ProductUtils {
     final Uri uri = Uri.parse(url);
     final queryParams = <String, String>{};
 
-    if (width != null) queryParams['width'] = width.toString();
-    if (height != null) queryParams['height'] = height.toString();
+    if (width != null) {
+      queryParams["width"] = width.toString();
+    }
+
+    if (height != null) {
+      queryParams["height"] = height.toString();
+    }
 
     if (queryParams.isNotEmpty) {
       return uri.replace(queryParameters: queryParams).toString();
