@@ -7,7 +7,7 @@ import 'package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dar
 class TvPageConfig {
   final String publishId;
   final String appUrl;
-  final String userId;
+  final String? userId;
   final List<Asset> assets;
   final String name;
   final String id;
@@ -50,7 +50,7 @@ class TvPageConfig {
     return TvPageConfig(
       publishId: json['publishId'] as String,
       appUrl: json['appUrl'] as String,
-      userId: json['userId'] as String,
+      userId: json['userId'] as String?,
       assets: (json['steps'] as List)
           .map((step) => Asset.fromStepJson(step as Map<String, dynamic>))
           .toList(),

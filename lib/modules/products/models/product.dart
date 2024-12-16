@@ -4,7 +4,7 @@ class Product {
   final String title;
   final String imageUrl;
   final List<Variant> variants;
-  final Map<String, dynamic> options;
+  final Map<String, dynamic>? options;
   final List<ProductImage> images;
   final String? tags;
   final String? descriptionHtml;
@@ -115,13 +115,13 @@ class ProductImage {
 }
 
 class Variant {
-  final String productId;
+  final String? productId;
   final dynamic id;
   final dynamic price;
   final dynamic compareAtPrice;
-  final String title;
-  final Map<String, String?> selectedOptions;
-  final bool isVariantAvailableForSale;
+  final String? title;
+  final Map<String, String?>? selectedOptions;
+  final bool? isVariantAvailableForSale;
   final String? sku;
 
   Variant({
@@ -137,14 +137,15 @@ class Variant {
 
   factory Variant.fromJson(Map<String, dynamic> json) {
     return Variant(
-      productId: json['productId'] as String,
+      productId: json['productId'] as String?,
       id: json['id'],
       price: json['price'],
       compareAtPrice: json['compareAtPrice'],
-      title: json['title'] as String,
-      selectedOptions:
-          Map.from(json['selectedOptions'] as Map<String, dynamic>),
-      isVariantAvailableForSale: json['isVariantAvailableForSale'] as bool,
+      title: json['title'] as String?,
+      selectedOptions: json['selectedOptions'] != null
+          ? Map.from(json['selectedOptions'] as Map<String, dynamic>)
+          : null,
+      isVariantAvailableForSale: json['isVariantAvailableForSale'] as bool?,
       sku: json['sku'] as String?,
     );
   }
@@ -204,9 +205,6 @@ class ProductsMap {
 
       // Skip products missing required fields
       if (product['id'] == null ||
-          product['appKey'] == null ||
-          product['dbProductId'] == null ||
-          product['appUrl'] == null ||
           product['imageUrl'] == null ||
           product['title'] == null) {
         return;
