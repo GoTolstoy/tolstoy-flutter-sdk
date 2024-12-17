@@ -37,7 +37,7 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
   }
 
   Future<void> _fetchConfig() async {
-    final TvPageConfig config = await (widget.config ??
+    final config = await (widget.config ??
         ApiService.getTvPageConfig(
           widget.publishId,
           widget.createProductsLoader,

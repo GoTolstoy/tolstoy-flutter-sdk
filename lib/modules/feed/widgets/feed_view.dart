@@ -76,7 +76,7 @@ class _FeedViewState extends State<FeedView>
     isPlayingEnabled = widget.options.isAutoplay;
     isMuted = widget.options.isMutedByDefault;
 
-    int initialPage = 0;
+    var initialPage = 0;
     if (widget.initialAssetId != null) {
       initialPage = widget.config.assets
           .indexWhere((asset) => asset.id == widget.initialAssetId);
@@ -157,7 +157,7 @@ class _FeedViewState extends State<FeedView>
       return null;
     }
 
-    final bool isActive = activePageIndex == index;
+    final isActive = activePageIndex == index;
     final int threshold =
         min(widget.config.assets.length, widget.options.pageThreshold);
 
@@ -169,7 +169,7 @@ class _FeedViewState extends State<FeedView>
       });
     }
 
-    final Asset asset = widget.config.assets[index];
+    final asset = widget.config.assets[index];
 
     return KeepAliveWrapper(
       child: FutureBuilder<List<Product>>(

@@ -15,16 +15,16 @@ class ApiService {
       required List<Asset> assets,
     }) createProductsLoader,
   ) async {
-    final Uri url = Uri.parse(
+    final url = Uri.parse(
       "${AppConfig.apilbBaseUrl}/settings${AppConfig.mobileAppFolder}/player/by-publish-id?publishId=$publishId",
     );
 
-    final http.Response response = await http.get(url);
+    final response = await http.get(url);
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body) as Map<String, dynamic>;
 
-      final TvPageConfig config =
+      final config =
           TvPageConfig.fromJson(jsonData, createProductsLoader);
 
       return config;
@@ -38,15 +38,15 @@ class ApiService {
     String appUrl,
     String appKey,
   ) async {
-    final Uri url = Uri.parse(
+    final url = Uri.parse(
       "${AppConfig.apilbBaseUrl}/products/actions/v2${AppConfig.mobileAppFolder}/get-by-vod-asset-ids?appKey=$appKey&appUrl=$appUrl&vodAssetIds=${vodAssetIds.join(",")}",
     );
 
-    final http.Response response = await http.get(url);
+    final response = await http.get(url);
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body) as Map<String, dynamic>;
-      final ProductsMap products = ProductsMap.fromJson(jsonData);
+      final products = ProductsMap.fromJson(jsonData);
 
       return products;
     } else {

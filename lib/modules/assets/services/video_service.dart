@@ -20,7 +20,7 @@ class VideoService {
       return previewUrl;
     }
 
-    final bool isAiVideo = asset.uploadType.contains("aiVideo");
+    final isAiVideo = asset.uploadType.contains("aiVideo");
     return "${_getBaseVideoUrl(asset, isAiVideo: isAiVideo)}_preview.mp4";
   }
 

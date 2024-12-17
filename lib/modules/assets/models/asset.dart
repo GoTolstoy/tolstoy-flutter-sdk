@@ -13,7 +13,7 @@ class Asset {
   });
 
   factory Asset.fromStepJson(Map<String, dynamic> json) {
-    final AssetType type = AssetType.values.firstWhere(
+    final type = AssetType.values.firstWhere(
       (e) => e.toString() == 'AssetType.${json['type'] ?? 'video'}',
       orElse: () => AssetType.video,
     );
