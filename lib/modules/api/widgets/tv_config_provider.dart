@@ -52,10 +52,12 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
 
   @override
   Widget build(BuildContext context) {
-    if (_config == null) {
+    final localConfig = _config;
+
+    if (localConfig == null) {
       return widget.loadingWidget;
     }
 
-    return widget.builder(context, _config!);
+    return widget.builder(context, localConfig);
   }
 }

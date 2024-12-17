@@ -1,5 +1,13 @@
 import "package:flutter/material.dart";
 
+// ignore: camel_case_types
+class _lang {
+  static const title = "Thanks for reporting";
+  static const description =
+      "We'll check this content to see if it goes against any of our policies and will take action if needed.";
+  static const close = "Close";
+}
+
 class FeedScreenReportSubmittedMenu extends StatelessWidget {
   const FeedScreenReportSubmittedMenu({
     required this.onClose,
@@ -7,12 +15,6 @@ class FeedScreenReportSubmittedMenu extends StatelessWidget {
   });
 
   static const _subtitleColor = Color.fromRGBO(90, 90, 90, 1);
-  static const _lang = {
-    "title": "Thanks for reporting",
-    "description":
-        "We'll check this content to see if it goes against any of our policies and will take action if needed.",
-    "close": "Close",
-  };
 
   final VoidCallback onClose;
 
@@ -21,17 +23,17 @@ class FeedScreenReportSubmittedMenu extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            _lang["title"]!,
-            style: const TextStyle(
+          const Text(
+            _lang.title,
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
             ),
           ),
           const SizedBox(height: 15),
-          Text(
-            _lang["description"]!,
-            style: const TextStyle(
+          const Text(
+            _lang.description,
+            style: TextStyle(
               fontSize: 14,
               color: _subtitleColor,
             ),
@@ -40,7 +42,7 @@ class FeedScreenReportSubmittedMenu extends StatelessWidget {
           Center(
             child: TextButton(
               onPressed: onClose,
-              child: Text(_lang["close"]!),
+              child: const Text(_lang.close),
             ),
           ),
         ],

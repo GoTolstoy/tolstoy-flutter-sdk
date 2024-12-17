@@ -35,95 +35,102 @@ class FeedProductCard extends StatelessWidget {
   final FeedProductCardOptions options;
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: () {
-          onProductClick?.call(product);
-        },
-        child: Container(
-          constraints: BoxConstraints(
-            maxWidth:
-                MediaQuery.of(context).size.width * options.maxWidthFactor,
-            maxHeight: options.height,
-          ),
-          height: options.height,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(options.borderRadius),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.horizontal(
-                  left: Radius.circular(options.borderRadius),
+  Widget build(BuildContext context) {
+    final yotpoReview = product.yotpoReview;
+
+    return GestureDetector(
+      onTap: () {
+        onProductClick?.call(product);
+      },
+      child: Container(
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * options.maxWidthFactor,
+          maxHeight: options.height,
+        ),
+        height: options.height,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(options.borderRadius),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.horizontal(
+                left: Radius.circular(options.borderRadius),
+              ),
+              child: SizedBox(
+                width: options.imageWidth,
+                height: options.height,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Container(color: Colors.grey[300]),
+                    CachedNetworkImage(
+                      imageUrl: ProductUtils.getOptimizedImageUrl(
+                        product,
+                        width: options.imageWidth.toInt(),
+                      ),
+                      fit: options.imageFit,
+                      placeholder: (context, url) =>
+                          Container(color: Colors.grey[300]),
+                      errorWidget: (context, url, error) => Icon(
+                        Icons.broken_image_rounded,
+                        size: 40,
+                        color: Colors.grey[400],
+                      ),
+                    ),
+                  ],
                 ),
-                child: SizedBox(
-                  width: options.imageWidth,
-                  height: options.height,
-                  child: Stack(
-                    fit: StackFit.expand,
+              ),
+            ),
+            Flexible(
+              child: SizedBox(
+                height: options.height,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(color: Colors.grey[300]),
-                      CachedNetworkImage(
-                        imageUrl: ProductUtils.getOptimizedImageUrl(
-                          product,
-                          width: options.imageWidth.toInt(),
-                        ),
-                        fit: options.imageFit,
-                        placeholder: (context, url) =>
-                            Container(color: Colors.grey[300]),
-                        errorWidget: (context, url, error) => Icon(
-                          Icons.broken_image_rounded,
-                          size: 40,
-                          color: Colors.grey[400],
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            product.title,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines:
+                                yotpoReview != null && yotpoReview.reviews > 0
+                                    ? 1
+                                    : 2,
+                          ),
+                          if (yotpoReview != null &&
+                              yotpoReview.reviews > 0) ...[
+                            const SizedBox(height: 4),
+                            FeedProductReview(review: yotpoReview),
+                          ],
+                        ],
+                      ),
+                      Text(
+                        ProductUtils.getProductPriceLabel(product) ?? "",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              Flexible(
-                child: SizedBox(
-                  height: options.height,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              product.title,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: product.hasReviews() ? 1 : 2,
-                            ),
-                            if (product.hasReviews()) ...[
-                              const SizedBox(height: 4),
-                              FeedProductReview(review: product.yotpoReview!),
-                            ],
-                          ],
-                        ),
-                        Text(
-                          ProductUtils.getProductPriceLabel(product) ?? "",
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 }

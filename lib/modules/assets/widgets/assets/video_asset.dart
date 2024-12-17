@@ -63,17 +63,19 @@ class _VideoAssetState extends State<VideoAsset> {
         ? AssetService.getPreviewUrl(widget.asset)
         : AssetService.getAssetUrl(widget.asset);
 
-    _controller = VideoPlayerController.networkUrl(
+    final localController = VideoPlayerController.networkUrl(
       Uri.parse(url),
     );
 
-    _controller!.addListener(_videoPlayerErrorListener);
+    _controller = localController;
 
-    _controller!.initialize().then((_) {
+    localController.addListener(_videoPlayerErrorListener);
+
+    localController.initialize().then((_) {
       _isVideoInitialized = true;
-      _controller!.setLooping(widget.options.shouldLoop);
+      localController.setLooping(widget.options.shouldLoop);
       _updateControllerState();
-      _controller!.addListener(_videoPlayerListener);
+      localController.addListener(_videoPlayerListener);
       setState(() {});
       // Add a small delay before setting _isVideoReady to true
       Future.delayed(const Duration(milliseconds: 50), () {
@@ -87,26 +89,38 @@ class _VideoAssetState extends State<VideoAsset> {
   }
 
   void _videoPlayerErrorListener() {
-    if (_controller?.value.hasError ?? false) {
+    final localController = _controller;
+
+    if (localController == null) {
+      return;
+    }
+
+    if (localController.value.hasError) {
       widget.onVideoError?.call(
-        _controller!.value.errorDescription ?? "Unknown error",
+        localController.value.errorDescription ?? "Unknown error",
         widget.asset,
       );
     }
   }
 
   void _videoPlayerListener() {
-    final currentPosition = _controller!.value.position;
+    final localController = _controller;
 
-    if (currentPosition >= _controller!.value.duration) {
-      if (!_controller!.value.isLooping) {
-        _controller!.seekTo(Duration.zero);
+    if (localController == null) {
+      return;
+    }
+
+    final currentPosition = localController.value.position;
+
+    if (currentPosition >= localController.value.duration) {
+      if (!localController.value.isLooping) {
+        localController.seekTo(Duration.zero);
       }
 
       widget.onAssetEnded?.call(widget.asset);
     }
 
-    if (!_controller!.value.isPlaying) {
+    if (!localController.value.isPlaying) {
       _sendVideoWatchedAnalytics();
       return;
     }
@@ -132,25 +146,29 @@ class _VideoAssetState extends State<VideoAsset> {
 
     _lastPosition = currentPosition;
 
-    if (_controller!.value.isPlaying &&
-        widget.onProgressUpdate != null &&
-        currentPosition > Duration.zero) {
-      widget.onProgressUpdate!(
+    if (localController.value.isPlaying && currentPosition > Duration.zero) {
+      widget.onProgressUpdate?.call(
         widget.asset,
         currentPosition,
-        _controller!.value.duration,
+        localController.value.duration,
       );
     }
   }
 
   void _sendVideoWatchedAnalytics() {
-    if (!_hasWatched || !widget.options.trackAnalytics) {
+    final localController = _controller;
+
+    if (!_hasWatched ||
+        !widget.options.trackAnalytics ||
+        localController == null) {
       return;
     }
 
-    final watchedSeconds = _controller!.value.position.inMicroseconds /
-            1000000.0 +
-        (_loopCount * _controller!.value.duration.inMicroseconds / 1000000.0);
+    final watchedSeconds =
+        localController.value.position.inMicroseconds / 1000000.0 +
+            (_loopCount *
+                localController.value.duration.inMicroseconds /
+                1000000.0);
 
     if (watchedSeconds == 0.0) {
       return;
@@ -164,7 +182,8 @@ class _VideoAssetState extends State<VideoAsset> {
         "type": widget.asset.type.name,
         "videoLoopCount": _loopCount,
         "videoWatchedTime": watchedSeconds,
-        "videoDuration": _controller!.value.duration.inMicroseconds / 1000000.0,
+        "videoDuration":
+            localController.value.duration.inMicroseconds / 1000000.0,
       },
     );
     _loopCount = 0;
@@ -172,16 +191,19 @@ class _VideoAssetState extends State<VideoAsset> {
   }
 
   void _updateControllerState() {
-    if (_controller == null) {
+    final localController = _controller;
+
+    if (localController == null) {
       return;
     }
+
     setState(() {
       if (widget.options.isPlaying) {
-        _controller!.play();
+        localController.play();
       } else {
-        _controller!.pause();
+        localController.pause();
       }
-      _controller!.setVolume(widget.options.isMuted ? 0.0 : 1.0);
+      localController.setVolume(widget.options.isMuted ? 0.0 : 1.0);
     });
   }
 
@@ -201,38 +223,42 @@ class _VideoAssetState extends State<VideoAsset> {
   }
 
   @override
-  Widget build(BuildContext context) => Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.network(
-            _thumbnailUrl,
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-            errorBuilder: (context, error, stackTrace) =>
-                const Center(child: CircularProgressIndicator()),
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) {
-                return child;
-              }
-              return const Center(child: CircularProgressIndicator());
-            },
-          ),
-          if (_controller != null && _isVideoInitialized)
-            AnimatedOpacity(
-              opacity: _isVideoReady ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 300),
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  height: _controller!.value.size.height,
-                  width: _controller!.value.size.width,
-                  child: VideoPlayer(_controller!),
-                ),
+  Widget build(BuildContext context) {
+    final localController = _controller;
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Image.network(
+          _thumbnailUrl,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: double.infinity,
+          errorBuilder: (context, error, stackTrace) =>
+              const Center(child: CircularProgressIndicator()),
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) {
+              return child;
+            }
+            return const Center(child: CircularProgressIndicator());
+          },
+        ),
+        if (localController != null && _isVideoInitialized)
+          AnimatedOpacity(
+            opacity: _isVideoReady ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 300),
+            child: FittedBox(
+              fit: BoxFit.cover,
+              child: SizedBox(
+                height: localController.value.size.height,
+                width: localController.value.size.width,
+                child: VideoPlayer(localController),
               ),
             ),
-        ],
-      );
+          ),
+      ],
+    );
+  }
 
   @override
   void dispose() {

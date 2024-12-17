@@ -5,6 +5,9 @@ import "package:tolstoy_flutter_sdk/modules/api/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models/asset.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
 import "package:tolstoy_flutter_sdk/modules/products/models.dart";
+import "package:tolstoy_flutter_sdk/utils/cast.dart";
+
+typedef AnalyticsParams = Map<String, dynamic>;
 
 class ApiService {
   static Future<TvPageConfig> getTvPageConfig(
@@ -22,13 +25,20 @@ class ApiService {
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body) as Map<String, dynamic>;
+      const cast = Cast(location: "ApiService::getTvPageConfig");
 
-      final config = TvPageConfig.fromJson(jsonData, createProductsLoader);
+      final jsonData =
+          cast.jsonMapOrNull(json.decode(response.body), "response.body");
 
-      return config;
+      if (jsonData == null) {
+        throw Exception("Failed to load TV page config");
+      }
+
+      return TvPageConfig.fromJson(jsonData, createProductsLoader);
     } else {
-      throw Exception("Failed to load TV page config");
+      throw Exception(
+        "Failed to load TV page config. Status code: ${response.statusCode}",
+      );
     }
   }
 
@@ -44,10 +54,16 @@ class ApiService {
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body) as Map<String, dynamic>;
-      final products = ProductsMap.fromJson(jsonData);
+      const cast = Cast(location: "ApiService::getProductsByVodAssetIds");
 
-      return products;
+      final jsonData =
+          cast.jsonMapOrNull(json.decode(response.body), "response.body");
+
+      if (jsonData == null) {
+        throw Exception("Failed to load products by VOD asset IDs");
+      }
+
+      return ProductsMap.fromJson(jsonData);
     } else {
       throw Exception(
         "Failed to load actions by VOD asset IDs. Status code: ${response.statusCode}",
@@ -55,7 +71,7 @@ class ApiService {
     }
   }
 
-  static Future<bool> sendEvent(Map<String, dynamic> params) async {
+  static Future<bool> sendEvent(AnalyticsParams params) async {
     final result = await http.post(
       Uri.parse("${AppConfig.apiBaseUrl}/events/event"),
       headers: {

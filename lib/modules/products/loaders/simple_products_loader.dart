@@ -15,8 +15,10 @@ class SimpleProductsLoader extends ProductsLoader {
 
   @override
   Future<List<Product>> getProducts(Asset asset) async {
-    if (_productsCache.containsKey(asset.id)) {
-      return _productsCache[asset.id]!;
+    final cachedProducts = _productsCache[asset.id];
+
+    if (cachedProducts != null) {
+      return cachedProducts;
     }
 
     _futureProductsMapCache[asset.id] = _futureProductsMapCache[asset.id] ??
@@ -25,10 +27,10 @@ class SimpleProductsLoader extends ProductsLoader {
     final productsMap = await _futureProductsMapCache[asset.id];
 
     final products = asset.products
-        .map((productRef) => productsMap!.getProductById(productRef.id))
-        .where((product) => product != null)
-        .cast<Product>()
-        .toList();
+            ?.map((productRef) => productsMap?.getProductById(productRef.id))
+            .whereType<Product>()
+            .toList() ??
+        [];
 
     _productsCache[asset.id] = products;
 
