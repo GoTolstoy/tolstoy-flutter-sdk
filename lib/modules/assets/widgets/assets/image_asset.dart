@@ -84,8 +84,8 @@ class _ImageAssetState extends State<ImageAsset> {
   }
 
   void _startPlaying() {
-    const Duration tick = Duration(milliseconds: 100);
-    final Duration duration =
+    const tick = Duration(milliseconds: 100);
+    final duration =
         Duration(seconds: widget.options.imagePlaytimeSec);
 
     Future.delayed(tick, () {

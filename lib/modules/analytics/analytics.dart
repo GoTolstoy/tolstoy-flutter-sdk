@@ -56,7 +56,7 @@ class Analytics {
   }
 
   void sendPageView(TvPageConfig config) {
-    final Map<String, dynamic> params = _getAnalyticsParams(
+    final params = _getAnalyticsParams(
       config,
       {"eventName": AnalyticsEventType.pageView.name},
     );
@@ -64,7 +64,7 @@ class Analytics {
   }
 
   void sendEmbedView(TvPageConfig config) {
-    final Map<String, dynamic> params = _getAnalyticsParams(
+    final params = _getAnalyticsParams(
       config,
       {"eventName": AnalyticsEventType.embedView.name},
     );
@@ -72,7 +72,7 @@ class Analytics {
   }
 
   void sendSessionStart(TvPageConfig config) {
-    final Map<String, dynamic> params = _getAnalyticsParams(
+    final params = _getAnalyticsParams(
       config,
       {"eventName": AnalyticsEventType.sessionStart.name},
     );
@@ -83,7 +83,7 @@ class Analytics {
     TvPageConfig config,
     Map<String, dynamic> dynamicParams,
   ) {
-    final Map<String, dynamic> params = _getAnalyticsParams(
+    final params = _getAnalyticsParams(
       config,
       {"eventName": AnalyticsEventType.videoClicked.name, ...dynamicParams},
     );
@@ -94,7 +94,7 @@ class Analytics {
     TvPageConfig config,
     Map<String, dynamic> dynamicParams,
   ) {
-    final Map<String, dynamic> params = _getAnalyticsParams(
+    final params = _getAnalyticsParams(
       config,
       {"eventName": AnalyticsEventType.videoLoaded.name, ...dynamicParams},
     );
@@ -105,7 +105,7 @@ class Analytics {
     TvPageConfig config,
     Map<String, dynamic> dynamicParams,
   ) {
-    final Map<String, dynamic> params = _getAnalyticsParams(
+    final params = _getAnalyticsParams(
       config,
       {"eventName": AnalyticsEventType.videoWatched.name, ...dynamicParams},
     );
@@ -116,7 +116,7 @@ class Analytics {
     TvPageConfig config,
     Map<String, dynamic> dynamicParams,
   ) {
-    final Map<String, dynamic> params = _getAnalyticsParams(config, {
+    final params = _getAnalyticsParams(config, {
       "eventName": AnalyticsEventType.clickViewProduct.name,
       ...dynamicParams,
     });

@@ -185,7 +185,7 @@ class ProductsMap {
   ProductsMap({required this.products});
 
   factory ProductsMap.fromJson(Map<String, dynamic> json) {
-    final Map<String, Product> productMap = {};
+    final productMap = <String, Product>{};
 
     json.forEach((key, value) {
       final product = value as Map<String, dynamic>;

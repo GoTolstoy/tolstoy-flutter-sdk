@@ -8,7 +8,7 @@ class ProductUtils {
     String? variantId,
   }) {
     // Extract the price from the first variant if no variantId is provided
-    final String? price = product.variants.isNotEmpty
+    final price = product.variants.isNotEmpty
         ? product.variants[0].price?.toString()
         : null;
 
@@ -17,7 +17,7 @@ class ProductUtils {
     }
 
     // Find the variant with the matching id
-    final Variant? variant =
+    final variant =
         product.variants.firstWhereOrNull((v) => v.id.toString() == variantId);
 
     // Return the price of the found variant or the default price
@@ -25,7 +25,7 @@ class ProductUtils {
   }
 
   static String? getProductPrice(Product product, {String? variantId}) {
-    String? price = getUnformatedProductPrice(product, variantId: variantId);
+    var price = getUnformatedProductPrice(product, variantId: variantId);
 
     if (price != null) {
       if (price.endsWith(".00") || price.endsWith(",00")) {
@@ -37,7 +37,7 @@ class ProductUtils {
   }
 
   static String? getProductPriceLabel(Product product, {String? variantId}) {
-    final String? price = getProductPrice(product, variantId: variantId);
+    final price = getProductPrice(product, variantId: variantId);
     if (price != null) {
       return "${product.currencySymbol}$price";
     }
@@ -59,7 +59,7 @@ class ProductUtils {
   }
 
   static String _optimizeShopifyImageUrl(String url, int? width, int? height) {
-    final Uri uri = Uri.parse(url);
+    final uri = Uri.parse(url);
     final queryParams = <String, String>{};
 
     if (width != null) {

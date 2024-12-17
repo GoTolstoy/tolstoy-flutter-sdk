@@ -9,7 +9,7 @@ void main() async {
   print("Updating tolstoy_flutter_sdk package...");
 
   // Hardcoded Git URI
-  const String gitUri = "git@github.com:GoTolstoy/tolstoy-flutter-sdk.git";
+  const gitUri = "git@github.com:GoTolstoy/tolstoy-flutter-sdk.git";
 
   // Get the path to the package
   final packagePath = await getPackagePath();
