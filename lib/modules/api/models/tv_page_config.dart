@@ -1,9 +1,8 @@
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
+import "package:tolstoy_flutter_sdk/utils/cast.dart";
+import "package:tolstoy_flutter_sdk/utils/json_parser.dart";
 
-/*
-  steps from config -> assets
-*/
 class TvPageConfig {
   TvPageConfig({
     required this.publishId,
@@ -23,27 +22,37 @@ class TvPageConfig {
         );
 
   factory TvPageConfig.fromJson(
-    Map<String, dynamic> json,
+    Map<dynamic, dynamic> json,
     ProductsLoader Function({
       required String appKey,
       required String appUrl,
       required List<Asset> assets,
     }) createProductsLoader,
-  ) =>
-      TvPageConfig(
-        publishId: json["publishId"] as String,
-        appUrl: json["appUrl"] as String,
-        userId: json["userId"] as String?,
-        assets: (json["steps"] as List)
-            .map((step) => Asset.fromStepJson(step as Map<String, dynamic>))
-            .toList(),
-        name: json["name"] as String,
-        id: json["id"] as String,
-        startStep: json["startStep"] as String,
-        appKey: json["appKey"] as String,
-        owner: json["owner"] as String,
-        createProductsLoader: createProductsLoader,
-      );
+  ) {
+    final parse = JsonParser(
+      location: "tv_page_config",
+      json: json,
+    );
+
+    const cast = Cast(location: "tv_page_config");
+
+    return TvPageConfig(
+      publishId: parse.string("publishId"),
+      appUrl: parse.string("appUrl"),
+      userId: parse.stringOrNull("userId"),
+      assets: parse
+          .list("steps")
+          .map((step) => Asset.fromStepJson(cast.map(step, "steps::step")))
+          .toList(),
+      name: parse.string("name"),
+      id: parse.string("id"),
+      startStep: parse.string("startStep"),
+      appKey: parse.string("appKey"),
+      owner: parse.string("owner"),
+      createProductsLoader: createProductsLoader,
+    );
+  }
+
   final String publishId;
   final String appUrl;
   final String? userId;

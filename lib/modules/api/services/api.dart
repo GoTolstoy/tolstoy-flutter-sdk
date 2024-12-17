@@ -24,8 +24,7 @@ class ApiService {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body) as Map<String, dynamic>;
 
-      final config =
-          TvPageConfig.fromJson(jsonData, createProductsLoader);
+      final config = TvPageConfig.fromJson(jsonData, createProductsLoader);
 
       return config;
     } else {
