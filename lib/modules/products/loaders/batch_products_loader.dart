@@ -30,17 +30,19 @@ class BatchProductsLoader extends ProductsLoader {
       _loadSlice(_getMaxSlice(assetIndex));
     }
 
-    if (_productsCache.containsKey(asset.id)) {
-      return _productsCache[asset.id]!;
+    final cachedProduct = _productsCache[asset.id];
+
+    if (cachedProduct != null) {
+      return cachedProduct;
     }
 
     final productsMap = await _futureProductsMapCache[asset.id];
 
     final products = asset.products
-        .map((productRef) => productsMap!.getProductById(productRef.id))
-        .where((product) => product != null)
-        .cast<Product>()
-        .toList();
+            ?.map((productRef) => productsMap?.getProductById(productRef.id))
+            .whereType<Product>()
+            .toList() ??
+        [];
 
     _productsCache[asset.id] = products;
 

@@ -1,12 +1,12 @@
-// ignore_for_file: avoid_dynamic_calls, avoid_print
+// ignore_for_file: avoid_dynamic_calls
 
 import "dart:convert";
 import "dart:io";
-
 import "package:path/path.dart" as path;
+import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 
 void main() async {
-  print("Updating tolstoy_flutter_sdk package...");
+  debugInfo("Updating tolstoy_flutter_sdk package...");
 
   // Hardcoded Git URI
   const gitUri = "git@github.com:GoTolstoy/tolstoy-flutter-sdk.git";
@@ -14,41 +14,43 @@ void main() async {
   // Get the path to the package
   final packagePath = await getPackagePath();
   if (packagePath == null) {
-    print("Unable to find the package. Make sure it's properly installed.");
+    debugError(
+      "Unable to find the package. Make sure it's properly installed.",
+    );
     return;
   }
 
-  print("Package found at: $packagePath");
+  debugInfo("Package found at: $packagePath");
 
   // Pull latest changes
-  print("Pulling latest changes...");
+  debugInfo("Pulling latest changes...");
   final pullResult =
       await Process.run("git", ["pull", gitUri], workingDirectory: packagePath);
 
   if (pullResult.exitCode != 0) {
-    print("Error pulling latest changes:");
-    print(pullResult.stderr);
+    debugError("Error pulling latest changes:");
+    debugError(pullResult.stderr);
     return;
   }
 
   // Run pub get
-  print("Running flutter pub get...");
+  debugInfo("Running flutter pub get...");
   final pubGetResult = await Process.run("flutter", ["pub", "get"]);
 
   if (pubGetResult.exitCode != 0) {
-    print("Error running flutter pub get:");
-    print(pubGetResult.stderr);
+    debugError("Error running flutter pub get:");
+    debugError(pubGetResult.stderr);
     return;
   }
 
-  print("Package updated successfully!");
+  debugInfo("Package updated successfully!");
 }
 
 Future<String?> getPackagePath() async {
   final packageConfigFile = File(".dart_tool/package_config.json");
   // ignore: avoid_slow_async_io
   if (!await packageConfigFile.exists()) {
-    print(
+    debugError(
       "package_config.json not found. Make sure you're in the root of your Flutter project.",
     );
     return null;
@@ -61,10 +63,10 @@ Future<String?> getPackagePath() async {
     orElse: () => null,
   );
 
-  print("tolstoyPackage: $tolstoyPackage");
+  debugInfo("tolstoyPackage: $tolstoyPackage");
 
   if (tolstoyPackage == null) {
-    print("tolstoy_flutter_sdk package not found in package_config.json.");
+    debugError("tolstoy_flutter_sdk package not found in package_config.json.");
     return null;
   }
 

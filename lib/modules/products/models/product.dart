@@ -1,95 +1,108 @@
+import "package:tolstoy_flutter_sdk/utils/cast.dart";
+import "package:tolstoy_flutter_sdk/utils/json_parser.dart";
+import "package:tolstoy_flutter_sdk/utils/types.dart";
+
 class Product {
   Product({
     required this.id,
-    required this.handle,
     required this.title,
     required this.imageUrl,
-    required this.variants,
-    required this.options,
-    required this.images,
-    required this.tags,
-    required this.dbProductId,
-    required this.appKey,
-    required this.appUrl,
-    required this.currencyCode,
     required this.currencySymbol,
+    required this.variants,
+    this.images,
+    this.tags,
+    this.dbProductId,
+    this.appKey,
+    this.appUrl,
+    this.handle,
+    this.currencyCode,
     this.descriptionHtml,
     this.templateSuffix,
     this.yotpoReview,
   });
 
-  factory Product.fromJson(Map<String, dynamic> json) => Product(
-        id: json["id"] as String? ?? "",
-        handle: json["handle"] as String? ?? "",
-        title: json["title"] as String? ?? "",
-        imageUrl: json["imageUrl"] as String? ?? "",
-        variants: (json["variants"] as List?)
-                ?.map(
-                  (variant) =>
-                      Variant.fromJson(variant as Map<String, dynamic>),
-                )
-                .toList() ??
-            [],
-        options: json["options"] as Map<String, dynamic>? ?? {},
-        images: (json["images"] as List?)
-                ?.map(
-                  (image) =>
-                      ProductImage.fromJson(image as Map<String, dynamic>),
-                )
-                .toList() ??
-            [],
-        tags: json["tags"] as String?,
-        descriptionHtml: json["descriptionHtml"] as String?,
-        templateSuffix: json["templateSuffix"] as String?,
-        dbProductId: json["dbProductId"] as String? ?? "",
-        appKey: json["appKey"] as String? ?? "",
-        appUrl: json["appUrl"] as String? ?? "",
-        currencyCode: json["currencyCode"] as String? ?? "",
-        currencySymbol: json["currencySymbol"] as String? ?? "",
-        yotpoReview: json["yotpo"] != null &&
-                ((json["yotpo"] as Map<String, dynamic>)["reviews"] as num?) !=
-                    null
-            ? YotpoReview.fromJson(json["yotpo"] as Map<String, dynamic>)
-            : null,
-      );
+  factory Product.fromJsonUnsafe(JsonMap json) {
+    final parse = JsonParser(
+      location: "Product",
+      json: json,
+    );
+
+    const cast = Cast(location: "Product");
+
+    final yotpo = parse.jsonMapOrNull("yotpo");
+
+    return Product(
+      id: parse.string("id"),
+      title: parse.string("title"),
+      imageUrl: parse.string("imageUrl"),
+      currencySymbol: parse.string("currencySymbol"),
+      variants: parse.list(
+        "variants",
+        (variant) => Variant.fromJson(
+          cast.jsonMap(variant, "variants::variant"),
+        ),
+      ),
+      images: parse.listOrNull(
+        "images",
+        (image) => ProductImage.fromJson(
+          cast.jsonMap(image, "images::image"),
+        ),
+      ),
+      tags: parse.stringOrNull("tags"),
+      dbProductId: parse.stringOrNull("dbProductId"),
+      appKey: parse.stringOrNull("appKey"),
+      appUrl: parse.stringOrNull("appUrl"),
+      handle: parse.stringOrNull("handle"),
+      currencyCode: parse.stringOrNull("currencyCode"),
+      descriptionHtml: parse.stringOrNull("descriptionHtml"),
+      templateSuffix: parse.stringOrNull("templateSuffix"),
+      yotpoReview: yotpo != null ? YotpoReview.fromJson(yotpo) : null,
+    );
+  }
 
   final String id;
-  final String handle;
   final String title;
   final String imageUrl;
+  final String currencySymbol;
   final List<Variant> variants;
-  final Map<String, dynamic>? options;
-  final List<ProductImage> images;
+  final List<ProductImage>? images;
   final String? tags;
+  final String? dbProductId;
+  final String? appKey;
+  final String? appUrl;
+  final String? handle;
+  final String? currencyCode;
   final String? descriptionHtml;
   final String? templateSuffix;
-  final String dbProductId;
-  final String appKey;
-  final String appUrl;
-  final String currencyCode;
-  final String currencySymbol;
   final YotpoReview? yotpoReview;
 
-  Map<String, dynamic> toJson() => {
+  static bool isConvertable(JsonMap json) =>
+      json["id"] != null &&
+      json["title"] != null &&
+      json["imageUrl"] != null &&
+      json["currencySymbol"] != null &&
+      json["variants"] != null;
+
+  static Product? fromJson(JsonMap json) =>
+      isConvertable(json) ? Product.fromJsonUnsafe(json) : null;
+
+  JsonMap toJson() => {
         "id": id,
-        "handle": handle,
         "title": title,
         "imageUrl": imageUrl,
-        "variants": variants.map((v) => v.toJson()).toList(),
-        "options": options,
-        "images": images.map((i) => i.toJson()).toList(),
+        "currencySymbol": currencySymbol,
+        "variants": variants.map((variant) => variant.toJson()).toList(),
+        "images": images?.map((image) => image.toJson()).toList(),
         "tags": tags,
-        "descriptionHtml": descriptionHtml,
-        "templateSuffix": templateSuffix,
         "dbProductId": dbProductId,
         "appKey": appKey,
         "appUrl": appUrl,
+        "handle": handle,
         "currencyCode": currencyCode,
-        "currencySymbol": currencySymbol,
+        "descriptionHtml": descriptionHtml,
+        "templateSuffix": templateSuffix,
         "yotpo": yotpoReview?.toJson(),
       };
-
-  bool hasReviews() => yotpoReview != null && yotpoReview!.reviews > 0;
 }
 
 class ProductImage {
@@ -98,15 +111,22 @@ class ProductImage {
     required this.src,
   });
 
-  factory ProductImage.fromJson(Map<String, dynamic> json) => ProductImage(
-        id: json["id"] as int,
-        src: json["src"] as String,
-      );
+  factory ProductImage.fromJson(JsonMap json) {
+    final parse = JsonParser(
+      location: "ProductImage",
+      json: json,
+    );
+
+    return ProductImage(
+      id: parse.integer("id"),
+      src: parse.string("src"),
+    );
+  }
 
   final int id;
   final String src;
 
-  Map<String, dynamic> toJson() => {
+  JsonMap toJson() => {
         "id": id,
         "src": src,
       };
@@ -114,45 +134,47 @@ class ProductImage {
 
 class Variant {
   Variant({
-    required this.productId,
     required this.id,
     required this.price,
-    required this.title,
-    required this.selectedOptions,
-    required this.isVariantAvailableForSale,
-    required this.sku,
     this.compareAtPrice,
+    this.title,
+    this.productId,
+    this.isVariantAvailableForSale,
+    this.sku,
   });
 
-  factory Variant.fromJson(Map<String, dynamic> json) => Variant(
-        productId: json["productId"] as String?,
-        id: json["id"],
-        price: json["price"],
-        compareAtPrice: json["compareAtPrice"],
-        title: json["title"] as String?,
-        selectedOptions: json["selectedOptions"] != null
-            ? Map.from(json["selectedOptions"] as Map<String, dynamic>)
-            : null,
-        isVariantAvailableForSale: json["isVariantAvailableForSale"] as bool?,
-        sku: json["sku"] as String?,
-      );
+  factory Variant.fromJson(JsonMap json) {
+    final parse = JsonParser(
+      location: "Variant",
+      json: json,
+    );
 
-  final String? productId;
-  final dynamic id;
-  final dynamic price;
-  final dynamic compareAtPrice;
+    return Variant(
+      id: parse.string("id"),
+      price: parse.string("price"),
+      compareAtPrice: parse.stringOrNull("compareAtPrice"),
+      title: parse.stringOrNull("title"),
+      productId: parse.stringOrNull("productId"),
+      isVariantAvailableForSale:
+          parse.booleanOrNull("isVariantAvailableForSale"),
+      sku: parse.stringOrNull("sku"),
+    );
+  }
+
+  final String id;
+  final String price;
+  final String? compareAtPrice;
   final String? title;
-  final Map<String, String?>? selectedOptions;
+  final String? productId;
   final bool? isVariantAvailableForSale;
   final String? sku;
 
-  Map<String, dynamic> toJson() => {
-        "productId": productId,
+  JsonMap toJson() => {
         "id": id,
         "price": price,
+        "productId": productId,
         "compareAtPrice": compareAtPrice,
         "title": title,
-        "selectedOptions": selectedOptions,
         "isVariantAvailableForSale": isVariantAvailableForSale,
         "sku": sku,
       };
@@ -162,49 +184,59 @@ class YotpoReview {
   YotpoReview({
     required this.reviews,
     required this.score,
-    required this.updatedAt,
+    this.updatedAt,
   });
 
-  factory YotpoReview.fromJson(Map<String, dynamic> json) => YotpoReview(
-        reviews: json["reviews"] as int,
-        score: (json["score"] as num).toDouble(),
-        updatedAt: DateTime.parse(json["updatedAt"] as String),
-      );
+  factory YotpoReview.fromJson(JsonMap json) {
+    final parse = JsonParser(
+      location: "YotpoReview",
+      json: json,
+    );
+
+    return YotpoReview(
+      reviews: parse.integer("reviews"),
+      score: parse.doubleValue("score"),
+      updatedAt: parse.dateTimeOrNull("updatedAt"),
+    );
+  }
+
   final int reviews;
   final double score;
-  final DateTime updatedAt;
+  final DateTime? updatedAt;
 
-  Map<String, dynamic> toJson() => {
+  JsonMap toJson() => {
         "reviews": reviews,
         "score": score,
-        "updatedAt": updatedAt.toIso8601String(),
+        "updatedAt": updatedAt?.toIso8601String(),
       };
 }
 
 class ProductsMap {
   ProductsMap({required this.products});
 
-  factory ProductsMap.fromJson(Map<String, dynamic> json) {
+  factory ProductsMap.fromJson(JsonMap json) {
     final productMap = <String, Product>{};
 
-    json.forEach((key, value) {
-      final product = value as Map<String, dynamic>;
+    const cast = Cast(location: "ProductsMap");
 
-      // Skip products missing required fields
-      if (product["id"] == null ||
-          product["imageUrl"] == null ||
-          product["title"] == null) {
+    json.forEach((key, value) {
+      if (key is! String) {
         return;
       }
 
-      try {
-        productMap[key] = Product.fromJson(product);
-        // ignore: avoid_catches_without_on_clauses
-      } catch (e) {
-        // Skip products that fail to parse
-        // ignore: avoid_print
-        print("Failed to parse product: $e");
+      final productJson = cast.jsonMapOrNull(value, key);
+
+      if (productJson == null) {
+        return;
       }
+
+      final product = Product.fromJson(productJson);
+
+      if (product == null) {
+        return;
+      }
+
+      productMap[key] = product;
     });
 
     return ProductsMap(products: productMap);
@@ -212,17 +244,5 @@ class ProductsMap {
 
   final Map<String, Product> products;
 
-  Map<String, dynamic> toJson() => {
-        "products": products.map((key, value) => MapEntry(key, value.toJson())),
-      };
-
   Product? getProductById(String dbProductId) => products[dbProductId];
-
-  void addProduct(Product product) {
-    products[product.dbProductId] = product;
-  }
-
-  void removeProduct(String dbProductId) {
-    products.remove(dbProductId);
-  }
 }

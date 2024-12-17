@@ -53,3 +53,10 @@ The Tolstoy Flutter SDK provides the following exportable components:
 - [`AssetViewOptions`](https://github.com/GoTolstoy/tolstoy-flutter-sdk/blob/master/lib/modules/assets/models/asset_view_options.dart): Options for customizing asset views.
 - [`Product`](https://github.com/GoTolstoy/tolstoy-flutter-sdk/blob/master/lib/modules/products/models/product.dart): Model representing a product.
 - [`getTvPageConfig`](https://github.com/GoTolstoy/tolstoy-flutter-sdk/blob/master/lib/modules/api/services/api.dart): Function for fetching Feed configuration.
+
+## Useful commands
+
+- `dart analyze` - analyze the code for potential issues.
+- `dart fix --apply` - fix the code for potential issues.
+- `dart format bin` - format the code in the `bin` directory.
+- `dart format lib` - format the code in the `lib` directory.

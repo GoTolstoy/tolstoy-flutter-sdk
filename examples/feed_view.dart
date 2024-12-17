@@ -4,6 +4,7 @@ import "package:tolstoy_flutter_sdk/modules/assets/models/asset.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/widgets/feed_view.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/batch_products_loader.dart";
 import "package:tolstoy_flutter_sdk/modules/products/models.dart";
+import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 
 const String publishId = "YOUR_PUBLISH_ID";
 
@@ -12,8 +13,7 @@ class FeedScreen extends StatelessWidget {
 
   void _handleProductClick(Product product) {
     // Implement logic for product click
-    // ignore: avoid_print
-    print("Product clicked: ${product.title}");
+    debugInfo("Product clicked: ${product.title}");
   }
 
   @override
@@ -40,8 +40,7 @@ class FeedScreen extends StatelessWidget {
             onProductClick: _handleProductClick,
             onVideoError: (message, asset) {
               // Implement logic for video error
-              // ignore: avoid_print
-              print("Video error: $message");
+              debugError("Video error: $message");
             },
           ),
         ),

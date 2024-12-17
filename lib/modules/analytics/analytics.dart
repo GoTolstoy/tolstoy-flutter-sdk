@@ -1,5 +1,6 @@
 import "package:tolstoy_flutter_sdk/modules/api/services/api.dart";
 import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
+import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 import "package:uuid/uuid.dart";
 
 const uuid = Uuid();
@@ -25,8 +26,9 @@ enum AnalyticsMode {
 
 class Analytics {
   factory Analytics([AnalyticsMode? mode]) {
-    _instance ??= Analytics._(mode);
-    return _instance!;
+    final localInstance = _instance ?? Analytics._(mode);
+    _instance = localInstance;
+    return localInstance;
   }
 
   Analytics._(AnalyticsMode? mode) {
@@ -42,13 +44,12 @@ class Analytics {
   String get sessionId => _sessionId;
   String get anonymousId => _anonymousId;
 
-  Future<void> _sendEvent(Map<String, dynamic> params) async {
+  Future<void> _sendEvent(AnalyticsParams params) async {
     switch (_mode) {
       case AnalyticsMode.track:
         await ApiService.sendEvent(params);
       case AnalyticsMode.log:
-        // ignore: avoid_print
-        print("Params: $params");
+        debugInfo("Params: $params");
       case AnalyticsMode.notrack:
         // Do nothing
         break;
@@ -81,7 +82,7 @@ class Analytics {
 
   void sendVideoClicked(
     TvPageConfig config,
-    Map<String, dynamic> dynamicParams,
+    AnalyticsParams dynamicParams,
   ) {
     final params = _getAnalyticsParams(
       config,
@@ -92,7 +93,7 @@ class Analytics {
 
   void sendVideoLoaded(
     TvPageConfig config,
-    Map<String, dynamic> dynamicParams,
+    AnalyticsParams dynamicParams,
   ) {
     final params = _getAnalyticsParams(
       config,
@@ -103,7 +104,7 @@ class Analytics {
 
   void sendVideoWatched(
     TvPageConfig config,
-    Map<String, dynamic> dynamicParams,
+    AnalyticsParams dynamicParams,
   ) {
     final params = _getAnalyticsParams(
       config,
@@ -114,7 +115,7 @@ class Analytics {
 
   void sendProductClicked(
     TvPageConfig config,
-    Map<String, dynamic> dynamicParams,
+    AnalyticsParams dynamicParams,
   ) {
     final params = _getAnalyticsParams(config, {
       "eventName": AnalyticsEventType.clickViewProduct.name,
@@ -123,9 +124,9 @@ class Analytics {
     _sendEvent(params);
   }
 
-  Map<String, dynamic> _getAnalyticsParams(
+  AnalyticsParams _getAnalyticsParams(
     TvPageConfig config,
-    Map<String, dynamic> dynamicParams,
+    AnalyticsParams dynamicParams,
   ) =>
       {
         "appKey": config.appKey,

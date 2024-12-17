@@ -96,9 +96,9 @@ class _FeedViewState extends State<FeedView>
   void _calculateFooterHeight() {
     if (widget.buildFeedFooter != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final footerBox =
-            widget.footerKey.currentContext?.findRenderObject() as RenderBox?;
-        if (footerBox != null) {
+        final footerBox = widget.footerKey.currentContext?.findRenderObject();
+
+        if (footerBox is RenderBox) {
           setState(() {
             _footerHeight = footerBox.size.height;
           });

@@ -5,6 +5,7 @@ import "package:tolstoy_flutter_sdk/modules/assets/models/asset.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/batch_products_loader.dart";
 import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 import "package:tolstoy_flutter_sdk/modules/rail/widgets.dart";
+import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 
 const String publishId = "YOUR_PUBLISH_ID";
 
@@ -20,14 +21,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   void _onProductClick(Product product) {
     // Implement logic for product click
-    // ignore: avoid_print
-    print("product clicked: ${product.title}");
+    debugInfo("product clicked: ${product.title}");
   }
 
   void _onAssetClick(Asset asset) {
     // Implement logic for asset click
-    // ignore: avoid_print
-    print("asset clicked: ${asset.name}");
+    debugInfo("asset clicked: ${asset.name}");
   }
 
   PreferredSizeWidget? _buildFeedHeader({
@@ -80,8 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onAssetClick: _onAssetClick,
               onVideoError: (message, asset) {
                 // Implement logic for video error
-                // ignore: avoid_print
-                print("Video error: $message");
+                debugInfo("Video error: $message");
               },
             ),
           ),

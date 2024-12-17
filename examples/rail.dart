@@ -4,6 +4,7 @@ import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/batch_products_loader.dart";
 import "package:tolstoy_flutter_sdk/modules/rail/models.dart";
 import "package:tolstoy_flutter_sdk/modules/rail/widgets/rail.dart";
+import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 
 const String publishId = "YOUR_PUBLISH_ID";
 
@@ -12,8 +13,7 @@ class RailScreen extends StatelessWidget {
 
   void _handleAssetClick(Asset asset) {
     // Implement logic for asset click
-    // ignore: avoid_print
-    print("Asset clicked: ${asset.id}");
+    debugInfo("Asset clicked: ${asset.id}");
   }
 
   @override
@@ -46,8 +46,7 @@ class RailScreen extends StatelessWidget {
                 onAssetClick: _handleAssetClick,
                 onVideoError: (message, asset) {
                   // Implement logic for video error
-                  // ignore: avoid_print
-                  print("Video error: $message");
+                  debugError("Video error: $message");
                 },
                 options: const RailOptions(
                   itemWidth: 160,

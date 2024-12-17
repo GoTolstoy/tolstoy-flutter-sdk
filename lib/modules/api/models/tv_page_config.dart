@@ -1,14 +1,13 @@
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
+import "package:tolstoy_flutter_sdk/utils/cast.dart";
+import "package:tolstoy_flutter_sdk/utils/json_parser.dart";
+import "package:tolstoy_flutter_sdk/utils/types.dart";
 
-/*
-  steps from config -> assets
-*/
 class TvPageConfig {
   TvPageConfig({
     required this.publishId,
     required this.appUrl,
-    required this.userId,
     required this.assets,
     required this.name,
     required this.id,
@@ -16,6 +15,7 @@ class TvPageConfig {
     required this.appKey,
     required this.owner,
     required this.createProductsLoader,
+    this.userId,
   }) : productsLoader = createProductsLoader(
           appKey: appKey,
           appUrl: appUrl,
@@ -23,30 +23,39 @@ class TvPageConfig {
         );
 
   factory TvPageConfig.fromJson(
-    Map<String, dynamic> json,
+    JsonMap json,
     ProductsLoader Function({
       required String appKey,
       required String appUrl,
       required List<Asset> assets,
     }) createProductsLoader,
-  ) =>
-      TvPageConfig(
-        publishId: json["publishId"] as String,
-        appUrl: json["appUrl"] as String,
-        userId: json["userId"] as String?,
-        assets: (json["steps"] as List)
-            .map((step) => Asset.fromStepJson(step as Map<String, dynamic>))
-            .toList(),
-        name: json["name"] as String,
-        id: json["id"] as String,
-        startStep: json["startStep"] as String,
-        appKey: json["appKey"] as String,
-        owner: json["owner"] as String,
-        createProductsLoader: createProductsLoader,
-      );
+  ) {
+    final parse = JsonParser(
+      location: "TvPageConfig",
+      json: json,
+    );
+
+    const cast = Cast(location: "TvPageConfig");
+
+    return TvPageConfig(
+      publishId: parse.string("publishId"),
+      appUrl: parse.string("appUrl"),
+      assets: parse.list(
+        "steps",
+        (step) => Asset.fromStepJson(cast.jsonMap(step, "steps::step")),
+      ),
+      name: parse.string("name"),
+      id: parse.string("id"),
+      startStep: parse.string("startStep"),
+      appKey: parse.string("appKey"),
+      owner: parse.string("owner"),
+      userId: parse.stringOrNull("userId"),
+      createProductsLoader: createProductsLoader,
+    );
+  }
+
   final String publishId;
   final String appUrl;
-  final String? userId;
   final List<Asset> assets;
   final String name;
   final String id;
@@ -58,18 +67,19 @@ class TvPageConfig {
     required String appUrl,
     required List<Asset> assets,
   }) createProductsLoader;
+  final String? userId;
   final ProductsLoader productsLoader;
 
   TvPageConfig copyWith({
     String? publishId,
     String? appUrl,
-    String? userId,
     List<Asset>? assets,
     String? name,
     String? id,
     String? startStep,
     String? appKey,
     String? owner,
+    String? userId,
     ProductsLoader Function({
       required String appKey,
       required String appUrl,
@@ -79,13 +89,13 @@ class TvPageConfig {
       TvPageConfig(
         publishId: publishId ?? this.publishId,
         appUrl: appUrl ?? this.appUrl,
-        userId: userId ?? this.userId,
         assets: assets ?? this.assets,
         name: name ?? this.name,
         id: id ?? this.id,
         startStep: startStep ?? this.startStep,
         appKey: appKey ?? this.appKey,
         owner: owner ?? this.owner,
+        userId: userId ?? this.userId,
         createProductsLoader: createProductsLoader ?? this.createProductsLoader,
       );
 }
