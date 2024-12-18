@@ -51,8 +51,9 @@ class ApiService {
       }
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      debugError(e);
-      onError?.call(e, StackTrace.current);
+      const message = "Failed to load TV page config";
+      debugError("$message: $e");
+      onError?.call(message, StackTrace.current, e);
       return null;
     }
   }
@@ -97,8 +98,9 @@ class ApiService {
       }
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      debugError(e);
-      onError?.call(e, StackTrace.current);
+      const message = "Failed to load products by VOD asset IDs";
+      debugError("$message: $e");
+      onError?.call(message, StackTrace.current, e);
       return ProductsMap(products: {});
     }
   }
@@ -120,8 +122,9 @@ class ApiService {
       return result.statusCode == 200;
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
-      debugError(e);
-      onError?.call(e, StackTrace.current);
+      const message = "Failed to send event";
+      debugError("$message: $e");
+      onError?.call(message, StackTrace.current, e);
       return false;
     }
   }

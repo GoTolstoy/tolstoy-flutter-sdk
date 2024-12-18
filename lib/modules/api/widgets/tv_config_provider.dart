@@ -64,7 +64,8 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       debugError(e);
-      localConfig.onError?.call(e, StackTrace.current);
+      localConfig.onError
+          ?.call("Failed to build widget with TvConfig", StackTrace.current, e);
       return widget.loadingWidget;
     }
   }
