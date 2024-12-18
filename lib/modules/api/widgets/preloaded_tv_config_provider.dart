@@ -1,29 +1,24 @@
 import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_config.dart";
-import "package:tolstoy_flutter_sdk/modules/api/services.dart";
-import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
 
-class TvConfigProvider extends StatefulWidget {
-  const TvConfigProvider({
+class PreloadedTvConfigProvider extends StatefulWidget {
+  const PreloadedTvConfigProvider({
     required this.builder,
-    required this.publishId,
-    required this.createProductsLoader,
-    this.disableCache = false,
+    required this.config,
     super.key,
     this.loadingWidget = const Center(child: CircularProgressIndicator()),
   });
 
   final Widget Function(BuildContext, TvPageConfig) builder;
-  final String publishId;
-  final ProductsLoaderFactory createProductsLoader;
-  final bool disableCache;
+  final Future<TvPageConfig> config;
   final Widget loadingWidget;
 
   @override
-  State<TvConfigProvider> createState() => _TvConfigProviderState();
+  State<PreloadedTvConfigProvider> createState() =>
+      _PreloadedTvConfigProviderState();
 }
 
-class _TvConfigProviderState extends State<TvConfigProvider> {
+class _PreloadedTvConfigProviderState extends State<PreloadedTvConfigProvider> {
   TvPageConfig? _config;
 
   @override
@@ -33,11 +28,7 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
   }
 
   Future<void> _fetchConfig() async {
-    final config = await ApiService.getTvPageConfig(
-      widget.publishId,
-      widget.createProductsLoader,
-      disableCache: widget.disableCache,
-    );
+    final config = await widget.config;
 
     if (mounted) {
       setState(() {
