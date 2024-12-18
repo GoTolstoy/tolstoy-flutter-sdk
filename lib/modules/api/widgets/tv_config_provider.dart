@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_config.dart";
 import "package:tolstoy_flutter_sdk/modules/api/services.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
+import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 
 class TvConfigProvider extends StatefulWidget {
   const TvConfigProvider({
@@ -58,6 +59,13 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
       return widget.loadingWidget;
     }
 
-    return widget.builder(context, localConfig);
+    try {
+      return widget.builder(context, localConfig);
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      debugError(e);
+      localConfig.onError?.call(e, StackTrace.current);
+      return widget.loadingWidget;
+    }
   }
 }
