@@ -1,5 +1,6 @@
 import "package:tolstoy_flutter_sdk/modules/assets/constants/asset_type.dart";
 import "package:tolstoy_flutter_sdk/utils/cast.dart";
+import "package:tolstoy_flutter_sdk/utils/enum_from_string.dart";
 import "package:tolstoy_flutter_sdk/utils/json_parser.dart";
 import "package:tolstoy_flutter_sdk/utils/types.dart";
 
@@ -29,9 +30,10 @@ class Asset {
       owner: parse.string("videoOwner"),
       id: parse.string("videoId"),
       uploadType: parse.string("uploadType"),
-      type: AssetType.values.firstWhere(
-        (value) => value.toString() == 'AssetType.${json['type'] ?? 'video'}',
-        orElse: () => AssetType.video,
+      type: enumFromString(
+        parse.string("type"),
+        AssetType.values,
+        AssetType.video,
       ),
       products: parse.listOrNull(
         "products",

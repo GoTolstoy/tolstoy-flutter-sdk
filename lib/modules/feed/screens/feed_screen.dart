@@ -1,4 +1,5 @@
 import "dart:convert";
+
 import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
 import "package:tolstoy_flutter_sdk/modules/api/services/api.dart";
@@ -78,26 +79,32 @@ class _FeedScreenState extends State<FeedScreen> {
                             required String id,
                             required String title,
                           }) async =>
-                              ApiService.sendEvent({
-                            "accountId": widget.config.owner,
-                            "appKey": widget.config.appKey,
-                            "appUrl": widget.config.appUrl,
-                            "contentReport": {"key": id, "description": title},
-                            "eventName": "feedReportSubmit",
-                            "formData": jsonEncode({
-                              "key": id,
-                              "description": title,
-                            }),
-                            "isMobile": true,
-                            "playerType": "flutter",
-                            "playlist": widget.config.name,
-                            "projectId": widget.config.id,
-                            "publishId": widget.config.publishId,
-                            "stepName": widget.config.startStep,
-                            "timestamp":
-                                DateTime.now().toUtc().toIso8601String(),
-                            "videoId": _currentAssetId,
-                          }),
+                              ApiService.sendEvent(
+                            {
+                              "accountId": widget.config.owner,
+                              "appKey": widget.config.appKey,
+                              "appUrl": widget.config.appUrl,
+                              "contentReport": {
+                                "key": id,
+                                "description": title,
+                              },
+                              "eventName": "feedReportSubmit",
+                              "formData": jsonEncode({
+                                "key": id,
+                                "description": title,
+                              }),
+                              "isMobile": true,
+                              "playerType": "flutter",
+                              "playlist": widget.config.name,
+                              "projectId": widget.config.id,
+                              "publishId": widget.config.publishId,
+                              "stepName": widget.config.startStep,
+                              "timestamp":
+                                  DateTime.now().toUtc().toIso8601String(),
+                              "videoId": _currentAssetId,
+                            },
+                            onError: widget.config.onError,
+                          ),
                         ),
                       ),
                     ),

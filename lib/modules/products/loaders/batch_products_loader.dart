@@ -1,3 +1,4 @@
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/api/services/api.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
@@ -20,7 +21,10 @@ class BatchProductsLoader extends ProductsLoader {
   final Map<String, Future<ProductsMap>> _futureProductsMapCache = {};
 
   @override
-  Future<List<Product>> getProducts(Asset asset) async {
+  Future<List<Product>> getProducts(
+    Asset asset,
+    SdkErrorCallback? onError,
+  ) async {
     final assetIndex =
         assets.indexWhere((candidate) => candidate.id == asset.id);
 
@@ -28,8 +32,11 @@ class BatchProductsLoader extends ProductsLoader {
       return [];
     }
 
-    if (!_isSlicePreloading(_getMinSlice(assetIndex))) {
-      _loadSlice(_getMaxSlice(assetIndex));
+    final minSlice = _getMinSlice(assetIndex);
+    final maxSlice = _getMaxSlice(assetIndex);
+
+    if (!_isSlicePreloading(minSlice)) {
+      _loadSlice(maxSlice, onError);
     }
 
     final cachedProduct = _productsCache[asset.id];
@@ -52,10 +59,10 @@ class BatchProductsLoader extends ProductsLoader {
   }
 
   @override
-  void preload(List<Asset> assets) {
+  void preload(List<Asset> assets, SdkErrorCallback? onError) {
     final assetIds = assets.map((asset) => asset.id).toList();
 
-    _loadSlice(assetIds);
+    _loadSlice(assetIds, onError);
   }
 
   List<String> _getMinSlice(int assetIndex) {
@@ -77,7 +84,7 @@ class BatchProductsLoader extends ProductsLoader {
   bool _isSlicePreloading(List<String> slice) =>
       slice.every(_futureProductsMapCache.containsKey);
 
-  void _loadSlice(List<String> slice) {
+  void _loadSlice(List<String> slice, SdkErrorCallback? onError) {
     final filteredSlice =
         slice.where((id) => !_futureProductsMapCache.containsKey(id)).toList();
 
@@ -90,6 +97,7 @@ class BatchProductsLoader extends ProductsLoader {
       appUrl,
       appKey,
       disableCache: disableCache,
+      onError: onError,
     );
 
     for (final id in filteredSlice) {

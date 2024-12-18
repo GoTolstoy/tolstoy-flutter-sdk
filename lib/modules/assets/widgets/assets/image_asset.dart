@@ -38,7 +38,7 @@ class _ImageAssetState extends State<ImageAsset> {
   @override
   void initState() {
     super.initState();
-    _analytics = Analytics();
+    _analytics = Analytics(onError: widget.config.onError);
     if (widget.options.isPlaying) {
       _startPlaying();
     }

@@ -1,7 +1,9 @@
 import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_config.dart";
 import "package:tolstoy_flutter_sdk/modules/api/services.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
+import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 
 class TvConfigProvider extends StatefulWidget {
   const TvConfigProvider({
@@ -9,6 +11,7 @@ class TvConfigProvider extends StatefulWidget {
     required this.publishId,
     required this.createProductsLoader,
     this.disableCache = false,
+    this.onError,
     super.key,
     this.loadingWidget = const Center(child: CircularProgressIndicator()),
   });
@@ -17,6 +20,7 @@ class TvConfigProvider extends StatefulWidget {
   final String publishId;
   final ProductsLoaderFactory createProductsLoader;
   final bool disableCache;
+  final SdkErrorCallback? onError;
   final Widget loadingWidget;
 
   @override
@@ -37,6 +41,7 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
       widget.publishId,
       widget.createProductsLoader,
       disableCache: widget.disableCache,
+      onError: widget.onError,
     );
 
     if (mounted) {
@@ -54,6 +59,14 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
       return widget.loadingWidget;
     }
 
-    return widget.builder(context, localConfig);
+    try {
+      return widget.builder(context, localConfig);
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      debugError(e);
+      localConfig.onError
+          ?.call("Failed to build widget with TvConfig", StackTrace.current, e);
+      return widget.loadingWidget;
+    }
   }
 }

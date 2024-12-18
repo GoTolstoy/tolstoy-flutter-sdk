@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_config.dart";
+import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 
 class PreloadedTvConfigProvider extends StatefulWidget {
   const PreloadedTvConfigProvider({
@@ -10,7 +11,7 @@ class PreloadedTvConfigProvider extends StatefulWidget {
   });
 
   final Widget Function(BuildContext, TvPageConfig) builder;
-  final Future<TvPageConfig> config;
+  final Future<TvPageConfig?> config;
   final Widget loadingWidget;
 
   @override
@@ -45,6 +46,14 @@ class _PreloadedTvConfigProviderState extends State<PreloadedTvConfigProvider> {
       return widget.loadingWidget;
     }
 
-    return widget.builder(context, localConfig);
+    try {
+      return widget.builder(context, localConfig);
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      debugError(e);
+      localConfig.onError
+          ?.call("Failed to build widget with TvConfig", StackTrace.current, e);
+      return widget.loadingWidget;
+    }
   }
 }

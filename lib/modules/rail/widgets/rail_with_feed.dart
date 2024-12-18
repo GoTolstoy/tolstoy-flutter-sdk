@@ -20,7 +20,7 @@ class RailWithFeed extends StatelessWidget {
   }) {
     final initialAssets = config.assets
         .sublist(0, config.assets.length.clamp(0, maxVisibleItems));
-    config.productsLoader.preload(initialAssets);
+    config.preload(initialAssets);
   }
 
   final TvPageConfig config;

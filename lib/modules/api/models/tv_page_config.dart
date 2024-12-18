@@ -1,5 +1,7 @@
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
+import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
 import "package:tolstoy_flutter_sdk/utils/cast.dart";
 import "package:tolstoy_flutter_sdk/utils/json_parser.dart";
 import "package:tolstoy_flutter_sdk/utils/types.dart";
@@ -15,6 +17,7 @@ class TvPageConfig {
     required this.appKey,
     required this.owner,
     required this.createProductsLoader,
+    this.onError,
     this.userId,
   }) : productsLoader = createProductsLoader(
           appKey: appKey,
@@ -25,6 +28,7 @@ class TvPageConfig {
   factory TvPageConfig.fromJson(
     JsonMap json,
     ProductsLoaderFactory createProductsLoader,
+    SdkErrorCallback? onError,
   ) {
     final parse = JsonParser(
       location: "TvPageConfig",
@@ -47,6 +51,7 @@ class TvPageConfig {
       owner: parse.string("owner"),
       userId: parse.stringOrNull("userId"),
       createProductsLoader: createProductsLoader,
+      onError: onError,
     );
   }
 
@@ -59,6 +64,7 @@ class TvPageConfig {
   final String appKey;
   final String owner;
   final ProductsLoaderFactory createProductsLoader;
+  final SdkErrorCallback? onError;
   final String? userId;
   final ProductsLoader productsLoader;
 
@@ -72,11 +78,8 @@ class TvPageConfig {
     String? appKey,
     String? owner,
     String? userId,
-    ProductsLoader Function({
-      required String appKey,
-      required String appUrl,
-      required List<Asset> assets,
-    })? createProductsLoader,
+    ProductsLoaderFactory? createProductsLoader,
+    SdkErrorCallback? onError,
   }) =>
       TvPageConfig(
         publishId: publishId ?? this.publishId,
@@ -89,5 +92,13 @@ class TvPageConfig {
         owner: owner ?? this.owner,
         userId: userId ?? this.userId,
         createProductsLoader: createProductsLoader ?? this.createProductsLoader,
+        onError: onError ?? this.onError,
       );
+
+  Future<List<Product>> getProducts(Asset asset) =>
+      productsLoader.getProducts(asset, onError);
+
+  void preload(List<Asset> assets) {
+    productsLoader.preload(assets, onError);
+  }
 }

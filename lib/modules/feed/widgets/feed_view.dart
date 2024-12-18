@@ -1,5 +1,6 @@
 import "dart:convert";
 import "dart:math";
+
 import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
@@ -70,7 +71,7 @@ class _FeedViewState extends State<FeedView>
   @override
   void initState() {
     super.initState();
-    _analytics = Analytics();
+    _analytics = Analytics(onError: widget.config.onError);
     _analytics.sendSessionStart(widget.config);
 
     isPlayingEnabled = widget.options.isAutoplay;
@@ -173,7 +174,7 @@ class _FeedViewState extends State<FeedView>
 
     return KeepAliveWrapper(
       child: FutureBuilder<List<Product>>(
-        future: widget.config.productsLoader.getProducts(asset),
+        future: widget.config.getProducts(asset),
         builder: (context, snapshot) => FeedAssetView(
           asset: asset,
           config: widget.config,

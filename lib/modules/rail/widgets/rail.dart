@@ -36,7 +36,7 @@ class _RailState extends State<Rail> {
   @override
   void initState() {
     super.initState();
-    _analytics = Analytics();
+    _analytics = Analytics(onError: widget.config.onError);
     _analytics.sendPageView(widget.config);
     _scrollController = ScrollController();
   }
