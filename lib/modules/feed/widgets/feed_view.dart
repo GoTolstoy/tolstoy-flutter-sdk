@@ -71,7 +71,7 @@ class _FeedViewState extends State<FeedView>
   @override
   void initState() {
     super.initState();
-    _analytics = Analytics();
+    _analytics = Analytics(onError: widget.config.onError);
     _analytics.sendSessionStart(widget.config);
 
     isPlayingEnabled = widget.options.isAutoplay;

@@ -18,34 +18,41 @@ class ApiService {
     bool disableCache = false,
     SdkErrorCallback? onError,
   }) async {
-    final endpoint = disableCache
-        ? AppConfig.configEndpointUrl
-        : AppConfig.configEndpointCacheUrl;
+    try {
+      final endpoint = disableCache
+          ? AppConfig.configEndpointUrl
+          : AppConfig.configEndpointCacheUrl;
 
-    final url = Uri.parse(
-      "$endpoint?publishId=$publishId",
-    );
+      final url = Uri.parse(
+        "$endpoint?publishId=$publishId",
+      );
 
-    final response = await http.get(url);
+      final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      const cast = Cast(location: "ApiService::getTvPageConfig");
+      if (response.statusCode == 200) {
+        const cast = Cast(location: "ApiService::getTvPageConfig");
 
-      final jsonData =
-          cast.jsonMapOrNull(json.decode(response.body), "response.body");
+        final jsonData =
+            cast.jsonMapOrNull(json.decode(response.body), "response.body");
 
-      if (jsonData == null) {
+        if (jsonData == null) {
+          const message = "Failed to load TV page config";
+          debugError(message);
+          onError?.call(message, StackTrace.current);
+          return null;
+        }
+
+        return TvPageConfig.fromJson(jsonData, createProductsLoader, onError);
+      } else {
         const message = "Failed to load TV page config";
         debugError(message);
         onError?.call(message, StackTrace.current);
         return null;
       }
-
-      return TvPageConfig.fromJson(jsonData, createProductsLoader, onError);
-    } else {
-      const message = "Failed to load TV page config";
-      debugError(message);
-      onError?.call(message, StackTrace.current);
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      debugError(e);
+      onError?.call(e, StackTrace.current);
       return null;
     }
   }
@@ -57,48 +64,65 @@ class ApiService {
     bool disableCache = false,
     SdkErrorCallback? onError,
   }) async {
-    final endpoint = disableCache
-        ? AppConfig.productsEndpointUrl
-        : AppConfig.productsEndpointCacheUrl;
+    try {
+      final endpoint = disableCache
+          ? AppConfig.productsEndpointUrl
+          : AppConfig.productsEndpointCacheUrl;
 
-    final url = Uri.parse(
-      "$endpoint?appKey=$appKey&appUrl=$appUrl&vodAssetIds=${vodAssetIds.join(",")}",
-    );
+      final url = Uri.parse(
+        "$endpoint?appKey=$appKey&appUrl=$appUrl&vodAssetIds=${vodAssetIds.join(",")}",
+      );
 
-    final response = await http.get(url);
+      final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      const cast = Cast(location: "ApiService::getProductsByVodAssetIds");
+      if (response.statusCode == 200) {
+        const cast = Cast(location: "ApiService::getProductsByVodAssetIds");
 
-      final jsonData =
-          cast.jsonMapOrNull(json.decode(response.body), "response.body");
+        final jsonData =
+            cast.jsonMapOrNull(json.decode(response.body), "response.body");
 
-      if (jsonData == null) {
+        if (jsonData == null) {
+          const message = "Failed to load products by VOD asset IDs";
+          debugError(message);
+          onError?.call(message, StackTrace.current);
+          return ProductsMap(products: {});
+        }
+
+        return ProductsMap.fromJson(jsonData);
+      } else {
         const message = "Failed to load products by VOD asset IDs";
         debugError(message);
         onError?.call(message, StackTrace.current);
         return ProductsMap(products: {});
       }
-
-      return ProductsMap.fromJson(jsonData);
-    } else {
-      const message = "Failed to load products by VOD asset IDs";
-      debugError(message);
-      onError?.call(message, StackTrace.current);
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      debugError(e);
+      onError?.call(e, StackTrace.current);
       return ProductsMap(products: {});
     }
   }
 
-  static Future<bool> sendEvent(AnalyticsParams params) async {
-    final result = await http.post(
-      Uri.parse(AppConfig.analyticsEndpointUrl),
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-      },
-      body: jsonEncode(params),
-    );
+  static Future<bool> sendEvent(
+    AnalyticsParams params, {
+    required SdkErrorCallback? onError,
+  }) async {
+    try {
+      final result = await http.post(
+        Uri.parse(AppConfig.analyticsEndpointUrl),
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(params),
+      );
 
-    return result.statusCode == 200;
+      return result.statusCode == 200;
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      debugError(e);
+      onError?.call(e, StackTrace.current);
+      return false;
+    }
   }
 }

@@ -49,7 +49,7 @@ class _VideoAssetState extends State<VideoAsset> {
   @override
   void initState() {
     super.initState();
-    _analytics = Analytics();
+    _analytics = Analytics(onError: widget.config.onError);
 
     _thumbnailUrl = AssetService.getPosterUrl(widget.asset);
 

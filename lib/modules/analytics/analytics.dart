@@ -1,3 +1,4 @@
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/api/services/api.dart";
 import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
 import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
@@ -25,29 +26,34 @@ enum AnalyticsMode {
 }
 
 class Analytics {
-  factory Analytics([AnalyticsMode? mode]) {
-    final localInstance = _instance ?? Analytics._(mode);
+  factory Analytics({
+    AnalyticsMode? mode,
+    SdkErrorCallback? onError,
+  }) {
+    final localInstance = _instance ?? Analytics._(mode, onError);
     _instance = localInstance;
     return localInstance;
   }
 
-  Analytics._(AnalyticsMode? mode) {
+  Analytics._(AnalyticsMode? mode, SdkErrorCallback? onError) {
     _sessionId = uuid.v4();
     _anonymousId = uuid.v4();
     _mode = mode ?? AnalyticsMode.track;
+    _onError = onError;
   }
 
   static Analytics? _instance;
   late final String _sessionId;
   late final String _anonymousId;
   late final AnalyticsMode _mode;
+  late final SdkErrorCallback? _onError;
   String get sessionId => _sessionId;
   String get anonymousId => _anonymousId;
 
   Future<void> _sendEvent(AnalyticsParams params) async {
     switch (_mode) {
       case AnalyticsMode.track:
-        await ApiService.sendEvent(params);
+        await ApiService.sendEvent(params, onError: _onError);
       case AnalyticsMode.log:
         debugInfo("Params: $params");
       case AnalyticsMode.notrack:
