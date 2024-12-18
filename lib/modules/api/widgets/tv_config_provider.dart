@@ -8,15 +8,18 @@ class TvConfigProvider extends StatefulWidget {
     required this.publishId,
     required this.builder,
     required this.createProductsLoader,
+    this.disableCache = false,
     super.key,
     this.config,
     this.loadingWidget = const Center(child: CircularProgressIndicator()),
   });
+
   final String publishId;
   final Future<TvPageConfig>? config;
   final Widget Function(BuildContext, TvPageConfig) builder;
   final Widget loadingWidget;
   final ProductsLoaderFactory createProductsLoader;
+  final bool disableCache;
 
   @override
   State<TvConfigProvider> createState() => _TvConfigProviderState();
@@ -36,6 +39,7 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
         ApiService.getTvPageConfig(
           widget.publishId,
           widget.createProductsLoader,
+          disableCache: widget.disableCache,
         ));
 
     if (mounted) {

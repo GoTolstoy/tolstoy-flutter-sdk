@@ -8,8 +8,10 @@ class SimpleProductsLoader extends ProductsLoader {
     required super.appUrl,
     required super.appKey,
     required super.assets,
+    this.disableCache = false,
   });
 
+  final bool disableCache;
   final Map<String, List<Product>> _productsCache = {};
   final Map<String, Future<ProductsMap>> _futureProductsMapCache = {};
 
@@ -22,7 +24,12 @@ class SimpleProductsLoader extends ProductsLoader {
     }
 
     _futureProductsMapCache[asset.id] = _futureProductsMapCache[asset.id] ??
-        ApiService.getProductsByVodAssetIds([asset.id], appUrl, appKey);
+        ApiService.getProductsByVodAssetIds(
+          [asset.id],
+          appUrl,
+          appKey,
+          disableCache: disableCache,
+        );
 
     final productsMap = await _futureProductsMapCache[asset.id];
 

@@ -11,10 +11,15 @@ typedef AnalyticsParams = Map<String, dynamic>;
 class ApiService {
   static Future<TvPageConfig> getTvPageConfig(
     String publishId,
-    ProductsLoaderFactory createProductsLoader,
-  ) async {
+    ProductsLoaderFactory createProductsLoader, {
+    bool disableCache = false,
+  }) async {
+    final endpoint = disableCache
+        ? AppConfig.configEndpointUrl
+        : AppConfig.configEndpointCacheUrl;
+
     final url = Uri.parse(
-      "${AppConfig.configEndpointUrl}?publishId=$publishId",
+      "$endpoint?publishId=$publishId",
     );
 
     final response = await http.get(url);
@@ -40,10 +45,15 @@ class ApiService {
   static Future<ProductsMap> getProductsByVodAssetIds(
     List<String> vodAssetIds,
     String appUrl,
-    String appKey,
-  ) async {
+    String appKey, {
+    bool disableCache = false,
+  }) async {
+    final endpoint = disableCache
+        ? AppConfig.productsEndpointUrl
+        : AppConfig.productsEndpointCacheUrl;
+
     final url = Uri.parse(
-      "${AppConfig.productsEndpointUrl}?appKey=$appKey&appUrl=$appUrl&vodAssetIds=${vodAssetIds.join(",")}",
+      "$endpoint?appKey=$appKey&appUrl=$appUrl&vodAssetIds=${vodAssetIds.join(",")}",
     );
 
     final response = await http.get(url);
