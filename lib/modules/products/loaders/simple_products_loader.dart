@@ -1,5 +1,4 @@
-import "dart:ui";
-
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/api/services/api.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
@@ -18,7 +17,10 @@ class SimpleProductsLoader extends ProductsLoader {
   final Map<String, Future<ProductsMap>> _futureProductsMapCache = {};
 
   @override
-  Future<List<Product>> getProducts(Asset asset, ErrorCallback? onError) async {
+  Future<List<Product>> getProducts(
+    Asset asset,
+    SdkErrorCallback? onError,
+  ) async {
     final cachedProducts = _productsCache[asset.id];
 
     if (cachedProducts != null) {
@@ -48,7 +50,7 @@ class SimpleProductsLoader extends ProductsLoader {
   }
 
   @override
-  void preload(List<Asset> assets, ErrorCallback? onError) {
+  void preload(List<Asset> assets, SdkErrorCallback? onError) {
     // Do not preload products in simple products loader
   }
 }

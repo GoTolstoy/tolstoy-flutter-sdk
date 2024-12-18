@@ -1,1 +1,4 @@
-typedef ErrorCallback = void Function(String message, StackTrace? stackTrace);
+typedef SdkErrorCallback = void Function(
+  Object message,
+  StackTrace? stackTrace,
+);

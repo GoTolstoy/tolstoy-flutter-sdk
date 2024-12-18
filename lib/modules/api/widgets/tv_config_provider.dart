@@ -1,5 +1,5 @@
-import "dart:ui";
 import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_config.dart";
 import "package:tolstoy_flutter_sdk/modules/api/services.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
@@ -20,7 +20,7 @@ class TvConfigProvider extends StatefulWidget {
   final String publishId;
   final ProductsLoaderFactory createProductsLoader;
   final bool disableCache;
-  final ErrorCallback? onError;
+  final SdkErrorCallback? onError;
   final Widget loadingWidget;
 
   @override

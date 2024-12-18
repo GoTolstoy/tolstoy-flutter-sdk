@@ -1,7 +1,7 @@
 import "dart:convert";
-import "dart:ui";
 import "package:http/http.dart" as http;
 import "package:tolstoy_flutter_sdk/core/config.dart";
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
 import "package:tolstoy_flutter_sdk/modules/products/models.dart";
@@ -15,7 +15,7 @@ class ApiService {
     String publishId,
     ProductsLoaderFactory createProductsLoader, {
     bool disableCache = false,
-    ErrorCallback? onError,
+    SdkErrorCallback? onError,
   }) async {
     final endpoint = disableCache
         ? AppConfig.configEndpointUrl
@@ -54,7 +54,7 @@ class ApiService {
     String appUrl,
     String appKey, {
     bool disableCache = false,
-    ErrorCallback? onError,
+    SdkErrorCallback? onError,
   }) async {
     final endpoint = disableCache
         ? AppConfig.productsEndpointUrl

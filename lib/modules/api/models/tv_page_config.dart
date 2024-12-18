@@ -1,4 +1,4 @@
-import "dart:ui";
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
 import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
@@ -28,7 +28,7 @@ class TvPageConfig {
   factory TvPageConfig.fromJson(
     JsonMap json,
     ProductsLoaderFactory createProductsLoader,
-    ErrorCallback? onError,
+    SdkErrorCallback? onError,
   ) {
     final parse = JsonParser(
       location: "TvPageConfig",
@@ -64,7 +64,7 @@ class TvPageConfig {
   final String appKey;
   final String owner;
   final ProductsLoaderFactory createProductsLoader;
-  final ErrorCallback? onError;
+  final SdkErrorCallback? onError;
   final String? userId;
   final ProductsLoader productsLoader;
 
@@ -83,7 +83,7 @@ class TvPageConfig {
       required String appUrl,
       required List<Asset> assets,
     })? createProductsLoader,
-    ErrorCallback? onError,
+    SdkErrorCallback? onError,
   }) =>
       TvPageConfig(
         publishId: publishId ?? this.publishId,
