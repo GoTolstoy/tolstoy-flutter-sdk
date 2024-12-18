@@ -8,12 +8,14 @@ class BatchProductsLoader extends ProductsLoader {
     required super.appUrl,
     required super.appKey,
     required super.assets,
+    this.disableCache = false,
     this.minPreload = 1,
     this.maxPreload = 10,
   });
 
   final int minPreload;
   final int maxPreload;
+  final bool disableCache;
   final Map<String, List<Product>> _productsCache = {};
   final Map<String, Future<ProductsMap>> _futureProductsMapCache = {};
 
@@ -83,8 +85,12 @@ class BatchProductsLoader extends ProductsLoader {
       return;
     }
 
-    final futureProductsMap =
-        ApiService.getProductsByVodAssetIds(filteredSlice, appUrl, appKey);
+    final futureProductsMap = ApiService.getProductsByVodAssetIds(
+      filteredSlice,
+      appUrl,
+      appKey,
+      disableCache: disableCache,
+    );
 
     for (final id in filteredSlice) {
       _futureProductsMapCache[id] = futureProductsMap;

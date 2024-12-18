@@ -1,7 +1,7 @@
 name: tolstoy_flutter_sdk
 description: "Tolstoy Flutter SDK"
 publish_to: 'none'
-version: 0.1.8
+version: 0.1.9
 
 environment:
   sdk: ^3.3.0

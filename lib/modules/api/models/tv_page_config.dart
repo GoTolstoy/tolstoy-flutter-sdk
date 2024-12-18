@@ -24,11 +24,7 @@ class TvPageConfig {
 
   factory TvPageConfig.fromJson(
     JsonMap json,
-    ProductsLoader Function({
-      required String appKey,
-      required String appUrl,
-      required List<Asset> assets,
-    }) createProductsLoader,
+    ProductsLoaderFactory createProductsLoader,
   ) {
     final parse = JsonParser(
       location: "TvPageConfig",
@@ -62,11 +58,7 @@ class TvPageConfig {
   final String startStep;
   final String appKey;
   final String owner;
-  final ProductsLoader Function({
-    required String appKey,
-    required String appUrl,
-    required List<Asset> assets,
-  }) createProductsLoader;
+  final ProductsLoaderFactory createProductsLoader;
   final String? userId;
   final ProductsLoader productsLoader;
 
