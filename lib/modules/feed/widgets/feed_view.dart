@@ -1,5 +1,6 @@
 import "dart:convert";
 import "dart:math";
+
 import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";

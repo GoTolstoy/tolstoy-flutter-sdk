@@ -78,11 +78,7 @@ class TvPageConfig {
     String? appKey,
     String? owner,
     String? userId,
-    ProductsLoader Function({
-      required String appKey,
-      required String appUrl,
-      required List<Asset> assets,
-    })? createProductsLoader,
+    ProductsLoaderFactory? createProductsLoader,
     SdkErrorCallback? onError,
   }) =>
       TvPageConfig(
