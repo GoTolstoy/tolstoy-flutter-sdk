@@ -2,7 +2,6 @@ import "dart:convert";
 import "package:http/http.dart" as http;
 import "package:tolstoy_flutter_sdk/core/config.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
-import "package:tolstoy_flutter_sdk/modules/assets/models/asset.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
 import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 import "package:tolstoy_flutter_sdk/utils/cast.dart";
@@ -12,11 +11,7 @@ typedef AnalyticsParams = Map<String, dynamic>;
 class ApiService {
   static Future<TvPageConfig> getTvPageConfig(
     String publishId,
-    ProductsLoader Function({
-      required String appKey,
-      required String appUrl,
-      required List<Asset> assets,
-    }) createProductsLoader,
+    ProductsLoaderFactory createProductsLoader,
   ) async {
     final url = Uri.parse(
       "${AppConfig.apilbBaseUrl}/settings${AppConfig.mobileAppFolder}/player/by-publish-id?publishId=$publishId",

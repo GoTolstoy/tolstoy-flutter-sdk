@@ -16,3 +16,9 @@ abstract class ProductsLoader {
 
   void preload(List<Asset> assets);
 }
+
+typedef ProductsLoaderFactory = ProductsLoader Function({
+  required String appKey,
+  required String appUrl,
+  required List<Asset> assets,
+});
