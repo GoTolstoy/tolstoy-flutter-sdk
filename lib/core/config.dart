@@ -1,13 +1,21 @@
+// ignore_for_file: do_not_use_environment
+
 import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
+import "package:tolstoy_flutter_sdk/utils/enum_from_string.dart";
 
 class AppConfig {
   // Options
 
-  static const _debugLevel = DebugLevel.info;
+  static final _debugLevel = enumFromString(
+    const String.fromEnvironment("TOLSTOY_FLUTTER_SDK_DEBUG_LEVEL"),
+    DebugLevel.values,
+    DebugLevel.none,
+  );
 
   static const _mobileAppEndpoints = true;
 
-  static const _prod = true;
+  static const _prod =
+      String.fromEnvironment("TOLSTOY_FLUTTER_SDK_PROD") != "false";
 
   // Local variables
 
@@ -26,7 +34,7 @@ class AppConfig {
   static const configEndpointCacheUrl =
       "https://${_devPart}cf-apilb.gotolstoy.com/settings$_mobileAppPart/player/by-publish-id";
 
-  static const debugLevel = _debugLevel;
+  static final debugLevel = _debugLevel;
 
   static const productsEndpointUrl =
       "https://${_devPart}apilb.gotolstoy.com/products/actions/v2$_mobileAppPart/get-by-vod-asset-ids";
