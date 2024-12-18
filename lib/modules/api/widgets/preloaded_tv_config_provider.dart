@@ -10,7 +10,7 @@ class PreloadedTvConfigProvider extends StatefulWidget {
   });
 
   final Widget Function(BuildContext, TvPageConfig) builder;
-  final Future<TvPageConfig> config;
+  final Future<TvPageConfig?> config;
   final Widget loadingWidget;
 
   @override

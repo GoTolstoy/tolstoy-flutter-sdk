@@ -1,3 +1,5 @@
+import "dart:ui";
+
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 
@@ -12,9 +14,9 @@ abstract class ProductsLoader {
   final String appUrl;
   final List<Asset> assets;
 
-  Future<List<Product>> getProducts(Asset asset);
+  Future<List<Product>> getProducts(Asset asset, ErrorCallback? onError);
 
-  void preload(List<Asset> assets);
+  void preload(List<Asset> assets, ErrorCallback? onError);
 }
 
 typedef ProductsLoaderFactory = ProductsLoader Function({

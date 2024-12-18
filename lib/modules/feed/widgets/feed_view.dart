@@ -173,7 +173,7 @@ class _FeedViewState extends State<FeedView>
 
     return KeepAliveWrapper(
       child: FutureBuilder<List<Product>>(
-        future: widget.config.productsLoader.getProducts(asset),
+        future: widget.config.getProducts(asset),
         builder: (context, snapshot) => FeedAssetView(
           asset: asset,
           config: widget.config,

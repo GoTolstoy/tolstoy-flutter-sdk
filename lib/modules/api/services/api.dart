@@ -1,18 +1,21 @@
 import "dart:convert";
+import "dart:ui";
 import "package:http/http.dart" as http;
 import "package:tolstoy_flutter_sdk/core/config.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
 import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 import "package:tolstoy_flutter_sdk/utils/cast.dart";
+import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 
 typedef AnalyticsParams = Map<String, dynamic>;
 
 class ApiService {
-  static Future<TvPageConfig> getTvPageConfig(
+  static Future<TvPageConfig?> getTvPageConfig(
     String publishId,
     ProductsLoaderFactory createProductsLoader, {
     bool disableCache = false,
+    ErrorCallback? onError,
   }) async {
     final endpoint = disableCache
         ? AppConfig.configEndpointUrl
@@ -31,14 +34,18 @@ class ApiService {
           cast.jsonMapOrNull(json.decode(response.body), "response.body");
 
       if (jsonData == null) {
-        throw Exception("Failed to load TV page config");
+        const message = "Failed to load TV page config";
+        debugError(message);
+        onError?.call(message, StackTrace.current);
+        return null;
       }
 
-      return TvPageConfig.fromJson(jsonData, createProductsLoader);
+      return TvPageConfig.fromJson(jsonData, createProductsLoader, onError);
     } else {
-      throw Exception(
-        "Failed to load TV page config. Status code: ${response.statusCode}",
-      );
+      const message = "Failed to load TV page config";
+      debugError(message);
+      onError?.call(message, StackTrace.current);
+      return null;
     }
   }
 
@@ -47,6 +54,7 @@ class ApiService {
     String appUrl,
     String appKey, {
     bool disableCache = false,
+    ErrorCallback? onError,
   }) async {
     final endpoint = disableCache
         ? AppConfig.productsEndpointUrl
@@ -65,14 +73,18 @@ class ApiService {
           cast.jsonMapOrNull(json.decode(response.body), "response.body");
 
       if (jsonData == null) {
-        throw Exception("Failed to load products by VOD asset IDs");
+        const message = "Failed to load products by VOD asset IDs";
+        debugError(message);
+        onError?.call(message, StackTrace.current);
+        return ProductsMap(products: {});
       }
 
       return ProductsMap.fromJson(jsonData);
     } else {
-      throw Exception(
-        "Failed to load actions by VOD asset IDs. Status code: ${response.statusCode}",
-      );
+      const message = "Failed to load products by VOD asset IDs";
+      debugError(message);
+      onError?.call(message, StackTrace.current);
+      return ProductsMap(products: {});
     }
   }
 

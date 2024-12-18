@@ -1,3 +1,4 @@
+import "dart:ui";
 import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_config.dart";
 import "package:tolstoy_flutter_sdk/modules/api/services.dart";
@@ -9,6 +10,7 @@ class TvConfigProvider extends StatefulWidget {
     required this.publishId,
     required this.createProductsLoader,
     this.disableCache = false,
+    this.onError,
     super.key,
     this.loadingWidget = const Center(child: CircularProgressIndicator()),
   });
@@ -17,6 +19,7 @@ class TvConfigProvider extends StatefulWidget {
   final String publishId;
   final ProductsLoaderFactory createProductsLoader;
   final bool disableCache;
+  final ErrorCallback? onError;
   final Widget loadingWidget;
 
   @override
@@ -37,6 +40,7 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
       widget.publishId,
       widget.createProductsLoader,
       disableCache: widget.disableCache,
+      onError: widget.onError,
     );
 
     if (mounted) {
