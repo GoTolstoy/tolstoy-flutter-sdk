@@ -14,7 +14,7 @@ class ApiService {
     ProductsLoaderFactory createProductsLoader,
   ) async {
     final url = Uri.parse(
-      "${AppConfig.apilbBaseUrl}/settings${AppConfig.mobileAppFolder}/player/by-publish-id?publishId=$publishId",
+      "${AppConfig.configEndpointUrl}?publishId=$publishId",
     );
 
     final response = await http.get(url);
@@ -43,7 +43,7 @@ class ApiService {
     String appKey,
   ) async {
     final url = Uri.parse(
-      "${AppConfig.apilbBaseUrl}/products/actions/v2${AppConfig.mobileAppFolder}/get-by-vod-asset-ids?appKey=$appKey&appUrl=$appUrl&vodAssetIds=${vodAssetIds.join(",")}",
+      "${AppConfig.productsEndpointUrl}?appKey=$appKey&appUrl=$appUrl&vodAssetIds=${vodAssetIds.join(",")}",
     );
 
     final response = await http.get(url);
@@ -68,7 +68,7 @@ class ApiService {
 
   static Future<bool> sendEvent(AnalyticsParams params) async {
     final result = await http.post(
-      Uri.parse("${AppConfig.apiBaseUrl}/events/event"),
+      Uri.parse(AppConfig.analyticsEndpointUrl),
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",

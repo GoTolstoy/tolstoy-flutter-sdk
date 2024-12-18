@@ -1,21 +1,34 @@
 import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 
-const prod = true;
-
-const useMobileEndpoints = true;
-
 class AppConfig {
-  static const debugLevel = prod ? DebugLevel.none : DebugLevel.info;
+  static const _debugLevel = DebugLevel.info;
 
-  static const apiBaseUrl =
-      prod ? "https://api.gotolstoy.com" : "https://dev-api.gotolstoy.com";
+  static const _mobileAppEndpoints = true;
 
-  static const apilbBaseUrl =
-      prod ? "https://apilb.gotolstoy.com" : "https://dev-apilb.gotolstoy.com";
+  static const _prod = true;
 
-  static const videoBaseUrl = prod
+  static const _devPart = _prod ? "" : "dev-";
+
+  static const _mobileAppPart = _mobileAppEndpoints ? "/mobile-app" : "";
+
+  static const debugLevel = _debugLevel;
+
+  static const analyticsEndpointUrl =
+      "https://${_devPart}api.gotolstoy.com/events/event";
+
+  static const configEndpointUrl =
+      "https://${_devPart}apilb.gotolstoy.com/settings$_mobileAppPart/player/by-publish-id";
+
+  static const configEndpointCacheUrl =
+      "https://${_devPart}cf-apilb.gotolstoy.com/settings$_mobileAppPart/player/by-publish-id";
+
+  static const productsEndpointUrl =
+      "https://${_devPart}apilb.gotolstoy.com/products/actions/v2$_mobileAppPart/get-by-vod-asset-ids";
+
+  static const productsEndpointCacheUrl =
+      "https://${_devPart}cf-apilb.gotolstoy.com/products/actions/v2$_mobileAppPart/get-by-vod-asset-ids";
+
+  static const videoBaseUrl = _prod
       ? "https://videos.gotolstoy.com"
       : "https://dev-videos.gotolstoy.com";
-
-  static const mobileAppFolder = useMobileEndpoints ? "/mobile-app" : "";
 }
