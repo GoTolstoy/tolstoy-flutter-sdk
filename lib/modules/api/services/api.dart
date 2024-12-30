@@ -17,6 +17,7 @@ class ApiService {
     ProductsLoaderFactory createProductsLoader, {
     bool disableCache = false,
     SdkErrorCallback? onError,
+    TvPageClientConfig? clientConfig,
   }) async {
     try {
       final endpoint = disableCache
@@ -42,7 +43,12 @@ class ApiService {
           return null;
         }
 
-        return TvPageConfig.fromJson(jsonData, createProductsLoader, onError);
+        return TvPageConfig.fromJson(
+          jsonData,
+          createProductsLoader,
+          onError,
+          clientConfig,
+        );
       } else {
         const message = "Failed to load TV page config";
         debugError(message);

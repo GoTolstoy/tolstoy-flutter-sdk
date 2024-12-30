@@ -45,6 +45,7 @@ class _VideoAssetState extends State<VideoAsset> {
   Duration _lastPosition = Duration.zero;
   bool _isVideoInitialized = false;
   bool _isVideoReady = false;
+  VideoPlayerValue? _videoPlayerValue;
 
   @override
   void initState() {
@@ -95,6 +96,10 @@ class _VideoAssetState extends State<VideoAsset> {
       return;
     }
 
+    setState(() {
+      _videoPlayerValue = localController.value;
+    });
+
     if (localController.value.hasError) {
       widget.onVideoError?.call(
         localController.value.errorDescription ?? "Unknown error",
@@ -109,6 +114,10 @@ class _VideoAssetState extends State<VideoAsset> {
     if (localController == null) {
       return;
     }
+
+    setState(() {
+      _videoPlayerValue = localController.value;
+    });
 
     final currentPosition = localController.value.position;
 
@@ -222,6 +231,41 @@ class _VideoAssetState extends State<VideoAsset> {
     }
   }
 
+  String _getVideoInfoText(VideoPlayerController? localController) {
+    var text = localController != null && _isVideoInitialized && _isVideoReady
+        ? (widget.options.playMode == AssetViewOptionsPlayMode.preview
+            ? "Preview video."
+            : "Video.")
+        : "Preview image.";
+
+    final localVideoPlayerValue = _videoPlayerValue;
+
+    if (localVideoPlayerValue != null) {
+      if (localVideoPlayerValue.isPlaying) {
+        text += " Playing.";
+      }
+
+      if (localVideoPlayerValue.isBuffering) {
+        text += " Buffering.";
+      }
+
+      if (localVideoPlayerValue.position != Duration.zero) {
+        final position = localVideoPlayerValue.position;
+        final minutes = position.inMinutes.remainder(60);
+        final seconds = position.inSeconds.remainder(60);
+        final milliseconds = position.inMilliseconds.remainder(1000);
+        text +=
+            ' $minutes:${seconds.toString().padLeft(2, '0')}:${milliseconds.toString().padLeft(3, '0')}.';
+      }
+
+      if (localVideoPlayerValue.errorDescription != null) {
+        text += " Error: ${localVideoPlayerValue.errorDescription}.";
+      }
+    }
+
+    return text;
+  }
+
   @override
   Widget build(BuildContext context) {
     final localController = _controller;
@@ -253,6 +297,23 @@ class _VideoAssetState extends State<VideoAsset> {
                 height: localController.value.size.height,
                 width: localController.value.size.width,
                 child: VideoPlayer(localController),
+              ),
+            ),
+          ),
+        if (widget.config.clientConfig?.videoDebugInfo ?? false)
+          Positioned(
+            top: 5,
+            left: 5,
+            right: 5,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              color: Colors.white.withOpacity(0.8),
+              child: Text(
+                _getVideoInfoText(localController),
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 12,
+                ),
               ),
             ),
           ),

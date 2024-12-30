@@ -6,6 +6,14 @@ import "package:tolstoy_flutter_sdk/utils/cast.dart";
 import "package:tolstoy_flutter_sdk/utils/json_parser.dart";
 import "package:tolstoy_flutter_sdk/utils/types.dart";
 
+class TvPageClientConfig {
+  TvPageClientConfig({
+    this.videoDebugInfo = false,
+  });
+
+  final bool videoDebugInfo;
+}
+
 class TvPageConfig {
   TvPageConfig({
     required this.publishId,
@@ -18,6 +26,7 @@ class TvPageConfig {
     required this.owner,
     required this.createProductsLoader,
     this.onError,
+    this.clientConfig,
     this.userId,
   }) : productsLoader = createProductsLoader(
           appKey: appKey,
@@ -29,6 +38,7 @@ class TvPageConfig {
     JsonMap json,
     ProductsLoaderFactory createProductsLoader,
     SdkErrorCallback? onError,
+    TvPageClientConfig? clientConfig,
   ) {
     final parse = JsonParser(
       location: "TvPageConfig",
@@ -52,6 +62,7 @@ class TvPageConfig {
       userId: parse.stringOrNull("userId"),
       createProductsLoader: createProductsLoader,
       onError: onError,
+      clientConfig: clientConfig,
     );
   }
 
@@ -65,6 +76,7 @@ class TvPageConfig {
   final String owner;
   final ProductsLoaderFactory createProductsLoader;
   final SdkErrorCallback? onError;
+  final TvPageClientConfig? clientConfig;
   final String? userId;
   final ProductsLoader productsLoader;
 
@@ -80,6 +92,7 @@ class TvPageConfig {
     String? userId,
     ProductsLoaderFactory? createProductsLoader,
     SdkErrorCallback? onError,
+    TvPageClientConfig? clientConfig,
   }) =>
       TvPageConfig(
         publishId: publishId ?? this.publishId,
@@ -93,6 +106,7 @@ class TvPageConfig {
         userId: userId ?? this.userId,
         createProductsLoader: createProductsLoader ?? this.createProductsLoader,
         onError: onError ?? this.onError,
+        clientConfig: clientConfig ?? this.clientConfig,
       );
 
   Future<List<Product>> getProducts(Asset asset) =>

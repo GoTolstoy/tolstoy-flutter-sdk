@@ -12,6 +12,7 @@ class TvConfigProvider extends StatefulWidget {
     required this.createProductsLoader,
     this.disableCache = false,
     this.onError,
+    this.clientConfig,
     super.key,
     this.loadingWidget = const Center(child: CircularProgressIndicator()),
   });
@@ -21,6 +22,7 @@ class TvConfigProvider extends StatefulWidget {
   final ProductsLoaderFactory createProductsLoader;
   final bool disableCache;
   final SdkErrorCallback? onError;
+  final TvPageClientConfig? clientConfig;
   final Widget loadingWidget;
 
   @override
@@ -42,6 +44,7 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
       widget.createProductsLoader,
       disableCache: widget.disableCache,
       onError: widget.onError,
+      clientConfig: widget.clientConfig,
     );
 
     if (mounted) {
