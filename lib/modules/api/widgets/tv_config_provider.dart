@@ -11,8 +11,8 @@ class TvConfigProvider extends StatefulWidget {
     required this.publishId,
     required this.createProductsLoader,
     this.disableCache = false,
-    this.onError,
     this.clientConfig,
+    this.onError,
     super.key,
     this.loadingWidget = const Center(child: CircularProgressIndicator()),
   });
@@ -21,8 +21,8 @@ class TvConfigProvider extends StatefulWidget {
   final String publishId;
   final ProductsLoaderFactory createProductsLoader;
   final bool disableCache;
-  final SdkErrorCallback? onError;
   final TvPageClientConfig? clientConfig;
+  final SdkErrorCallback? onError;
   final Widget loadingWidget;
 
   @override
@@ -43,8 +43,8 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
       widget.publishId,
       widget.createProductsLoader,
       disableCache: widget.disableCache,
-      onError: widget.onError,
       clientConfig: widget.clientConfig,
+      onError: widget.onError,
     );
 
     if (mounted) {

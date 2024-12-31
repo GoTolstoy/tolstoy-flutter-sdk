@@ -12,10 +12,14 @@ class AppConfig {
     DebugLevel.none,
   );
 
+  // Should be true when commiting!!!
   static const _mobileAppEndpoints = true;
 
-  static const _prod =
-      String.fromEnvironment("TOLSTOY_FLUTTER_SDK_PROD") != "false";
+  // Should be true when commiting!!!
+  static const _prod = true;
+
+  // Should be false when commiting!!!
+  static const _videoDebugInfo = false;
 
   // Local variables
 
@@ -45,4 +49,6 @@ class AppConfig {
   static const videoBaseUrl = _prod
       ? "https://videos.gotolstoy.com"
       : "https://dev-videos.gotolstoy.com";
+
+  static const videoDebugInfo = _videoDebugInfo;
 }
