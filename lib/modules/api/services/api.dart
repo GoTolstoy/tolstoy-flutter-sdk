@@ -28,7 +28,13 @@ class ApiService {
         "$endpoint?publishId=$publishId",
       );
 
+      debugInfo("HTTP request: $url");
+
       final response = await http.get(url);
+
+      if (AppConfig.debugNetworkDelay != Duration.zero) {
+        await Future.delayed(AppConfig.debugNetworkDelay);
+      }
 
       if (response.statusCode == 200) {
         const cast = Cast(location: "ApiService::getTvPageConfig");
@@ -80,7 +86,13 @@ class ApiService {
         "$endpoint?appKey=$appKey&appUrl=$appUrl&vodAssetIds=${vodAssetIds.join(",")}",
       );
 
+      debugInfo("HTTP request: $url");
+
       final response = await http.get(url);
+
+      if (AppConfig.debugNetworkDelay != Duration.zero) {
+        await Future.delayed(AppConfig.debugNetworkDelay);
+      }
 
       if (response.statusCode == 200) {
         const cast = Cast(location: "ApiService::getProductsByVodAssetIds");

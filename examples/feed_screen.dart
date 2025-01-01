@@ -47,17 +47,20 @@ class FeedPage extends StatelessWidget {
           appUrl: appUrl,
           assets: assets,
         ),
-        builder: (context, config) => FeedScreen(
-          config: config,
-          onProductClick: (Product product) {
-            // Implement logic for product click
-            debugInfo("Product clicked: ${product.title}");
-          },
-        ),
-        loadingWidget: const Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
+        builder: (context, config) {
+          final localConfig = config;
+
+          if (localConfig == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          return FeedScreen(
+            config: localConfig,
+            onProductClick: (Product product) {
+              // Implement logic for product click
+              debugInfo("Product clicked: ${product.title}");
+            },
+          );
+        },
       );
 }

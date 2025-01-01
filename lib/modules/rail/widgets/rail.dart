@@ -16,7 +16,7 @@ class Rail extends StatefulWidget {
     this.onVideoError,
   });
 
-  final TvPageConfig config;
+  final TvPageConfig? config;
   final void Function(Asset)? onAssetClick;
   final RailOptions options;
   final void Function(String message, Asset asset)? onVideoError;
@@ -26,19 +26,38 @@ class Rail extends StatefulWidget {
 }
 
 class _RailState extends State<Rail> {
-  late final Analytics _analytics;
+  Analytics? _analytics;
   bool _isVisible = false;
   bool _hasBeenVisible = false;
   int _currentPlayingIndex = 0;
   bool _currentVideoEnded = false;
   late final ScrollController _scrollController;
+  final _visibilityKey = UniqueKey();
 
   @override
   void initState() {
     super.initState();
-    _analytics = Analytics(onError: widget.config.onError);
-    _analytics.sendPageView(widget.config);
     _scrollController = ScrollController();
+    _initializeAnalytics();
+  }
+
+  @override
+  void didUpdateWidget(Rail oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.config != oldWidget.config) {
+      _initializeAnalytics();
+    }
+  }
+
+  void _initializeAnalytics() {
+    final localConfig = widget.config;
+
+    if (localConfig == null) {
+      return;
+    }
+
+    _analytics = Analytics(onError: localConfig.onError);
+    _analytics?.sendPageView(localConfig);
   }
 
   @override
@@ -48,7 +67,7 @@ class _RailState extends State<Rail> {
   }
 
   int get visibleItemCount =>
-      widget.config.assets.length.clamp(0, maxVisibleItems);
+      widget.config?.assets.length.clamp(0, maxVisibleItems) ?? maxVisibleItems;
 
   double get railWidth =>
       context.size?.width ?? MediaQuery.of(context).size.width;
@@ -161,92 +180,105 @@ class _RailState extends State<Rail> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      NotificationListener<ScrollNotification>(
-        onNotification: (scrollNotification) {
-          if (scrollNotification is ScrollEndNotification) {
-            _onScrollEnd();
+  Widget build(BuildContext context) {
+    final localConfig = widget.config;
+
+    return NotificationListener<ScrollNotification>(
+      onNotification: (scrollNotification) {
+        if (scrollNotification is ScrollEndNotification) {
+          _onScrollEnd();
+        }
+
+        return true;
+      },
+      child: VisibilityDetector(
+        key: _visibilityKey,
+        onVisibilityChanged: (visibilityInfo) {
+          if (!mounted) {
+            return;
           }
 
-          return true;
+          if (visibilityInfo.visibleFraction > 0.5 && !_hasBeenVisible) {
+            _hasBeenVisible = true;
+            if (localConfig != null) {
+              _analytics?.sendEmbedView(localConfig);
+            }
+          }
+
+          setState(() {
+            _isVisible = visibilityInfo.visibleFraction > 0.5;
+          });
         },
-        child: VisibilityDetector(
-          key: Key("rail-${widget.config.publishId}"),
-          onVisibilityChanged: (visibilityInfo) {
-            if (!mounted) {
-              return;
-            }
+        child: SizedBox(
+          height: widget.options.itemHeight,
+          child: ListView.builder(
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            itemCount: visibleItemCount,
+            itemBuilder: (context, index) {
+              final asset = localConfig?.assets[index];
+              final isFirstItem = index == 0;
+              final isLastItem = index == visibleItemCount - 1;
 
-            if (visibilityInfo.visibleFraction > 0.5 && !_hasBeenVisible) {
-              _hasBeenVisible = true;
-              _analytics.sendEmbedView(widget.config);
-            }
+              return Padding(
+                padding: EdgeInsets.only(
+                  left: isFirstItem
+                      ? widget.options.xPadding
+                      : widget.options.itemGap / 2,
+                  right: isLastItem
+                      ? widget.options.xPadding
+                      : widget.options.itemGap / 2,
+                ),
+                child: RailAsset(
+                  asset: asset,
+                  config: localConfig,
+                  onTap: () {
+                    if (localConfig == null || asset == null) {
+                      return;
+                    }
 
-            setState(() {
-              _isVisible = visibilityInfo.visibleFraction > 0.5;
-            });
-          },
-          child: SizedBox(
-            height: widget.options.itemHeight,
-            child: ListView.builder(
-              controller: _scrollController,
-              scrollDirection: Axis.horizontal,
-              itemCount: visibleItemCount,
-              itemBuilder: (context, index) {
-                final asset = widget.config.assets[index];
-                final isFirstItem = index == 0;
-                final isLastItem = index == visibleItemCount - 1;
+                    widget.onAssetClick?.call(asset);
+                    _analytics?.sendVideoClicked(
+                      localConfig,
+                      {"videoId": asset.id},
+                    );
+                  },
+                  onPlayClick: () {
+                    if (localConfig == null || asset == null) {
+                      return;
+                    }
 
-                return Padding(
-                  padding: EdgeInsets.only(
-                    left: isFirstItem
-                        ? widget.options.xPadding
-                        : widget.options.itemGap / 2,
-                    right: isLastItem
-                        ? widget.options.xPadding
-                        : widget.options.itemGap / 2,
+                    _playVideo(index);
+                    _analytics?.sendVideoWatched(
+                      localConfig,
+                      {"videoId": asset.id},
+                    );
+                  },
+                  onVideoEnded: (asset) {
+                    if (index != _currentPlayingIndex) {
+                      return;
+                    }
+
+                    _onCurrentVideoEnded();
+                  },
+                  onVideoError: widget.onVideoError,
+                  width: widget.options.itemWidth,
+                  height: widget.options.itemHeight,
+                  options: AssetViewOptions(
+                    isPlaying: index == _currentPlayingIndex &&
+                        _isVisible &&
+                        !_currentVideoEnded,
+                    isMuted: true,
+                    imageFit: BoxFit.cover,
+                    playMode: AssetViewOptionsPlayMode.preview,
                   ),
-                  child: RailAsset(
-                    asset: asset,
-                    config: widget.config,
-                    onTap: () {
-                      widget.onAssetClick?.call(asset);
-                      _analytics.sendVideoClicked(
-                        widget.config,
-                        {"videoId": asset.id},
-                      );
-                    },
-                    onPlayClick: () {
-                      _playVideo(index);
-                      _analytics.sendVideoWatched(
-                        widget.config,
-                        {"videoId": asset.id},
-                      );
-                    },
-                    onVideoEnded: (asset) {
-                      if (index != _currentPlayingIndex) {
-                        return;
-                      }
-
-                      _onCurrentVideoEnded();
-                    },
-                    onVideoError: widget.onVideoError,
-                    width: widget.options.itemWidth,
-                    height: widget.options.itemHeight,
-                    options: AssetViewOptions(
-                      isPlaying: index == _currentPlayingIndex &&
-                          _isVisible &&
-                          !_currentVideoEnded,
-                      isMuted: true,
-                      imageFit: BoxFit.cover,
-                      playMode: AssetViewOptionsPlayMode.preview,
-                    ),
-                    preload: _shouldPreload(index),
-                  ),
-                );
-              },
-            ),
+                  preload: _shouldPreload(index),
+                ),
+              );
+            },
           ),
         ),
-      );
+      ),
+    );
+  }
 }

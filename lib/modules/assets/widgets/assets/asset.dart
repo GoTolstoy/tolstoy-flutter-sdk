@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/constants.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/widgets/assets/asset_placeholder.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/widgets/assets/image_asset.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/widgets/assets/video_asset.dart";
 import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
@@ -17,8 +18,8 @@ class AssetView extends StatefulWidget {
     this.onVideoError,
   });
 
-  final Asset asset;
-  final TvPageConfig config;
+  final Asset? asset;
+  final TvPageConfig? config;
   final AssetViewOptions options;
   final Function(Asset)? onAssetEnded;
   final Function(
@@ -36,11 +37,18 @@ class AssetView extends StatefulWidget {
 class _AssetViewState extends State<AssetView> {
   @override
   Widget build(BuildContext context) {
-    switch (widget.asset.type) {
+    final localAsset = widget.asset;
+    final localConfig = widget.config;
+
+    if (localAsset == null || localConfig == null) {
+      return const AssetPlaceholder();
+    }
+
+    switch (localAsset.type) {
       case AssetType.video:
         return VideoAsset(
-          asset: widget.asset,
-          config: widget.config,
+          asset: localAsset,
+          config: localConfig,
           options: widget.options,
           onAssetEnded: widget.onAssetEnded,
           onProgressUpdate: widget.onProgressUpdate,
@@ -49,9 +57,9 @@ class _AssetViewState extends State<AssetView> {
         );
       case AssetType.image:
         return ImageAsset(
-          asset: widget.asset,
+          asset: localAsset,
+          config: localConfig,
           options: widget.options,
-          config: widget.config,
           onAssetEnded: widget.onAssetEnded,
           onProgressUpdate: widget.onProgressUpdate,
         );

@@ -7,8 +7,8 @@ import "package:tolstoy_flutter_sdk/modules/rail/models.dart";
 import "package:tolstoy_flutter_sdk/modules/rail/widgets/consts.dart";
 import "package:tolstoy_flutter_sdk/modules/rail/widgets/rail.dart";
 
-class RailWithFeed extends StatelessWidget {
-  RailWithFeed({
+class RailWithFeed extends StatefulWidget {
+  const RailWithFeed({
     required this.config,
     super.key,
     this.railOptions = const RailOptions(),
@@ -17,13 +17,9 @@ class RailWithFeed extends StatelessWidget {
     this.buildFeedFooter,
     this.onAssetClick,
     this.onVideoError,
-  }) {
-    final initialAssets = config.assets
-        .sublist(0, config.assets.length.clamp(0, maxVisibleItems));
-    config.preload(initialAssets);
-  }
+  });
 
-  final TvPageConfig config;
+  final TvPageConfig? config;
   final RailOptions railOptions;
   final void Function(Product)? onProductClick;
   final PreferredSizeWidget? Function({
@@ -39,25 +35,71 @@ class RailWithFeed extends StatelessWidget {
   final void Function(String message, Asset asset)? onVideoError;
 
   @override
+  State<RailWithFeed> createState() => _RailWithFeedState();
+}
+
+class _RailWithFeedState extends State<RailWithFeed> {
+  @override
+  void initState() {
+    super.initState();
+    _preloadAssets();
+  }
+
+  @override
+  void didUpdateWidget(RailWithFeed oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.config != oldWidget.config) {
+      _preloadAssets();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) => Rail(
-        config: config,
-        options: railOptions,
-        onVideoError: onVideoError,
+        config: widget.config,
+        options: widget.railOptions,
+        onVideoError: widget.onVideoError,
         onAssetClick: (Asset asset) {
-          onAssetClick?.call(asset);
+          widget.onAssetClick?.call(asset);
 
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => FeedScreen(
-                config: config,
-                initialAssetId: asset.id,
-                onProductClick: onProductClick,
-                buildFeedHeader: buildFeedHeader,
-                buildFeedFooter: buildFeedFooter,
-                onVideoError: onVideoError,
-              ),
+              builder: (context) {
+                final localConfig = widget.config;
+
+                if (localConfig == null) {
+                  return Scaffold(
+                    body: Container(
+                      color: Colors.red,
+                      width: double.infinity,
+                      height: double.infinity,
+                    ),
+                  );
+                }
+
+                return FeedScreen(
+                  config: localConfig,
+                  initialAssetId: asset.id,
+                  onProductClick: widget.onProductClick,
+                  buildFeedHeader: widget.buildFeedHeader,
+                  buildFeedFooter: widget.buildFeedFooter,
+                  onVideoError: widget.onVideoError,
+                );
+              },
             ),
           );
         },
       );
+
+  void _preloadAssets() {
+    final localConfig = widget.config;
+
+    if (localConfig == null) {
+      return;
+    }
+
+    final initialAssets = localConfig.assets
+        .sublist(0, localConfig.assets.length.clamp(0, maxVisibleItems));
+    localConfig.preload(initialAssets);
+  }
 }

@@ -31,18 +31,26 @@ class FeedScreen extends StatelessWidget {
             appUrl: appUrl,
             assets: assets,
           ),
-          builder: (context, config) => FeedView(
-            config: config,
-            options: const FeedViewOptions(
-              isMutedByDefault: true,
-              pageThreshold: 5,
-            ),
-            onProductClick: _handleProductClick,
-            onVideoError: (message, asset) {
-              // Implement logic for video error
-              debugError("Video error: $message");
-            },
-          ),
+          builder: (context, config) {
+            final localConfig = config;
+
+            if (localConfig == null) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            return FeedView(
+              config: localConfig,
+              options: const FeedViewOptions(
+                isMutedByDefault: true,
+                pageThreshold: 5,
+              ),
+              onProductClick: _handleProductClick,
+              onVideoError: (message, asset) {
+                // Implement logic for video error
+                debugError("Video error: $message");
+              },
+            );
+          },
         ),
       );
 }

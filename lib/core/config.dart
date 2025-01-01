@@ -12,6 +12,9 @@ class AppConfig {
     DebugLevel.none,
   );
 
+  // Should be Duration.zero when commiting!!!
+  static const _debugNetworkDelay = Duration.zero;
+
   // Should be true when commiting!!!
   static const _mobileAppEndpoints = true;
 
@@ -39,6 +42,8 @@ class AppConfig {
       "https://${_devPart}cf-apilb.gotolstoy.com/settings$_mobileAppPart/player/by-publish-id";
 
   static final debugLevel = _debugLevel;
+
+  static const debugNetworkDelay = _debugNetworkDelay;
 
   static const productsEndpointUrl =
       "https://${_devPart}apilb.gotolstoy.com/products/actions/v2$_mobileAppPart/get-by-vod-asset-ids";

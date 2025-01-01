@@ -8,9 +8,7 @@ enum DebugLevel {
 }
 
 void debugError(dynamic message) {
-  if (AppConfig.debugLevel == DebugLevel.info ||
-      AppConfig.debugLevel == DebugLevel.warning ||
-      AppConfig.debugLevel == DebugLevel.error) {
+  if (AppConfig.debugLevel == DebugLevel.error) {
     // ignore: avoid_print
     print(message);
   }
@@ -25,7 +23,9 @@ void debugWarning(dynamic message) {
 }
 
 void debugInfo(dynamic message) {
-  if (AppConfig.debugLevel == DebugLevel.error) {
+  if (AppConfig.debugLevel == DebugLevel.info ||
+      AppConfig.debugLevel == DebugLevel.warning ||
+      AppConfig.debugLevel == DebugLevel.error) {
     // ignore: avoid_print
     print(message);
   }
