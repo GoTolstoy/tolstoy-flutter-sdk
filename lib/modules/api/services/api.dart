@@ -16,6 +16,7 @@ class ApiService {
     String publishId,
     ProductsLoaderFactory createProductsLoader, {
     bool disableCache = false,
+    TvPageClientConfig? clientConfig,
     SdkErrorCallback? onError,
   }) async {
     try {
@@ -27,7 +28,13 @@ class ApiService {
         "$endpoint?publishId=$publishId",
       );
 
+      debugInfo("HTTP request: $url");
+
       final response = await http.get(url);
+
+      if (AppConfig.debugNetworkDelay != Duration.zero) {
+        await Future.delayed(AppConfig.debugNetworkDelay);
+      }
 
       if (response.statusCode == 200) {
         const cast = Cast(location: "ApiService::getTvPageConfig");
@@ -42,7 +49,12 @@ class ApiService {
           return null;
         }
 
-        return TvPageConfig.fromJson(jsonData, createProductsLoader, onError);
+        return TvPageConfig.fromJson(
+          jsonData,
+          createProductsLoader,
+          clientConfig: clientConfig,
+          onError: onError,
+        );
       } else {
         const message = "Failed to load TV page config";
         debugError(message);
@@ -74,7 +86,13 @@ class ApiService {
         "$endpoint?appKey=$appKey&appUrl=$appUrl&vodAssetIds=${vodAssetIds.join(",")}",
       );
 
+      debugInfo("HTTP request: $url");
+
       final response = await http.get(url);
+
+      if (AppConfig.debugNetworkDelay != Duration.zero) {
+        await Future.delayed(AppConfig.debugNetworkDelay);
+      }
 
       if (response.statusCode == 200) {
         const cast = Cast(location: "ApiService::getProductsByVodAssetIds");

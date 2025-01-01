@@ -32,7 +32,7 @@ class FeedAssetView extends StatefulWidget {
   final Asset asset;
   final TvPageConfig config;
   final AssetViewOptions options;
-  final List<Product> products;
+  final List<Product?> products;
   final Function(Asset) onPlayClick;
   final Function(Asset) onMuteClick;
   final void Function(Product)? onProductClick;

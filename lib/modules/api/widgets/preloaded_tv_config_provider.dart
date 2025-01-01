@@ -7,12 +7,10 @@ class PreloadedTvConfigProvider extends StatefulWidget {
     required this.builder,
     required this.config,
     super.key,
-    this.loadingWidget = const Center(child: CircularProgressIndicator()),
   });
 
-  final Widget Function(BuildContext, TvPageConfig) builder;
+  final Widget Function(BuildContext, TvPageConfig?) builder;
   final Future<TvPageConfig?> config;
-  final Widget loadingWidget;
 
   @override
   State<PreloadedTvConfigProvider> createState() =>
@@ -42,18 +40,20 @@ class _PreloadedTvConfigProviderState extends State<PreloadedTvConfigProvider> {
   Widget build(BuildContext context) {
     final localConfig = _config;
 
-    if (localConfig == null) {
-      return widget.loadingWidget;
+    if (localConfig != null) {
+      try {
+        return widget.builder(context, _config);
+        // ignore: avoid_catches_without_on_clauses
+      } catch (e) {
+        debugError(e);
+        localConfig.onError?.call(
+          "Failed to build widget with TvConfig",
+          StackTrace.current,
+          e,
+        );
+      }
     }
 
-    try {
-      return widget.builder(context, localConfig);
-      // ignore: avoid_catches_without_on_clauses
-    } catch (e) {
-      debugError(e);
-      localConfig.onError
-          ?.call("Failed to build widget with TvConfig", StackTrace.current, e);
-      return widget.loadingWidget;
-    }
+    return widget.builder(context, null);
   }
 }

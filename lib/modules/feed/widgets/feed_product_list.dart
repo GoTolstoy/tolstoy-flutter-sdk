@@ -26,7 +26,7 @@ class FeedProductList extends StatefulWidget {
     this.onProductClick,
   });
 
-  final List<Product> products;
+  final List<Product?> products;
   final FeedProductListOptions options;
   final void Function(Product)? onProductClick;
 

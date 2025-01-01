@@ -6,6 +6,14 @@ import "package:tolstoy_flutter_sdk/utils/cast.dart";
 import "package:tolstoy_flutter_sdk/utils/json_parser.dart";
 import "package:tolstoy_flutter_sdk/utils/types.dart";
 
+class TvPageClientConfig {
+  TvPageClientConfig({
+    this.videoBufferingIndicator = true,
+  });
+
+  final bool videoBufferingIndicator;
+}
+
 class TvPageConfig {
   TvPageConfig({
     required this.publishId,
@@ -17,6 +25,7 @@ class TvPageConfig {
     required this.appKey,
     required this.owner,
     required this.createProductsLoader,
+    required this.clientConfig,
     this.onError,
     this.userId,
   }) : productsLoader = createProductsLoader(
@@ -27,9 +36,10 @@ class TvPageConfig {
 
   factory TvPageConfig.fromJson(
     JsonMap json,
-    ProductsLoaderFactory createProductsLoader,
+    ProductsLoaderFactory createProductsLoader, {
+    TvPageClientConfig? clientConfig,
     SdkErrorCallback? onError,
-  ) {
+  }) {
     final parse = JsonParser(
       location: "TvPageConfig",
       json: json,
@@ -51,6 +61,7 @@ class TvPageConfig {
       owner: parse.string("owner"),
       userId: parse.stringOrNull("userId"),
       createProductsLoader: createProductsLoader,
+      clientConfig: clientConfig ?? TvPageClientConfig(),
       onError: onError,
     );
   }
@@ -64,6 +75,7 @@ class TvPageConfig {
   final String appKey;
   final String owner;
   final ProductsLoaderFactory createProductsLoader;
+  final TvPageClientConfig clientConfig;
   final SdkErrorCallback? onError;
   final String? userId;
   final ProductsLoader productsLoader;
@@ -79,6 +91,7 @@ class TvPageConfig {
     String? owner,
     String? userId,
     ProductsLoaderFactory? createProductsLoader,
+    TvPageClientConfig? clientConfig,
     SdkErrorCallback? onError,
   }) =>
       TvPageConfig(
@@ -92,6 +105,7 @@ class TvPageConfig {
         owner: owner ?? this.owner,
         userId: userId ?? this.userId,
         createProductsLoader: createProductsLoader ?? this.createProductsLoader,
+        clientConfig: clientConfig ?? this.clientConfig,
         onError: onError ?? this.onError,
       );
 

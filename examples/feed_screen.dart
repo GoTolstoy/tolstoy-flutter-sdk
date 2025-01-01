@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_spinkit/flutter_spinkit.dart";
 import "package:tolstoy_flutter_sdk/modules/api/widgets/tv_config_provider.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models/asset.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/screens/feed_screen.dart";
@@ -47,17 +48,25 @@ class FeedPage extends StatelessWidget {
           appUrl: appUrl,
           assets: assets,
         ),
-        builder: (context, config) => FeedScreen(
-          config: config,
-          onProductClick: (Product product) {
-            // Implement logic for product click
-            debugInfo("Product clicked: ${product.title}");
-          },
-        ),
-        loadingWidget: const Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
+        builder: (context, config) {
+          final localConfig = config;
+
+          if (localConfig == null) {
+            return const Center(
+              child: SpinKitRing(
+                color: Colors.white,
+                size: 60,
+              ),
+            );
+          }
+
+          return FeedScreen(
+            config: localConfig,
+            onProductClick: (Product product) {
+              // Implement logic for product click
+              debugInfo("Product clicked: ${product.title}");
+            },
+          );
+        },
       );
 }

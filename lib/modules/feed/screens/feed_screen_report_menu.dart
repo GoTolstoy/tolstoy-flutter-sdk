@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_spinkit/flutter_spinkit.dart";
 
 // ignore: camel_case_types
 class _lang {
@@ -161,7 +162,10 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
                     ? const SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+                        child: SpinKitRing(
+                          color: Colors.white,
+                          size: 60,
+                        ),
                       )
                     : const Text(_lang.report),
               ),

@@ -24,23 +24,25 @@ class FeedProductCardOptions {
 
 class FeedProductCard extends StatelessWidget {
   const FeedProductCard({
-    required this.product,
+    this.product,
     super.key,
     this.onProductClick,
     this.options = const FeedProductCardOptions(),
   });
 
-  final Product product;
+  final Product? product;
   final void Function(Product)? onProductClick;
   final FeedProductCardOptions options;
 
   @override
   Widget build(BuildContext context) {
-    final yotpoReview = product.yotpoReview;
+    final localProduct = product;
 
     return GestureDetector(
       onTap: () {
-        onProductClick?.call(product);
+        if (localProduct != null) {
+          onProductClick?.call(localProduct);
+        }
       },
       child: Container(
         constraints: BoxConstraints(
@@ -66,20 +68,21 @@ class FeedProductCard extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     Container(color: Colors.grey[300]),
-                    CachedNetworkImage(
-                      imageUrl: ProductUtils.getOptimizedImageUrl(
-                        product,
-                        width: options.imageWidth.toInt(),
+                    if (localProduct != null)
+                      CachedNetworkImage(
+                        imageUrl: ProductUtils.getOptimizedImageUrl(
+                          localProduct,
+                          width: options.imageWidth.toInt(),
+                        ),
+                        fit: options.imageFit,
+                        placeholder: (context, url) =>
+                            Container(color: Colors.grey[300]),
+                        errorWidget: (context, url, error) => Icon(
+                          Icons.broken_image_rounded,
+                          size: 40,
+                          color: Colors.grey[400],
+                        ),
                       ),
-                      fit: options.imageFit,
-                      placeholder: (context, url) =>
-                          Container(color: Colors.grey[300]),
-                      errorWidget: (context, url, error) => Icon(
-                        Icons.broken_image_rounded,
-                        size: 40,
-                        color: Colors.grey[400],
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -90,41 +93,9 @@ class FeedProductCard extends StatelessWidget {
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            product.title,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines:
-                                yotpoReview != null && yotpoReview.reviews > 0
-                                    ? 1
-                                    : 2,
-                          ),
-                          if (yotpoReview != null &&
-                              yotpoReview.reviews > 0) ...[
-                            const SizedBox(height: 4),
-                            FeedProductReview(review: yotpoReview),
-                          ],
-                        ],
-                      ),
-                      Text(
-                        ProductUtils.getProductPriceLabel(product) ?? "",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: localProduct != null
+                      ? _buildProductCard(localProduct)
+                      : _buildProductCardSkeleton(),
                 ),
               ),
             ),
@@ -133,4 +104,82 @@ class FeedProductCard extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildProductCard(Product product) {
+    final yotpoReview = product.yotpoReview;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              product.title,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: yotpoReview != null && yotpoReview.reviews > 0 ? 1 : 2,
+            ),
+            if (yotpoReview != null && yotpoReview.reviews > 0) ...[
+              const SizedBox(height: 4),
+              FeedProductReview(review: yotpoReview),
+            ],
+          ],
+        ),
+        Text(
+          ProductUtils.getProductPriceLabel(product) ?? "",
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProductCardSkeleton() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            children: [
+              SizedBox(height: 0.04 * options.height),
+              Container(
+                height: 0.15 * options.height,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Container(
+                height: 0.15 * options.height,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              Container(
+                height: 0.15 * options.height,
+                width: 50,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              SizedBox(height: 0.06 * options.height),
+            ],
+          ),
+        ],
+      );
 }

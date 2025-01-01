@@ -175,26 +175,30 @@ class _FeedViewState extends State<FeedView>
     return KeepAliveWrapper(
       child: FutureBuilder<List<Product>>(
         future: widget.config.getProducts(asset),
-        builder: (context, snapshot) => FeedAssetView(
-          asset: asset,
-          config: widget.config,
-          options: AssetViewOptions(
-            isPlaying: isPlayingEnabled && isActive && _isVisible,
-            isPlayingEnabled: isPlayingEnabled,
-            isMuted: isMuted,
-            shouldLoop: true,
-            withMuteButton: asset.type != AssetType.image,
-            trackAnalytics: true,
-          ),
-          onPlayClick: _onPlayClick,
-          onMuteClick: _onMuteClick,
-          products: snapshot.data ?? [],
-          onProductClick: _onProductClick,
-          onVideoError: widget.onVideoError,
-          feedAssetOptions: FeedAssetOptions(
-            overlayBottomPadding: _footerHeight,
-          ),
-        ),
+        builder: (context, snapshot) {
+          final products = snapshot.data ?? List<Product?>.filled(1, null);
+
+          return FeedAssetView(
+            asset: asset,
+            config: widget.config,
+            options: AssetViewOptions(
+              isPlaying: isPlayingEnabled && isActive && _isVisible,
+              isPlayingEnabled: isPlayingEnabled,
+              isMuted: isMuted,
+              shouldLoop: true,
+              withMuteButton: asset.type != AssetType.image,
+              trackAnalytics: true,
+            ),
+            onPlayClick: _onPlayClick,
+            onMuteClick: _onMuteClick,
+            products: products,
+            onProductClick: _onProductClick,
+            onVideoError: widget.onVideoError,
+            feedAssetOptions: FeedAssetOptions(
+              overlayBottomPadding: _footerHeight,
+            ),
+          );
+        },
       ),
     );
   }

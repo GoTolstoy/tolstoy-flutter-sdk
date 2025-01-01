@@ -1,8 +1,12 @@
 import "package:flutter/material.dart";
+import "package:flutter_spinkit/flutter_spinkit.dart";
+import "package:tolstoy_flutter_sdk/core/config.dart";
 import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/services.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/widgets/assets/asset_placeholder.dart";
+import "package:tolstoy_flutter_sdk/utils/components/delayed_display.dart";
 import "package:video_player/video_player.dart";
 
 const watchThresholdMS = 200;
@@ -69,15 +73,15 @@ class _VideoAssetState extends State<VideoAsset> {
 
     _controller = localController;
 
-    localController.addListener(_videoPlayerErrorListener);
+    localController.addListener(_videoPlayerListener);
 
     localController.initialize().then((_) {
-      _isVideoInitialized = true;
       localController.setLooping(widget.options.shouldLoop);
       _updateControllerState();
-      localController.addListener(_videoPlayerListener);
-      setState(() {});
-      // Add a small delay before setting _isVideoReady to true
+      setState(() {
+        _isVideoInitialized = true;
+      });
+
       Future.delayed(const Duration(milliseconds: 50), () {
         if (mounted) {
           setState(() {
@@ -88,7 +92,9 @@ class _VideoAssetState extends State<VideoAsset> {
     });
   }
 
-  void _videoPlayerErrorListener() {
+  void _videoPlayerListener() {
+    setState(() {});
+
     final localController = _controller;
 
     if (localController == null) {
@@ -101,12 +107,8 @@ class _VideoAssetState extends State<VideoAsset> {
         widget.asset,
       );
     }
-  }
 
-  void _videoPlayerListener() {
-    final localController = _controller;
-
-    if (localController == null) {
+    if (!_isVideoInitialized) {
       return;
     }
 
@@ -222,6 +224,45 @@ class _VideoAssetState extends State<VideoAsset> {
     }
   }
 
+  String _getVideoInfoText() {
+    final localController = _controller;
+
+    final isVideo =
+        localController != null && _isVideoInitialized && _isVideoReady;
+
+    final isPreview =
+        widget.options.playMode == AssetViewOptionsPlayMode.preview;
+
+    var text =
+        isVideo ? (isPreview ? "Preview video." : "Video.") : "Preview image.";
+
+    if (localController != null) {
+      if (localController.value.isPlaying) {
+        text += " Playing.";
+      }
+
+      if (localController.value.isBuffering) {
+        text += " Buffering.";
+      }
+
+      if (localController.value.position != Duration.zero) {
+        final position = localController.value.position;
+        final minutes = position.inMinutes.remainder(60);
+        final seconds = position.inSeconds.remainder(60);
+        final milliseconds = position.inMilliseconds.remainder(1000);
+        text +=
+            ' $minutes:${seconds.toString().padLeft(2, '0')}:${milliseconds.toString().padLeft(3, '0')}.';
+      }
+
+      if (localController.value.hasError) {
+        text +=
+            " Error: ${localController.value.errorDescription ?? "Unknown error"}.";
+      }
+    }
+
+    return text;
+  }
+
   @override
   Widget build(BuildContext context) {
     final localController = _controller;
@@ -229,19 +270,41 @@ class _VideoAssetState extends State<VideoAsset> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Image.network(
-          _thumbnailUrl,
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
-          errorBuilder: (context, error, stackTrace) =>
-              const Center(child: CircularProgressIndicator()),
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) {
-              return child;
-            }
-            return const Center(child: CircularProgressIndicator());
-          },
+        const AssetPlaceholder(),
+        Center(
+          child: Image.network(
+            _thumbnailUrl,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+            errorBuilder: (context, error, stackTrace) => Center(
+              child: SpinKitRing(
+                color: Colors.white,
+                size:
+                    widget.options.playMode == AssetViewOptionsPlayMode.preview
+                        ? 40
+                        : 60,
+              ),
+            ),
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) {
+                return child;
+              }
+              return Center(
+                child: SpinKitRing(
+                  color: Colors.white,
+                  lineWidth: widget.options.playMode ==
+                          AssetViewOptionsPlayMode.preview
+                      ? 5
+                      : 7,
+                  size: widget.options.playMode ==
+                          AssetViewOptionsPlayMode.preview
+                      ? 40
+                      : 60,
+                ),
+              );
+            },
+          ),
         ),
         if (localController != null && _isVideoInitialized)
           AnimatedOpacity(
@@ -253,6 +316,44 @@ class _VideoAssetState extends State<VideoAsset> {
                 height: localController.value.size.height,
                 width: localController.value.size.width,
                 child: VideoPlayer(localController),
+              ),
+            ),
+          ),
+        if (widget.config.clientConfig.videoBufferingIndicator &&
+            widget.options.isPlaying &&
+            localController != null &&
+            _isVideoInitialized &&
+            _isVideoReady)
+          Center(
+            child: DelayedDisplay(
+              isVisible: localController.value.isBuffering,
+              child: SpinKitRing(
+                color: Colors.white,
+                lineWidth:
+                    widget.options.playMode == AssetViewOptionsPlayMode.preview
+                        ? 5
+                        : 7,
+                size:
+                    widget.options.playMode == AssetViewOptionsPlayMode.preview
+                        ? 40
+                        : 60,
+              ),
+            ),
+          ),
+        if (AppConfig.videoDebugInfo)
+          Positioned(
+            top: 5,
+            left: 5,
+            right: 5,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              color: Colors.white.withOpacity(0.8),
+              child: Text(
+                _getVideoInfoText(),
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 12,
+                ),
               ),
             ),
           ),

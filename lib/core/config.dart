@@ -9,13 +9,21 @@ class AppConfig {
   static final _debugLevel = enumFromString(
     const String.fromEnvironment("TOLSTOY_FLUTTER_SDK_DEBUG_LEVEL"),
     DebugLevel.values,
+    // Should be DebugLevel.none when commiting!!!
     DebugLevel.none,
   );
 
+  // Should be Duration.zero when commiting!!!
+  static const _debugNetworkDelay = Duration.zero;
+
+  // Should be true when commiting!!!
   static const _mobileAppEndpoints = true;
 
   static const _prod =
       String.fromEnvironment("TOLSTOY_FLUTTER_SDK_PROD") != "false";
+
+  // Should be false when commiting!!!
+  static const _videoDebugInfo = false;
 
   // Local variables
 
@@ -36,6 +44,8 @@ class AppConfig {
 
   static final debugLevel = _debugLevel;
 
+  static const debugNetworkDelay = _debugNetworkDelay;
+
   static const productsEndpointUrl =
       "https://${_devPart}apilb.gotolstoy.com/products/actions/v2$_mobileAppPart/get-by-vod-asset-ids";
 
@@ -45,4 +55,6 @@ class AppConfig {
   static const videoBaseUrl = _prod
       ? "https://videos.gotolstoy.com"
       : "https://dev-videos.gotolstoy.com";
+
+  static const videoDebugInfo = _videoDebugInfo;
 }

@@ -21,7 +21,7 @@ class FeedAssetOverlay extends StatelessWidget {
 
   final bool isPlayingEnabled;
   final bool isMuted;
-  final List<Product> products;
+  final List<Product?> products;
   final VoidCallback onPlayPause;
   final VoidCallback onMuteUnmute;
   final void Function(Product)? onProductClick;

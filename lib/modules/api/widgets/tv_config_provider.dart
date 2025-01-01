@@ -11,17 +11,17 @@ class TvConfigProvider extends StatefulWidget {
     required this.publishId,
     required this.createProductsLoader,
     this.disableCache = false,
+    this.clientConfig,
     this.onError,
     super.key,
-    this.loadingWidget = const Center(child: CircularProgressIndicator()),
   });
 
-  final Widget Function(BuildContext, TvPageConfig) builder;
+  final Widget Function(BuildContext, TvPageConfig?) builder;
   final String publishId;
   final ProductsLoaderFactory createProductsLoader;
   final bool disableCache;
+  final TvPageClientConfig? clientConfig;
   final SdkErrorCallback? onError;
-  final Widget loadingWidget;
 
   @override
   State<TvConfigProvider> createState() => _TvConfigProviderState();
@@ -41,6 +41,7 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
       widget.publishId,
       widget.createProductsLoader,
       disableCache: widget.disableCache,
+      clientConfig: widget.clientConfig,
       onError: widget.onError,
     );
 
@@ -55,18 +56,20 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
   Widget build(BuildContext context) {
     final localConfig = _config;
 
-    if (localConfig == null) {
-      return widget.loadingWidget;
+    if (localConfig != null) {
+      try {
+        return widget.builder(context, _config);
+        // ignore: avoid_catches_without_on_clauses
+      } catch (e) {
+        debugError(e);
+        localConfig.onError?.call(
+          "Failed to build widget with TvConfig",
+          StackTrace.current,
+          e,
+        );
+      }
     }
 
-    try {
-      return widget.builder(context, localConfig);
-      // ignore: avoid_catches_without_on_clauses
-    } catch (e) {
-      debugError(e);
-      localConfig.onError
-          ?.call("Failed to build widget with TvConfig", StackTrace.current, e);
-      return widget.loadingWidget;
-    }
+    return widget.builder(context, null);
   }
 }

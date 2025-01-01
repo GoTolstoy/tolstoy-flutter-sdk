@@ -18,8 +18,8 @@ class RailAsset extends StatelessWidget {
     this.onVideoError,
   });
 
-  final Asset asset;
-  final TvPageConfig config;
+  final Asset? asset;
+  final TvPageConfig? config;
   final AssetViewOptions? options;
   final VoidCallback onTap;
   final VoidCallback onPlayClick;
@@ -52,18 +52,19 @@ class RailAsset extends StatelessWidget {
                   preload: preload,
                   onVideoError: onVideoError,
                 ),
-                Positioned(
-                  left: 12,
-                  bottom: 12,
-                  child: GestureDetector(
-                    onTap: onPlayClick,
-                    child: const Icon(
-                      Icons.play_arrow,
-                      color: Colors.white,
-                      size: 24,
+                if (config != null && asset != null)
+                  Positioned(
+                    left: 12,
+                    bottom: 12,
+                    child: GestureDetector(
+                      onTap: onPlayClick,
+                      child: const Icon(
+                        Icons.play_arrow,
+                        color: Colors.white,
+                        size: 24,
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
