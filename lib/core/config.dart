@@ -9,6 +9,7 @@ class AppConfig {
   static final _debugLevel = enumFromString(
     const String.fromEnvironment("TOLSTOY_FLUTTER_SDK_DEBUG_LEVEL"),
     DebugLevel.values,
+    // Should be DebugLevel.none when commiting!!!
     DebugLevel.none,
   );
 

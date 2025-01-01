@@ -227,11 +227,14 @@ class _VideoAssetState extends State<VideoAsset> {
   String _getVideoInfoText() {
     final localController = _controller;
 
-    var text = localController != null && _isVideoInitialized && _isVideoReady
-        ? (widget.options.playMode == AssetViewOptionsPlayMode.preview
-            ? "Preview video."
-            : "Video.")
-        : "Preview image.";
+    final isVideo =
+        localController != null && _isVideoInitialized && _isVideoReady;
+
+    final isPreview =
+        widget.options.playMode == AssetViewOptionsPlayMode.preview;
+
+    var text =
+        isVideo ? (isPreview ? "Preview video." : "Video.") : "Preview image.";
 
     if (localController != null) {
       if (localController.value.isPlaying) {

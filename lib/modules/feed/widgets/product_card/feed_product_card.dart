@@ -37,7 +37,6 @@ class FeedProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localProduct = product;
-    final yotpoReview = product?.yotpoReview;
 
     return GestureDetector(
       onTap: () {
@@ -94,80 +93,9 @@ class FeedProductCard extends StatelessWidget {
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: localProduct != null
-                        ? [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  localProduct.title,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: yotpoReview != null &&
-                                          yotpoReview.reviews > 0
-                                      ? 1
-                                      : 2,
-                                ),
-                                if (yotpoReview != null &&
-                                    yotpoReview.reviews > 0) ...[
-                                  const SizedBox(height: 4),
-                                  FeedProductReview(review: yotpoReview),
-                                ],
-                              ],
-                            ),
-                            Text(
-                              ProductUtils.getProductPriceLabel(localProduct) ??
-                                  "",
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ]
-                        : [
-                            Column(
-                              children: [
-                                SizedBox(height: 0.04 * options.height),
-                                Container(
-                                  height: 0.15 * options.height,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Container(
-                                  height: 0.15 * options.height,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Container(
-                                  height: 0.15 * options.height,
-                                  width: 50,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                                SizedBox(height: 0.06 * options.height),
-                              ],
-                            ),
-                          ],
-                  ),
+                  child: localProduct != null
+                      ? _buildProductCard(localProduct)
+                      : _buildProductCardSkeleton(),
                 ),
               ),
             ),
@@ -176,4 +104,82 @@ class FeedProductCard extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildProductCard(Product product) {
+    final yotpoReview = product.yotpoReview;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              product.title,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: yotpoReview != null && yotpoReview.reviews > 0 ? 1 : 2,
+            ),
+            if (yotpoReview != null && yotpoReview.reviews > 0) ...[
+              const SizedBox(height: 4),
+              FeedProductReview(review: yotpoReview),
+            ],
+          ],
+        ),
+        Text(
+          ProductUtils.getProductPriceLabel(product) ?? "",
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProductCardSkeleton() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            children: [
+              SizedBox(height: 0.04 * options.height),
+              Container(
+                height: 0.15 * options.height,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Container(
+                height: 0.15 * options.height,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              Container(
+                height: 0.15 * options.height,
+                width: 50,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              SizedBox(height: 0.06 * options.height),
+            ],
+          ),
+        ],
+      );
 }
