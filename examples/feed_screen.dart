@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:flutter_spinkit/flutter_spinkit.dart";
 import "package:tolstoy_flutter_sdk/modules/api/widgets/tv_config_provider.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models/asset.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/screens/feed_screen.dart";
@@ -51,7 +52,12 @@ class FeedPage extends StatelessWidget {
           final localConfig = config;
 
           if (localConfig == null) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: SpinKitRing(
+                color: Colors.white,
+                size: 60,
+              ),
+            );
           }
 
           return FeedScreen(

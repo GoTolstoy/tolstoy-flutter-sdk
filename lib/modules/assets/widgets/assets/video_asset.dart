@@ -277,13 +277,32 @@ class _VideoAssetState extends State<VideoAsset> {
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
-            errorBuilder: (context, error, stackTrace) =>
-                const Center(child: CircularProgressIndicator()),
+            errorBuilder: (context, error, stackTrace) => Center(
+              child: SpinKitRing(
+                color: Colors.white,
+                size:
+                    widget.options.playMode == AssetViewOptionsPlayMode.preview
+                        ? 40
+                        : 60,
+              ),
+            ),
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) {
                 return child;
               }
-              return const Center(child: CircularProgressIndicator());
+              return Center(
+                child: SpinKitRing(
+                  color: Colors.white,
+                  lineWidth: widget.options.playMode ==
+                          AssetViewOptionsPlayMode.preview
+                      ? 5
+                      : 7,
+                  size: widget.options.playMode ==
+                          AssetViewOptionsPlayMode.preview
+                      ? 40
+                      : 60,
+                ),
+              );
             },
           ),
         ),
@@ -310,6 +329,10 @@ class _VideoAssetState extends State<VideoAsset> {
               isVisible: localController.value.isBuffering,
               child: SpinKitRing(
                 color: Colors.white,
+                lineWidth:
+                    widget.options.playMode == AssetViewOptionsPlayMode.preview
+                        ? 5
+                        : 7,
                 size:
                     widget.options.playMode == AssetViewOptionsPlayMode.preview
                         ? 40
