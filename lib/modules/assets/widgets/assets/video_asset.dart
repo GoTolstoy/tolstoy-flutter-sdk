@@ -301,12 +301,11 @@ class _VideoAssetState extends State<VideoAsset> {
             widget.options.isPlaying &&
             localController != null &&
             _isVideoInitialized &&
-            _isVideoReady &&
-            localController.value.isBuffering)
-          DelayedDisplay(
-            delay: const Duration(milliseconds: 500),
-            child: Center(
-              child: SpinKitFadingCube(
+            _isVideoReady)
+          Center(
+            child: DelayedDisplay(
+              isVisible: localController.value.isBuffering,
+              child: SpinKitRing(
                 color: Colors.white,
                 size:
                     widget.options.playMode == AssetViewOptionsPlayMode.preview
