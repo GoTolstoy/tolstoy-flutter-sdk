@@ -9,9 +9,13 @@ import "package:tolstoy_flutter_sdk/utils/types.dart";
 class TvPageClientConfig {
   TvPageClientConfig({
     this.videoBufferingIndicator = true,
+    this.sessionId,
+    this.anonymousId,
   });
 
   final bool videoBufferingIndicator;
+  final String? sessionId;
+  final String? anonymousId;
 }
 
 class TvPageConfig {

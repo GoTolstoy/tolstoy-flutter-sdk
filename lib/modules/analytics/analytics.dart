@@ -7,6 +7,9 @@ import "package:uuid/uuid.dart";
 const uuid = Uuid();
 const fractionDigits = 2;
 
+final _sessionId = uuid.v4();
+final _anonymousId = uuid.v4();
+
 enum AnalyticsEventType {
   pageView,
   embedView,
@@ -36,19 +39,13 @@ class Analytics {
   }
 
   Analytics._(AnalyticsMode? mode, SdkErrorCallback? onError) {
-    _sessionId = uuid.v4();
-    _anonymousId = uuid.v4();
     _mode = mode ?? AnalyticsMode.track;
     _onError = onError;
   }
 
   static Analytics? _instance;
-  late final String _sessionId;
-  late final String _anonymousId;
   late final AnalyticsMode _mode;
   late final SdkErrorCallback? _onError;
-  String get sessionId => _sessionId;
-  String get anonymousId => _anonymousId;
 
   Future<void> _sendEvent(AnalyticsParams params) async {
     switch (_mode) {
@@ -137,8 +134,8 @@ class Analytics {
       {
         "appKey": config.appKey,
         "publishId": config.publishId,
-        "sessionId": _sessionId,
-        "anonymousId": _anonymousId,
+        "sessionId": config.clientConfig.sessionId ?? _sessionId,
+        "anonymousId": config.clientConfig.anonymousId ?? _anonymousId,
         "isMobile": true,
         "storeUrl": config.appUrl,
         "appUrl": config.appUrl,
