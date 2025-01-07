@@ -8,10 +8,14 @@ import "package:tolstoy_flutter_sdk/utils/types.dart";
 
 class TvPageClientConfig {
   TvPageClientConfig({
+    this.appKey,
     this.videoBufferingIndicator = true,
+    this.staleWhileRevalidate = true,
   });
 
+  final String? appKey;
   final bool videoBufferingIndicator;
+  final bool staleWhileRevalidate;
 }
 
 class TvPageConfig {

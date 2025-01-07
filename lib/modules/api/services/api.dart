@@ -1,6 +1,7 @@
 import "dart:convert";
 
 import "package:http/http.dart" as http;
+import "package:shared_preferences/shared_preferences.dart";
 import "package:tolstoy_flutter_sdk/core/config.dart";
 import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
@@ -20,17 +21,36 @@ class ApiService {
     SdkErrorCallback? onError,
   }) async {
     try {
+      final localClientConfig = clientConfig ?? TvPageClientConfig();
+
       final endpoint = disableCache
           ? AppConfig.configEndpointUrl
           : AppConfig.configEndpointCacheUrl;
 
-      final url = Uri.parse(
-        "$endpoint?publishId=$publishId",
+      final cacheVersionFromPref =
+          await getCacheVersionFromPrefs(localClientConfig.appKey);
+
+      final staleUrl = Uri.parse(
+        "$endpoint?publishId=$publishId&v=$cacheVersionFromPref",
       );
 
-      debugInfo("HTTP request: $url");
+      debugInfo("HTTP request: $staleUrl");
 
-      final response = await http.get(url);
+      final staleResponseFuture =
+          cacheVersionFromPref != null ? http.get(staleUrl) : null;
+
+      final cacheVersionFromApi =
+          await getCacheVersion(localClientConfig.appKey, onError: onError);
+
+      final upToDateUrl = Uri.parse(
+        "$endpoint?publishId=$publishId&v=$cacheVersionFromApi",
+      );
+
+      final response = (cacheVersionFromApi == cacheVersionFromPref ||
+                  localClientConfig.staleWhileRevalidate) &&
+              staleResponseFuture != null
+          ? await staleResponseFuture
+          : await http.get(upToDateUrl);
 
       if (AppConfig.debugNetworkDelay != Duration.zero) {
         await Future.delayed(AppConfig.debugNetworkDelay);
@@ -82,8 +102,10 @@ class ApiService {
           ? AppConfig.productsEndpointUrl
           : AppConfig.productsEndpointCacheUrl;
 
+      final cacheVersion = await getCacheVersionFromPrefs(appKey);
+
       final url = Uri.parse(
-        "$endpoint?appKey=$appKey&appUrl=$appUrl&vodAssetIds=${vodAssetIds.join(",")}",
+        "$endpoint?appKey=$appKey&appUrl=$appUrl&vodAssetIds=${vodAssetIds.join(",")}&v=$cacheVersion",
       );
 
       debugInfo("HTTP request: $url");
@@ -145,5 +167,53 @@ class ApiService {
       onError?.call(message, StackTrace.current, e);
       return false;
     }
+  }
+
+  static Future<String> getCacheVersion(
+    String? appKey, {
+    SdkErrorCallback? onError,
+  }) async {
+    if (appKey == null) {
+      return "";
+    }
+
+    var cacheVersion = "";
+
+    final response = await http.post(
+      Uri.parse(AppConfig.cacheVersionEndpointUrl),
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        "appKey": appKey,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      const cast = Cast(location: "ApiService::getCacheVersion");
+
+      final jsonData = cast.jsonMap(json.decode(response.body), "body");
+
+      cacheVersion = cast.string(jsonData["cacheVersion"], "body.cacheVersion");
+    } else {
+      const message = "Failed to get cache version";
+      debugError(message);
+      onError?.call(message, StackTrace.current);
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("cacheVersion_$appKey", cacheVersion);
+
+    return cacheVersion;
+  }
+
+  static Future<String?> getCacheVersionFromPrefs(String? appKey) async {
+    if (appKey == null) {
+      return "";
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("cacheVersion_$appKey");
   }
 }

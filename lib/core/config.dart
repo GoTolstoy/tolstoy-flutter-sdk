@@ -36,6 +36,9 @@ class AppConfig {
   static const analyticsEndpointUrl =
       "https://${_devPart}api.gotolstoy.com/events/event";
 
+  static const cacheVersionEndpointUrl =
+      "https://${_devPart}apilb.gotolstoy.com/settings/mobile-app/get-cache-version-by-app-key";
+
   static const configEndpointUrl =
       "https://${_devPart}apilb.gotolstoy.com/settings$_mobileAppPart/player/by-publish-id";
 
