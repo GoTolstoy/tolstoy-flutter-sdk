@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_spinkit/flutter_spinkit.dart";
 import "package:tolstoy_flutter_sdk/core/config.dart";
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
@@ -33,7 +34,7 @@ class VideoAsset extends StatefulWidget {
   )? onProgressUpdate;
   final AssetViewOptions options;
   final bool preload;
-  final void Function(String message, Asset asset)? onVideoError;
+  final VideoErrorCallback? onVideoError;
 
   @override
   State<VideoAsset> createState() => _VideoAssetState();

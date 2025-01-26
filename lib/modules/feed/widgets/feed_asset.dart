@@ -1,6 +1,7 @@
 import "dart:async";
 
 import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/widgets.dart";
@@ -38,7 +39,7 @@ class FeedAssetView extends StatefulWidget {
   final void Function(Product)? onProductClick;
   final bool preload;
   final FeedAssetOptions? feedAssetOptions;
-  final void Function(String message, Asset asset)? onVideoError;
+  final VideoErrorCallback? onVideoError;
 
   @override
   State<FeedAssetView> createState() => _FeedAssetViewState();

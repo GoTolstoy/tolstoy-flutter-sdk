@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/constants.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/widgets/assets/asset_placeholder.dart";
@@ -28,7 +29,7 @@ class AssetView extends StatefulWidget {
     Duration duration,
   )? onProgressUpdate;
   final bool preload;
-  final void Function(String message, Asset asset)? onVideoError;
+  final VideoErrorCallback? onVideoError;
 
   @override
   State<AssetView> createState() => _AssetViewState();

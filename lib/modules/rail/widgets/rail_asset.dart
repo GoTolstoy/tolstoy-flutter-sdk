@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/widgets.dart";
 import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
@@ -27,7 +28,7 @@ class RailAsset extends StatelessWidget {
   final double width;
   final double height;
   final bool preload;
-  final void Function(String message, Asset asset)? onVideoError;
+  final VideoErrorCallback? onVideoError;
 
   @override
   Widget build(BuildContext context) => GestureDetector(

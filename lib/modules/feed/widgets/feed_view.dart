@@ -2,6 +2,7 @@ import "dart:convert";
 import "dart:math";
 
 import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/constants.dart";
@@ -48,7 +49,7 @@ class FeedView extends StatefulWidget {
     required TvPageConfig config,
   })? buildFeedFooter;
   final GlobalKey footerKey;
-  final void Function(String message, Asset asset)? onVideoError;
+  final VideoErrorCallback? onVideoError;
 
   @override
   State<FeedView> createState() => _FeedViewState();

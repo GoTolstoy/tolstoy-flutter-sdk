@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/screens.dart";
@@ -32,7 +33,7 @@ class RailWithFeed extends StatefulWidget {
     required TvPageConfig config,
   })? buildFeedFooter;
   final void Function(Asset)? onAssetClick;
-  final void Function(String message, Asset asset)? onVideoError;
+  final VideoErrorCallback? onVideoError;
 
   @override
   State<RailWithFeed> createState() => _RailWithFeedState();

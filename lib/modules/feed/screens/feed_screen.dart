@@ -1,6 +1,7 @@
 import "dart:convert";
 
 import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
 import "package:tolstoy_flutter_sdk/modules/api/services/api.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models/asset.dart";
@@ -31,7 +32,7 @@ class FeedScreen extends StatefulWidget {
     required BuildContext context,
     required TvPageConfig config,
   })? buildFeedFooter;
-  final void Function(String message, Asset asset)? onVideoError;
+  final VideoErrorCallback? onVideoError;
 
   @override
   State<FeedScreen> createState() => _FeedScreenState();
