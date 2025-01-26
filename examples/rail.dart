@@ -44,9 +44,10 @@ class RailScreen extends StatelessWidget {
               builder: (context, config) => Rail(
                 config: config,
                 onAssetClick: _handleAssetClick,
-                onVideoError: (message, asset) {
+                onVideoError: (message, asset, playMode) {
                   // Implement logic for video error
                   debugError("Video error: $message");
+                  return null;
                 },
                 options: const RailOptions(
                   itemWidth: 160,

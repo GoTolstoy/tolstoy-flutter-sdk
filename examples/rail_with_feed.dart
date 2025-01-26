@@ -77,9 +77,10 @@ class _MyHomePageState extends State<MyHomePage> {
               buildFeedHeader: _buildFeedHeader,
               buildFeedFooter: _buildFeedFooter,
               onAssetClick: _onAssetClick,
-              onVideoError: (message, asset) {
+              onVideoError: (message, asset, playMode) {
                 // Implement logic for video error
                 debugInfo("Video error: $message");
+                return null;
               },
             ),
           ),

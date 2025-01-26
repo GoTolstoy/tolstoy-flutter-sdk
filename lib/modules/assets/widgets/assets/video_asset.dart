@@ -50,6 +50,7 @@ class _VideoAssetState extends State<VideoAsset> {
   Duration _lastPosition = Duration.zero;
   bool _isVideoInitialized = false;
   bool _isVideoReady = false;
+  Widget? _errorWidget;
 
   @override
   void initState() {
@@ -103,9 +104,10 @@ class _VideoAssetState extends State<VideoAsset> {
     }
 
     if (localController.value.hasError) {
-      widget.onVideoError?.call(
+      _errorWidget = widget.onVideoError?.call(
         localController.value.errorDescription ?? "Unknown error",
         widget.asset,
+        widget.options.playMode,
       );
     }
 
@@ -320,6 +322,21 @@ class _VideoAssetState extends State<VideoAsset> {
               ),
             ),
           ),
+        if (localController != null && localController.value.hasError)
+          _errorWidget ??
+              Center(
+                child: Opacity(
+                  opacity: 0.7,
+                  child: Icon(
+                    Icons.broken_image,
+                    size: widget.options.playMode ==
+                            AssetViewOptionsPlayMode.preview
+                        ? 50
+                        : 80,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
         if (widget.config.clientConfig.videoBufferingIndicator &&
             widget.options.isPlaying &&
             localController != null &&

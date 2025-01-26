@@ -1,4 +1,6 @@
+import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models/asset.dart";
+import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
 
 typedef SdkErrorCallback = void Function(
   String message,
@@ -6,7 +8,8 @@ typedef SdkErrorCallback = void Function(
   Object? error,
 ]);
 
-typedef VideoErrorCallback = void Function(
+typedef VideoErrorCallback = Widget? Function(
   String message,
   Asset asset,
+  AssetViewOptionsPlayMode playMode,
 );
