@@ -269,7 +269,7 @@ class _VideoAssetState extends State<VideoAsset> {
   @override
   Widget build(BuildContext context) {
     final localController = _controller;
-
+    final localErrorWidget = _errorWidget;
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -322,21 +322,10 @@ class _VideoAssetState extends State<VideoAsset> {
               ),
             ),
           ),
-        if (localController != null && localController.value.hasError)
-          _errorWidget ??
-              Center(
-                child: Opacity(
-                  opacity: 0.7,
-                  child: Icon(
-                    Icons.broken_image,
-                    size: widget.options.playMode ==
-                            AssetViewOptionsPlayMode.preview
-                        ? 50
-                        : 80,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+        if (localController != null &&
+            localController.value.hasError &&
+            localErrorWidget != null)
+          localErrorWidget,
         if (widget.config.clientConfig.videoBufferingIndicator &&
             widget.options.isPlaying &&
             localController != null &&
