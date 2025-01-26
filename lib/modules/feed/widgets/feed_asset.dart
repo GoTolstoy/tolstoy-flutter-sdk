@@ -81,6 +81,7 @@ class _FeedAssetViewState extends State<FeedAssetView> {
             top: 0,
             bottom: widget.feedAssetOptions?.overlayBottomPadding ?? 0,
             child: FeedAssetOverlay(
+              handle: widget.asset.externalProviderData?.handle,
               products: widget.products,
               isPlayingEnabled: widget.options.isPlayingEnabled,
               isMuted: widget.options.isMuted,
