@@ -31,7 +31,7 @@ class ApiService {
           : AppConfig.configEndpointCacheUrl;
 
       final cacheVersionFromPref =
-          await getCacheVersionFromPrefs(localClientConfig.appKey);
+          await _getCacheVersionFromPrefs(localClientConfig.appKey);
 
       final staleUrl = Uri.parse(
         "$endpoint?publishId=$publishId&v=$cacheVersionFromPref",
@@ -47,7 +47,7 @@ class ApiService {
           : null;
 
       final cacheVersionFromApi =
-          await getCacheVersion(localClientConfig.appKey, onError: onError);
+          await _getCacheVersion(localClientConfig.appKey, onError: onError);
 
       final upToDateUrl = Uri.parse(
         "$endpoint?publishId=$publishId&v=$cacheVersionFromApi",
@@ -116,7 +116,7 @@ class ApiService {
           ? AppConfig.productsEndpointUrl
           : AppConfig.productsEndpointCacheUrl;
 
-      final cacheVersion = await getCacheVersionFromPrefs(appKey);
+      final cacheVersion = await _getCacheVersionFromPrefs(appKey);
 
       final url = Uri.parse(
         "$endpoint?appKey=$appKey&appUrl=$appUrl&vodAssetIds=${vodAssetIds.join(",")}&v=$cacheVersion",
@@ -188,7 +188,7 @@ class ApiService {
     }
   }
 
-  static Future<String> getCacheVersion(
+  static Future<String> _getCacheVersion(
     String? appKey, {
     SdkErrorCallback? onError,
   }) async {
@@ -241,7 +241,7 @@ class ApiService {
     return cacheVersion;
   }
 
-  static Future<String?> getCacheVersionFromPrefs(String? appKey) async {
+  static Future<String?> _getCacheVersionFromPrefs(String? appKey) async {
     if (appKey == null) {
       return "";
     }
