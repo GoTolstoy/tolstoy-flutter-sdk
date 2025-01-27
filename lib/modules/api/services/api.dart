@@ -14,6 +14,9 @@ import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 typedef AnalyticsParams = Map<String, dynamic>;
 
 class ApiService {
+  static const _prefsPrefix = "cacheVersion_";
+
+  static Future<SharedPreferences>? _sharedPreferences;
   static final _cacheVersionByAppKey = <String, Future<String>>{};
 
   static Future<TvPageConfig?> getTvPageConfig(
@@ -28,41 +31,24 @@ class ApiService {
 
       final localClientConfig = clientConfig ?? TvPageClientConfig();
 
+      final appKey = localClientConfig.appKey;
+
+      final cacheVersion = await _getCacheVersion(appKey, onError: onError);
+
       final endpoint = disableCache
           ? AppConfig.configEndpointUrl
           : AppConfig.configEndpointCacheUrl;
 
-      final cacheVersionFromPref =
-          await _getCacheVersionFromPrefs(localClientConfig.appKey);
-
-      final staleUrl = Uri.parse(
-        "$endpoint?publishId=$publishId&v=$cacheVersionFromPref",
+      final url = Uri.parse(
+        "$endpoint?publishId=$publishId&v=$cacheVersion",
       );
 
-      debugInfo("HTTP request: $staleUrl");
+      debugInfo("HTTP request: $url");
 
-      final staleResponseFuture = cacheVersionFromPref != null
-          ? benchmarkedFuture(
-              http.get(staleUrl),
-              "ApiService.getTvPageConfig.getStale",
-            )
-          : null;
-
-      final cacheVersionFromApi =
-          await _getCacheVersion(localClientConfig.appKey, onError: onError);
-
-      final upToDateUrl = Uri.parse(
-        "$endpoint?publishId=$publishId&v=$cacheVersionFromApi",
+      final response = await benchmarkedFuture(
+        http.get(url),
+        "ApiService.getTvPageConfig.get",
       );
-
-      final response = (cacheVersionFromApi == cacheVersionFromPref ||
-                  localClientConfig.staleWhileRevalidate) &&
-              staleResponseFuture != null
-          ? await staleResponseFuture
-          : await benchmarkedFuture(
-              http.get(upToDateUrl),
-              "ApiService.getTvPageConfig.get",
-            );
 
       benchmarkedFutureEnd(benchmark, "ApiService.getTvPageConfig");
 
@@ -114,11 +100,11 @@ class ApiService {
     try {
       final benchmark = benchmarkedFutureStart();
 
+      final cacheVersion = await _getCacheVersion(appKey, onError: onError);
+
       final endpoint = disableCache
           ? AppConfig.productsEndpointUrl
           : AppConfig.productsEndpointCacheUrl;
-
-      final cacheVersion = await _getCacheVersionFromPrefs(appKey);
 
       final url = Uri.parse(
         "$endpoint?appKey=$appKey&appUrl=$appUrl&vodAssetIds=${vodAssetIds.join(",")}&v=$cacheVersion",
@@ -198,15 +184,30 @@ class ApiService {
       return "";
     }
 
+    final cacheVersionFromApiFuture =
+        _getCacheVersionFromApi(appKey, onError: onError);
+
+    final cacheVersionFromPref = await _getCacheVersionFromPrefs(appKey);
+
+    final cacheVersion =
+        cacheVersionFromPref ?? await cacheVersionFromApiFuture;
+
+    return cacheVersion;
+  }
+
+  static Future<String> _getCacheVersionFromApi(
+    String appKey, {
+    SdkErrorCallback? onError,
+  }) async {
     final cacheVersion = _cacheVersionByAppKey[appKey] ??
-        _getCacheVersionRequest(appKey, onError: onError);
+        _getCacheVersionFromApiUncached(appKey, onError: onError);
 
     _cacheVersionByAppKey[appKey] = cacheVersion;
 
     return cacheVersion;
   }
 
-  static Future<String> _getCacheVersionRequest(
+  static Future<String> _getCacheVersionFromApiUncached(
     String appKey, {
     SdkErrorCallback? onError,
   }) async {
@@ -242,29 +243,28 @@ class ApiService {
       onError?.call(message, StackTrace.current);
     }
 
-    final prefs = await benchmarkedFuture(
-      SharedPreferences.getInstance(),
-      "SharedPreferences.getInstance",
-    );
+    final prefs = await _getSharedPreferences();
 
-    await benchmarkedFuture(
-      prefs.setString("cacheVersion_$appKey", cacheVersion),
-      "SharedPreferences.setString",
-    );
+    await prefs.setString("$_prefsPrefix$appKey", cacheVersion);
 
     return cacheVersion;
   }
 
-  static Future<String?> _getCacheVersionFromPrefs(String? appKey) async {
-    if (appKey == null) {
-      return "";
-    }
+  static Future<String?> _getCacheVersionFromPrefs(String appKey) async {
+    final prefs = await _getSharedPreferences();
 
-    final prefs = await benchmarkedFuture(
-      SharedPreferences.getInstance(),
-      "SharedPreferences.getInstance",
-    );
+    return prefs.getString("$_prefsPrefix$appKey");
+  }
 
-    return prefs.getString("cacheVersion_$appKey");
+  static Future<SharedPreferences> _getSharedPreferences() async {
+    final sharedPreferences = _sharedPreferences ??
+        benchmarkedFuture(
+          SharedPreferences.getInstance(),
+          "SharedPreferences.getInstance",
+        );
+
+    _sharedPreferences = sharedPreferences;
+
+    return sharedPreferences;
   }
 }

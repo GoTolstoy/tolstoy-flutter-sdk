@@ -12,13 +12,11 @@ class TvPageClientConfig {
   TvPageClientConfig({
     this.appKey,
     this.videoBufferingIndicator = true,
-    this.staleWhileRevalidate = true,
     this.placeholderWidget = const ShimmerBox(),
   });
 
   final String? appKey;
   final bool videoBufferingIndicator;
-  final bool staleWhileRevalidate;
   final Widget placeholderWidget;
 }
 
