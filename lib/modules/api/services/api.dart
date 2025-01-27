@@ -14,6 +14,8 @@ import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 typedef AnalyticsParams = Map<String, dynamic>;
 
 class ApiService {
+  static final _cacheVersionByAppKey = <String, Future<String>>{};
+
   static Future<TvPageConfig?> getTvPageConfig(
     String publishId,
     ProductsLoaderFactory createProductsLoader, {
@@ -196,6 +198,18 @@ class ApiService {
       return "";
     }
 
+    final cacheVersion = _cacheVersionByAppKey[appKey] ??
+        _getCacheVersionRequest(appKey, onError: onError);
+
+    _cacheVersionByAppKey[appKey] = cacheVersion;
+
+    return cacheVersion;
+  }
+
+  static Future<String> _getCacheVersionRequest(
+    String appKey, {
+    SdkErrorCallback? onError,
+  }) async {
     var cacheVersion = "";
 
     final url = Uri.parse(AppConfig.cacheVersionEndpointUrl);
