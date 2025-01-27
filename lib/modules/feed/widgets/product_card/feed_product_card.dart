@@ -1,8 +1,8 @@
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/widgets/product_card/feed_product_reviews.dart";
-import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 import "package:tolstoy_flutter_sdk/modules/products/services.dart";
+import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
 
 class FeedProductCardOptions {
   const FeedProductCardOptions({
@@ -24,6 +24,7 @@ class FeedProductCardOptions {
 
 class FeedProductCard extends StatelessWidget {
   const FeedProductCard({
+    required this.config,
     this.product,
     super.key,
     this.onProductClick,
@@ -33,6 +34,7 @@ class FeedProductCard extends StatelessWidget {
   final Product? product;
   final void Function(Product)? onProductClick;
   final FeedProductCardOptions options;
+  final TvPageConfig config;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +69,7 @@ class FeedProductCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Container(color: Colors.grey[300]),
+                    config.clientConfig.placeholderWidget,
                     if (localProduct != null)
                       CachedNetworkImage(
                         imageUrl: ProductUtils.getOptimizedImageUrl(
@@ -75,8 +77,7 @@ class FeedProductCard extends StatelessWidget {
                           width: options.imageWidth.toInt(),
                         ),
                         fit: options.imageFit,
-                        placeholder: (context, url) =>
-                            Container(color: Colors.grey[300]),
+                        placeholder: (context, url) => const SizedBox.shrink(),
                         errorWidget: (context, url, error) => Icon(
                           Icons.broken_image_rounded,
                           size: 40,
@@ -148,33 +149,33 @@ class FeedProductCard extends StatelessWidget {
           Column(
             children: [
               SizedBox(height: 0.04 * options.height),
-              Container(
-                height: 0.15 * options.height,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(4),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: SizedBox(
+                  height: 0.15 * options.height,
+                  width: double.infinity,
+                  child: config.clientConfig.placeholderWidget,
                 ),
               ),
               const SizedBox(height: 6),
-              Container(
-                height: 0.15 * options.height,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(4),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: SizedBox(
+                  height: 0.15 * options.height,
+                  width: double.infinity,
+                  child: config.clientConfig.placeholderWidget,
                 ),
               ),
             ],
           ),
           Column(
             children: [
-              Container(
-                height: 0.15 * options.height,
-                width: 50,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(4),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: SizedBox(
+                  height: 0.15 * options.height,
+                  width: 50,
+                  child: config.clientConfig.placeholderWidget,
                 ),
               ),
               SizedBox(height: 0.06 * options.height),

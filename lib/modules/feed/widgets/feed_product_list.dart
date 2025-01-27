@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/widgets/product_card/feed_product_card.dart";
-import "package:tolstoy_flutter_sdk/modules/products/models.dart";
+import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
 
 class FeedProductListOptions {
   const FeedProductListOptions({
@@ -21,6 +21,7 @@ class FeedProductListOptions {
 class FeedProductList extends StatefulWidget {
   const FeedProductList({
     required this.products,
+    required this.config,
     super.key,
     this.options = const FeedProductListOptions(),
     this.onProductClick,
@@ -28,6 +29,7 @@ class FeedProductList extends StatefulWidget {
 
   final List<Product?> products;
   final FeedProductListOptions options;
+  final TvPageConfig config;
   final void Function(Product)? onProductClick;
 
   @override
@@ -49,6 +51,7 @@ class _FeedProductListState extends State<FeedProductList> {
               return Padding(
                 padding: widget.options.itemPadding,
                 child: FeedProductCard(
+                  config: widget.config,
                   product: product,
                   options: FeedProductCardOptions(
                     height: widget.options.itemHeight,
