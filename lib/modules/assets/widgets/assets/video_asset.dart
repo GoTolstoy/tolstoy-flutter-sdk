@@ -6,7 +6,6 @@ import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/services.dart";
-import "package:tolstoy_flutter_sdk/modules/assets/widgets/assets/asset_placeholder.dart";
 import "package:tolstoy_flutter_sdk/utils/components/delayed_display.dart";
 import "package:video_player/video_player.dart";
 
@@ -273,7 +272,6 @@ class _VideoAssetState extends State<VideoAsset> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        const AssetPlaceholder(),
         Center(
           child: Image.network(
             _thumbnailUrl,

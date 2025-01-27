@@ -3,7 +3,6 @@ import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/services.dart";
-import "package:tolstoy_flutter_sdk/modules/assets/widgets/assets/asset_placeholder.dart";
 
 class ImageAsset extends StatefulWidget {
   const ImageAsset({
@@ -134,7 +133,6 @@ class _ImageAssetState extends State<ImageAsset> {
   Widget build(BuildContext context) => Stack(
         fit: StackFit.expand,
         children: [
-          const AssetPlaceholder(),
           Center(
             child: Image.network(
               AssetService.getAssetUrl(widget.asset),
