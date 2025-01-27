@@ -69,7 +69,7 @@ class FeedProductCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    config.clientConfig.placeholderWidget,
+                    config.clientConfig.loadingPlaceholderWidget,
                     if (localProduct != null)
                       CachedNetworkImage(
                         imageUrl: ProductUtils.getOptimizedImageUrl(
@@ -154,7 +154,7 @@ class FeedProductCard extends StatelessWidget {
                 child: SizedBox(
                   height: 0.15 * options.height,
                   width: double.infinity,
-                  child: config.clientConfig.placeholderWidget,
+                  child: config.clientConfig.loadingPlaceholderWidget,
                 ),
               ),
               const SizedBox(height: 6),
@@ -163,7 +163,7 @@ class FeedProductCard extends StatelessWidget {
                 child: SizedBox(
                   height: 0.15 * options.height,
                   width: double.infinity,
-                  child: config.clientConfig.placeholderWidget,
+                  child: config.clientConfig.loadingPlaceholderWidget,
                 ),
               ),
             ],
@@ -175,7 +175,7 @@ class FeedProductCard extends StatelessWidget {
                 child: SizedBox(
                   height: 0.15 * options.height,
                   width: 50,
-                  child: config.clientConfig.placeholderWidget,
+                  child: config.clientConfig.loadingPlaceholderWidget,
                 ),
               ),
               SizedBox(height: 0.06 * options.height),

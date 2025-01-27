@@ -5,7 +5,6 @@ import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/screens.dart";
 import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 import "package:tolstoy_flutter_sdk/modules/rail/models.dart";
-import "package:tolstoy_flutter_sdk/modules/rail/widgets/consts.dart";
 import "package:tolstoy_flutter_sdk/modules/rail/widgets/rail.dart";
 
 class RailWithFeed extends StatefulWidget {
@@ -19,6 +18,8 @@ class RailWithFeed extends StatefulWidget {
     this.buildFeedFooter,
     this.onAssetClick,
     this.onVideoError,
+    this.showMoreButton = true,
+    this.maxVisibleItems = 6,
   });
 
   final TvPageConfig? config;
@@ -36,6 +37,8 @@ class RailWithFeed extends StatefulWidget {
   final void Function(Asset)? onAssetClick;
   final VideoErrorCallback? onVideoError;
   final EdgeInsets safeInsets;
+  final bool showMoreButton;
+  final int maxVisibleItems;
   @override
   State<RailWithFeed> createState() => _RailWithFeedState();
 }
@@ -59,6 +62,8 @@ class _RailWithFeedState extends State<RailWithFeed> {
   @override
   Widget build(BuildContext context) => Rail(
         config: widget.config,
+        showMoreButton: widget.showMoreButton,
+        maxVisibleItems: widget.maxVisibleItems,
         options: widget.railOptions,
         onVideoError: widget.onVideoError,
         onAssetClick: (Asset asset) {
@@ -102,7 +107,7 @@ class _RailWithFeedState extends State<RailWithFeed> {
     }
 
     final initialAssets = localConfig.assets
-        .sublist(0, localConfig.assets.length.clamp(0, maxVisibleItems));
+        .sublist(0, localConfig.assets.length.clamp(0, widget.maxVisibleItems));
     localConfig.preload(initialAssets);
   }
 }

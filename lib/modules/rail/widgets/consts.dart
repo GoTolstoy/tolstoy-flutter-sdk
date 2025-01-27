@@ -1,1 +1,0 @@
-const maxVisibleItems = 6;

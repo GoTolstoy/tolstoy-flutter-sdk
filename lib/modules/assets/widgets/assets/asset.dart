@@ -43,7 +43,7 @@ class _AssetViewState extends State<AssetView> {
 
     return Stack(
       children: [
-        localClientConfig.placeholderWidget,
+        localClientConfig.loadingPlaceholderWidget,
         if (localConfig != null &&
             localAsset != null &&
             localAsset.type == AssetType.video)

@@ -4,6 +4,7 @@ import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
 import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
 import "package:tolstoy_flutter_sdk/utils/cast.dart";
+import "package:tolstoy_flutter_sdk/utils/components/placeholder_box.dart";
 import "package:tolstoy_flutter_sdk/utils/components/shimmer_box.dart";
 import "package:tolstoy_flutter_sdk/utils/json_parser.dart";
 import "package:tolstoy_flutter_sdk/utils/types.dart";
@@ -12,12 +13,14 @@ class TvPageClientConfig {
   TvPageClientConfig({
     this.appKey,
     this.videoBufferingIndicator = true,
-    this.placeholderWidget = const ShimmerBox(),
+    this.placeholderWidget = const PlaceholderBox(),
+    this.loadingPlaceholderWidget = const ShimmerBox(),
   });
 
   final String? appKey;
   final bool videoBufferingIndicator;
   final Widget placeholderWidget;
+  final Widget loadingPlaceholderWidget;
 }
 
 class TvPageConfig {
