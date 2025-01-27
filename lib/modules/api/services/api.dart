@@ -7,6 +7,7 @@ import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
 import "package:tolstoy_flutter_sdk/modules/products/models.dart";
+import "package:tolstoy_flutter_sdk/utils/benchmarked_future.dart";
 import "package:tolstoy_flutter_sdk/utils/cast.dart";
 import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 
@@ -21,6 +22,8 @@ class ApiService {
     SdkErrorCallback? onError,
   }) async {
     try {
+      final benchmark = benchmarkedFutureStart();
+
       final localClientConfig = clientConfig ?? TvPageClientConfig();
 
       final endpoint = disableCache
@@ -36,8 +39,12 @@ class ApiService {
 
       debugInfo("HTTP request: $staleUrl");
 
-      final staleResponseFuture =
-          cacheVersionFromPref != null ? http.get(staleUrl) : null;
+      final staleResponseFuture = cacheVersionFromPref != null
+          ? benchmarkedFuture(
+              http.get(staleUrl),
+              "ApiService.getTvPageConfig.getStale",
+            )
+          : null;
 
       final cacheVersionFromApi =
           await getCacheVersion(localClientConfig.appKey, onError: onError);
@@ -50,14 +57,19 @@ class ApiService {
                   localClientConfig.staleWhileRevalidate) &&
               staleResponseFuture != null
           ? await staleResponseFuture
-          : await http.get(upToDateUrl);
+          : await benchmarkedFuture(
+              http.get(upToDateUrl),
+              "ApiService.getTvPageConfig.get",
+            );
+
+      benchmarkedFutureEnd(benchmark, "ApiService.getTvPageConfig");
 
       if (AppConfig.debugNetworkDelay != Duration.zero) {
         await Future.delayed(AppConfig.debugNetworkDelay);
       }
 
       if (response.statusCode == 200) {
-        const cast = Cast(location: "ApiService::getTvPageConfig");
+        const cast = Cast(location: "ApiService.getTvPageConfig");
 
         final jsonData =
             cast.jsonMapOrNull(json.decode(response.body), "response.body");
@@ -98,6 +110,8 @@ class ApiService {
     SdkErrorCallback? onError,
   }) async {
     try {
+      final benchmark = benchmarkedFutureStart();
+
       final endpoint = disableCache
           ? AppConfig.productsEndpointUrl
           : AppConfig.productsEndpointCacheUrl;
@@ -110,14 +124,19 @@ class ApiService {
 
       debugInfo("HTTP request: $url");
 
-      final response = await http.get(url);
+      final response = await benchmarkedFuture(
+        http.get(url),
+        "ApiService.getProductsByVodAssetIds.get",
+      );
+
+      benchmarkedFutureEnd(benchmark, "ApiService.getProductsByVodAssetIds");
 
       if (AppConfig.debugNetworkDelay != Duration.zero) {
         await Future.delayed(AppConfig.debugNetworkDelay);
       }
 
       if (response.statusCode == 200) {
-        const cast = Cast(location: "ApiService::getProductsByVodAssetIds");
+        const cast = Cast(location: "ApiService.getProductsByVodAssetIds");
 
         final jsonData =
             cast.jsonMapOrNull(json.decode(response.body), "response.body");
@@ -179,19 +198,26 @@ class ApiService {
 
     var cacheVersion = "";
 
-    final response = await http.post(
-      Uri.parse(AppConfig.cacheVersionEndpointUrl),
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-      },
-      body: jsonEncode({
-        "appKey": appKey,
-      }),
+    final url = Uri.parse(AppConfig.cacheVersionEndpointUrl);
+
+    debugInfo("HTTP request: $url");
+
+    final response = await benchmarkedFuture(
+      http.post(
+        url,
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "appKey": appKey,
+        }),
+      ),
+      "ApiService.getCacheVersion.post",
     );
 
     if (response.statusCode == 200) {
-      const cast = Cast(location: "ApiService::getCacheVersion");
+      const cast = Cast(location: "ApiService.getCacheVersion");
 
       final jsonData = cast.jsonMap(json.decode(response.body), "body");
 
@@ -202,8 +228,15 @@ class ApiService {
       onError?.call(message, StackTrace.current);
     }
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString("cacheVersion_$appKey", cacheVersion);
+    final prefs = await benchmarkedFuture(
+      SharedPreferences.getInstance(),
+      "SharedPreferences.getInstance",
+    );
+
+    await benchmarkedFuture(
+      prefs.setString("cacheVersion_$appKey", cacheVersion),
+      "SharedPreferences.setString",
+    );
 
     return cacheVersion;
   }
@@ -213,7 +246,11 @@ class ApiService {
       return "";
     }
 
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await benchmarkedFuture(
+      SharedPreferences.getInstance(),
+      "SharedPreferences.getInstance",
+    );
+
     return prefs.getString("cacheVersion_$appKey");
   }
 }
