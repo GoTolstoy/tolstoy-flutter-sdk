@@ -33,7 +33,7 @@ class Asset {
       id: parse.string("videoId"),
       uploadType: parse.string("uploadType"),
       type: enumFromString(
-        parse.string("type"),
+        parse.stringOrNull("type"),
         AssetType.values,
         AssetType.video,
       ),
