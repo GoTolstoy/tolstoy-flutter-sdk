@@ -11,6 +11,7 @@ import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 class FeedScreen extends StatefulWidget {
   const FeedScreen({
     required this.config,
+    this.safeInsets = EdgeInsets.zero,
     super.key,
     this.onProductClick,
     this.initialAssetId,
@@ -32,6 +33,7 @@ class FeedScreen extends StatefulWidget {
     required TvPageConfig config,
   })? buildFeedFooter;
   final VideoErrorCallback? onVideoError;
+  final EdgeInsets safeInsets;
 
   @override
   State<FeedScreen> createState() => _FeedScreenState();
@@ -125,6 +127,7 @@ class _FeedScreenState extends State<FeedScreen> {
           options: const FeedViewOptions(
             isMutedByDefault: true,
           ),
+          safeInsets: widget.safeInsets,
         ),
       );
 }

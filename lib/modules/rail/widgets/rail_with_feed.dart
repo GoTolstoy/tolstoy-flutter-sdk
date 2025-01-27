@@ -11,6 +11,7 @@ import "package:tolstoy_flutter_sdk/modules/rail/widgets/rail.dart";
 class RailWithFeed extends StatefulWidget {
   const RailWithFeed({
     required this.config,
+    this.safeInsets = EdgeInsets.zero,
     super.key,
     this.railOptions = const RailOptions(),
     this.onProductClick,
@@ -34,7 +35,7 @@ class RailWithFeed extends StatefulWidget {
   })? buildFeedFooter;
   final void Function(Asset)? onAssetClick;
   final VideoErrorCallback? onVideoError;
-
+  final EdgeInsets safeInsets;
   @override
   State<RailWithFeed> createState() => _RailWithFeedState();
 }
@@ -85,6 +86,7 @@ class _RailWithFeedState extends State<RailWithFeed> {
                   buildFeedHeader: widget.buildFeedHeader,
                   buildFeedFooter: widget.buildFeedFooter,
                   onVideoError: widget.onVideoError,
+                  safeInsets: widget.safeInsets,
                 );
               },
             ),

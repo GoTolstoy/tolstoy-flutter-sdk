@@ -28,6 +28,7 @@ class FeedViewOptions {
 class FeedView extends StatefulWidget {
   FeedView({
     required this.config,
+    this.safeInsets = EdgeInsets.zero,
     super.key,
     this.onLoadNextPage,
     this.options = const FeedViewOptions(),
@@ -50,6 +51,7 @@ class FeedView extends StatefulWidget {
   })? buildFeedFooter;
   final GlobalKey footerKey;
   final VideoErrorCallback? onVideoError;
+  final EdgeInsets safeInsets;
 
   @override
   State<FeedView> createState() => _FeedViewState();
@@ -196,7 +198,7 @@ class _FeedViewState extends State<FeedView>
             onProductClick: _onProductClick,
             onVideoError: widget.onVideoError,
             feedAssetOptions: FeedAssetOptions(
-              overlayBottomPadding: _footerHeight,
+              overlayBottomPadding: _footerHeight + widget.safeInsets.bottom,
             ),
           );
         },
