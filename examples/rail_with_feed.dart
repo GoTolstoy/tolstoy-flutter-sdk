@@ -7,6 +7,7 @@ import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 import "package:tolstoy_flutter_sdk/modules/rail/widgets.dart";
 import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 
+const String appKey = "YOUR_APP_KEY";
 const String publishId = "YOUR_PUBLISH_ID";
 
 class MyHomePage extends StatefulWidget {
@@ -60,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) => Scaffold(
         body: SafeArea(
           child: TvConfigProvider(
+            appKey: appKey,
             publishId: publishId,
             createProductsLoader: ({
               required String appKey,
@@ -77,9 +79,10 @@ class _MyHomePageState extends State<MyHomePage> {
               buildFeedHeader: _buildFeedHeader,
               buildFeedFooter: _buildFeedFooter,
               onAssetClick: _onAssetClick,
-              onVideoError: (message, asset) {
+              onVideoError: (message, asset, playMode) {
                 // Implement logic for video error
                 debugInfo("Video error: $message");
+                return null;
               },
             ),
           ),

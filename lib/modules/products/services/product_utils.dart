@@ -1,4 +1,6 @@
 import "package:collection/collection.dart"; // needed for .firstWhereOrNull
+import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/core/types.dart";
 
 import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 
@@ -34,12 +36,17 @@ class ProductUtils {
     return price;
   }
 
-  static String? getProductPriceLabel(Product product, {String? variantId}) {
+  static Widget getProductPriceLabel(
+    Product product, {
+    required PriceFormatter formatter,
+    String? variantId,
+  }) {
     final price = getProductPrice(product, variantId: variantId);
     if (price != null) {
-      return "${product.currencySymbol}$price";
+      return formatter(price: price, currencySymbol: product.currencySymbol);
     }
-    return null;
+
+    return const SizedBox.shrink();
   }
 
   static String getOptimizedImageUrl(

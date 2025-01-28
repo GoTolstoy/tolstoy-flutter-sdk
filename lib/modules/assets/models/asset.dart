@@ -13,6 +13,7 @@ class Asset {
     this.products,
     this.name,
     this.stockAsset,
+    this.externalProviderData,
     this.createdAt,
   });
 
@@ -25,13 +26,14 @@ class Asset {
     const cast = Cast(location: "Asset");
 
     final stockAsset = parse.jsonMapOrNull("stockAsset");
+    final externalProviderData = parse.jsonMapOrNull("externalProviderData");
 
     return Asset(
       owner: parse.string("videoOwner"),
       id: parse.string("videoId"),
       uploadType: parse.string("uploadType"),
       type: enumFromString(
-        parse.string("type"),
+        parse.stringOrNull("type"),
         AssetType.values,
         AssetType.video,
       ),
@@ -44,6 +46,9 @@ class Asset {
       name: parse.stringOrNull("videoName"),
       createdAt: parse.dateTimeOrNull("videoCreatedAt"),
       stockAsset: stockAsset != null ? StockAsset.fromJson(stockAsset) : null,
+      externalProviderData: externalProviderData != null
+          ? ExternalProviderData.fromJson(externalProviderData)
+          : null,
     );
   }
 
@@ -54,6 +59,7 @@ class Asset {
   final List<ProductReference>? products;
   final String? name;
   final StockAsset? stockAsset;
+  final ExternalProviderData? externalProviderData;
   final DateTime? createdAt;
 }
 
@@ -116,4 +122,23 @@ class StockAsset {
   final bool? hasOriginal;
   final String? shopifyPosterUrl;
   final String? shopifyFileId;
+}
+
+class ExternalProviderData {
+  ExternalProviderData({
+    this.handle,
+  });
+
+  factory ExternalProviderData.fromJson(JsonMap json) {
+    final parse = JsonParser(
+      location: "ExternalProviderData",
+      json: json,
+    );
+
+    return ExternalProviderData(
+      handle: parse.stringOrNull("handle"),
+    );
+  }
+
+  final String? handle;
 }

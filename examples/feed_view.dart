@@ -1,12 +1,11 @@
 import "package:flutter/material.dart";
 import "package:flutter_spinkit/flutter_spinkit.dart";
-import "package:tolstoy_flutter_sdk/modules/api/widgets/tv_config_provider.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models/asset.dart";
-import "package:tolstoy_flutter_sdk/modules/feed/widgets/feed_view.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/batch_products_loader.dart";
-import "package:tolstoy_flutter_sdk/modules/products/models.dart";
+import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
 import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 
+const String appKey = "YOUR_APP_KEY";
 const String publishId = "YOUR_PUBLISH_ID";
 
 class FeedScreen extends StatelessWidget {
@@ -21,6 +20,7 @@ class FeedScreen extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: const Text("Feed")),
         body: TvConfigProvider(
+          appKey: appKey,
           publishId: publishId,
           createProductsLoader: ({
             required String appKey,
@@ -51,9 +51,10 @@ class FeedScreen extends StatelessWidget {
                 pageThreshold: 5,
               ),
               onProductClick: _handleProductClick,
-              onVideoError: (message, asset) {
+              onVideoError: (message, asset, playMode) {
                 // Implement logic for video error
                 debugError("Video error: $message");
+                return null;
               },
             );
           },

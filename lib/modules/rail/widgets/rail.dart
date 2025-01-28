@@ -1,25 +1,33 @@
 import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_client_config.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/rail/models.dart";
-import "package:tolstoy_flutter_sdk/modules/rail/widgets/consts.dart";
 import "package:tolstoy_flutter_sdk/modules/rail/widgets/rail_asset.dart";
+import "package:tolstoy_flutter_sdk/modules/rail/widgets/rail_more_asset.dart";
 import "package:visibility_detector/visibility_detector.dart";
 
 class Rail extends StatefulWidget {
   const Rail({
     required this.config,
     super.key,
+    this.clientConfig = const TvPageClientConfig(),
     this.onAssetClick,
     this.options = const RailOptions(),
     this.onVideoError,
+    this.showMoreButton = true,
+    this.maxVisibleItems = 6,
   });
 
   final TvPageConfig? config;
+  final TvPageClientConfig clientConfig;
   final void Function(Asset)? onAssetClick;
   final RailOptions options;
-  final void Function(String message, Asset asset)? onVideoError;
+  final VideoErrorCallback? onVideoError;
+  final bool showMoreButton;
+  final int maxVisibleItems;
 
   @override
   State<Rail> createState() => _RailState();
@@ -67,7 +75,8 @@ class _RailState extends State<Rail> {
   }
 
   int get visibleItemCount =>
-      widget.config?.assets.length.clamp(0, maxVisibleItems) ?? maxVisibleItems;
+      widget.config?.assets.length.clamp(0, widget.maxVisibleItems) ??
+      widget.maxVisibleItems;
 
   double get railWidth =>
       context.size?.width ?? MediaQuery.of(context).size.width;
@@ -229,51 +238,66 @@ class _RailState extends State<Rail> {
                       ? widget.options.xPadding
                       : widget.options.itemGap / 2,
                 ),
-                child: RailAsset(
-                  asset: asset,
-                  config: localConfig,
-                  onTap: () {
-                    if (localConfig == null || asset == null) {
-                      return;
-                    }
+                child: isLastItem && widget.showMoreButton
+                    ? RailMoreAsset(
+                        config: localConfig,
+                        clientConfig: widget.clientConfig,
+                        onTap: () {
+                          if (localConfig == null || asset == null) {
+                            return;
+                          }
 
-                    widget.onAssetClick?.call(asset);
-                    _analytics?.sendVideoClicked(
-                      localConfig,
-                      {"videoId": asset.id},
-                    );
-                  },
-                  onPlayClick: () {
-                    if (localConfig == null || asset == null) {
-                      return;
-                    }
+                          widget.onAssetClick?.call(asset);
+                        },
+                        width: widget.options.itemWidth,
+                        height: widget.options.itemHeight,
+                      )
+                    : RailAsset(
+                        asset: asset,
+                        config: localConfig,
+                        clientConfig: widget.clientConfig,
+                        onTap: () {
+                          if (localConfig == null || asset == null) {
+                            return;
+                          }
 
-                    _playVideo(index);
-                    _analytics?.sendVideoWatched(
-                      localConfig,
-                      {"videoId": asset.id},
-                    );
-                  },
-                  onVideoEnded: (asset) {
-                    if (index != _currentPlayingIndex) {
-                      return;
-                    }
+                          widget.onAssetClick?.call(asset);
+                          _analytics?.sendVideoClicked(
+                            localConfig,
+                            {"videoId": asset.id},
+                          );
+                        },
+                        onPlayClick: () {
+                          if (localConfig == null || asset == null) {
+                            return;
+                          }
 
-                    _onCurrentVideoEnded();
-                  },
-                  onVideoError: widget.onVideoError,
-                  width: widget.options.itemWidth,
-                  height: widget.options.itemHeight,
-                  options: AssetViewOptions(
-                    isPlaying: index == _currentPlayingIndex &&
-                        _isVisible &&
-                        !_currentVideoEnded,
-                    isMuted: true,
-                    imageFit: BoxFit.cover,
-                    playMode: AssetViewOptionsPlayMode.preview,
-                  ),
-                  preload: _shouldPreload(index),
-                ),
+                          _playVideo(index);
+                          _analytics?.sendVideoWatched(
+                            localConfig,
+                            {"videoId": asset.id},
+                          );
+                        },
+                        onVideoEnded: (asset) {
+                          if (index != _currentPlayingIndex) {
+                            return;
+                          }
+
+                          _onCurrentVideoEnded();
+                        },
+                        onVideoError: widget.onVideoError,
+                        width: widget.options.itemWidth,
+                        height: widget.options.itemHeight,
+                        options: AssetViewOptions(
+                          isPlaying: index == _currentPlayingIndex &&
+                              _isVisible &&
+                              !_currentVideoEnded,
+                          isMuted: true,
+                          imageFit: BoxFit.cover,
+                          playMode: AssetViewOptionsPlayMode.preview,
+                        ),
+                        preload: _shouldPreload(index),
+                      ),
               );
             },
           ),

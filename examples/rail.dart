@@ -1,11 +1,10 @@
 import "package:flutter/material.dart";
-import "package:tolstoy_flutter_sdk/modules/api/widgets/tv_config_provider.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/batch_products_loader.dart";
-import "package:tolstoy_flutter_sdk/modules/rail/models.dart";
-import "package:tolstoy_flutter_sdk/modules/rail/widgets/rail.dart";
+import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
 import "package:tolstoy_flutter_sdk/utils/debug_print.dart";
 
+const String appKey = "YOUR_APP_KEY";
 const String publishId = "YOUR_PUBLISH_ID";
 
 class RailScreen extends StatelessWidget {
@@ -30,6 +29,7 @@ class RailScreen extends StatelessWidget {
               ),
             ),
             TvConfigProvider(
+              appKey: appKey,
               publishId: publishId,
               createProductsLoader: ({
                 required String appKey,
@@ -44,9 +44,10 @@ class RailScreen extends StatelessWidget {
               builder: (context, config) => Rail(
                 config: config,
                 onAssetClick: _handleAssetClick,
-                onVideoError: (message, asset) {
+                onVideoError: (message, asset, playMode) {
                   // Implement logic for video error
                   debugError("Video error: $message");
+                  return null;
                 },
                 options: const RailOptions(
                   itemWidth: 160,

@@ -1,4 +1,6 @@
 import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/core/types.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_client_config.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/widgets.dart";
 import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
@@ -12,6 +14,7 @@ class RailAsset extends StatelessWidget {
     required this.onVideoEnded,
     required this.width,
     required this.height,
+    this.clientConfig = const TvPageClientConfig(),
     super.key,
     this.options,
     this.preload = true,
@@ -20,6 +23,7 @@ class RailAsset extends StatelessWidget {
 
   final Asset? asset;
   final TvPageConfig? config;
+  final TvPageClientConfig clientConfig;
   final AssetViewOptions? options;
   final VoidCallback onTap;
   final VoidCallback onPlayClick;
@@ -27,7 +31,7 @@ class RailAsset extends StatelessWidget {
   final double width;
   final double height;
   final bool preload;
-  final void Function(String message, Asset asset)? onVideoError;
+  final VideoErrorCallback? onVideoError;
 
   @override
   Widget build(BuildContext context) => GestureDetector(
@@ -46,6 +50,7 @@ class RailAsset extends StatelessWidget {
                 AssetView(
                   asset: asset,
                   config: config,
+                  clientConfig: clientConfig,
                   onAssetEnded: onVideoEnded,
                   options:
                       options ?? const AssetViewOptions(imageFit: BoxFit.cover),

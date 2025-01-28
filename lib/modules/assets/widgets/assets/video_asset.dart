@@ -1,11 +1,12 @@
 import "package:flutter/material.dart";
 import "package:flutter_spinkit/flutter_spinkit.dart";
 import "package:tolstoy_flutter_sdk/core/config.dart";
+import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_client_config.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/services.dart";
-import "package:tolstoy_flutter_sdk/modules/assets/widgets/assets/asset_placeholder.dart";
 import "package:tolstoy_flutter_sdk/utils/components/delayed_display.dart";
 import "package:video_player/video_player.dart";
 
@@ -15,6 +16,7 @@ class VideoAsset extends StatefulWidget {
   const VideoAsset({
     required this.asset,
     required this.config,
+    this.clientConfig = const TvPageClientConfig(),
     super.key,
     this.onAssetEnded,
     this.onProgressUpdate,
@@ -25,6 +27,7 @@ class VideoAsset extends StatefulWidget {
 
   final Asset asset;
   final TvPageConfig config;
+  final TvPageClientConfig clientConfig;
   final Function(Asset)? onAssetEnded;
   final Function(
     Asset asset,
@@ -33,7 +36,7 @@ class VideoAsset extends StatefulWidget {
   )? onProgressUpdate;
   final AssetViewOptions options;
   final bool preload;
-  final void Function(String message, Asset asset)? onVideoError;
+  final VideoErrorCallback? onVideoError;
 
   @override
   State<VideoAsset> createState() => _VideoAssetState();
@@ -49,6 +52,7 @@ class _VideoAssetState extends State<VideoAsset> {
   Duration _lastPosition = Duration.zero;
   bool _isVideoInitialized = false;
   bool _isVideoReady = false;
+  Widget? _errorWidget;
 
   @override
   void initState() {
@@ -102,9 +106,10 @@ class _VideoAssetState extends State<VideoAsset> {
     }
 
     if (localController.value.hasError) {
-      widget.onVideoError?.call(
+      _errorWidget = widget.onVideoError?.call(
         localController.value.errorDescription ?? "Unknown error",
         widget.asset,
+        widget.options.playMode,
       );
     }
 
@@ -266,11 +271,10 @@ class _VideoAssetState extends State<VideoAsset> {
   @override
   Widget build(BuildContext context) {
     final localController = _controller;
-
+    final localErrorWidget = _errorWidget;
     return Stack(
       fit: StackFit.expand,
       children: [
-        const AssetPlaceholder(),
         Center(
           child: Image.network(
             _thumbnailUrl,
@@ -319,7 +323,11 @@ class _VideoAssetState extends State<VideoAsset> {
               ),
             ),
           ),
-        if (widget.config.clientConfig.videoBufferingIndicator &&
+        if (localController != null &&
+            localController.value.hasError &&
+            localErrorWidget != null)
+          localErrorWidget,
+        if (widget.clientConfig.videoBufferingIndicator &&
             widget.options.isPlaying &&
             localController != null &&
             _isVideoInitialized &&

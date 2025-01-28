@@ -1,8 +1,9 @@
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_client_config.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/widgets/product_card/feed_product_reviews.dart";
-import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 import "package:tolstoy_flutter_sdk/modules/products/services.dart";
+import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
 
 class FeedProductCardOptions {
   const FeedProductCardOptions({
@@ -24,6 +25,8 @@ class FeedProductCardOptions {
 
 class FeedProductCard extends StatelessWidget {
   const FeedProductCard({
+    required this.config,
+    this.clientConfig = const TvPageClientConfig(),
     this.product,
     super.key,
     this.onProductClick,
@@ -33,7 +36,8 @@ class FeedProductCard extends StatelessWidget {
   final Product? product;
   final void Function(Product)? onProductClick;
   final FeedProductCardOptions options;
-
+  final TvPageConfig config;
+  final TvPageClientConfig clientConfig;
   @override
   Widget build(BuildContext context) {
     final localProduct = product;
@@ -67,7 +71,7 @@ class FeedProductCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Container(color: Colors.grey[300]),
+                    clientConfig.loadingPlaceholderWidget,
                     if (localProduct != null)
                       CachedNetworkImage(
                         imageUrl: ProductUtils.getOptimizedImageUrl(
@@ -75,8 +79,7 @@ class FeedProductCard extends StatelessWidget {
                           width: options.imageWidth.toInt(),
                         ),
                         fit: options.imageFit,
-                        placeholder: (context, url) =>
-                            Container(color: Colors.grey[300]),
+                        placeholder: (context, url) => const SizedBox.shrink(),
                         errorWidget: (context, url, error) => Icon(
                           Icons.broken_image_rounded,
                           size: 40,
@@ -130,12 +133,20 @@ class FeedProductCard extends StatelessWidget {
             ],
           ],
         ),
-        Text(
-          ProductUtils.getProductPriceLabel(product) ?? "",
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+        ProductUtils.getProductPriceLabel(
+          product,
+          formatter: clientConfig.priceFormatter ??
+              ({
+                required String price,
+                required String currencySymbol,
+              }) =>
+                  Text(
+                    "$currencySymbol$price",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
         ),
       ],
     );
@@ -148,33 +159,33 @@ class FeedProductCard extends StatelessWidget {
           Column(
             children: [
               SizedBox(height: 0.04 * options.height),
-              Container(
-                height: 0.15 * options.height,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(4),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: SizedBox(
+                  height: 0.15 * options.height,
+                  width: double.infinity,
+                  child: clientConfig.loadingPlaceholderWidget,
                 ),
               ),
               const SizedBox(height: 6),
-              Container(
-                height: 0.15 * options.height,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(4),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: SizedBox(
+                  height: 0.15 * options.height,
+                  width: double.infinity,
+                  child: clientConfig.loadingPlaceholderWidget,
                 ),
               ),
             ],
           ),
           Column(
             children: [
-              Container(
-                height: 0.15 * options.height,
-                width: 50,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(4),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: SizedBox(
+                  height: 0.15 * options.height,
+                  width: 50,
+                  child: clientConfig.loadingPlaceholderWidget,
                 ),
               ),
               SizedBox(height: 0.06 * options.height),
