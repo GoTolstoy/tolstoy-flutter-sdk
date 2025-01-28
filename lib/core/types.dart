@@ -13,3 +13,8 @@ typedef VideoErrorCallback = Widget? Function(
   Asset asset,
   AssetViewOptionsPlayMode playMode,
 );
+
+typedef PriceFormatter = Widget Function({
+  required String price,
+  required String currencySymbol,
+});

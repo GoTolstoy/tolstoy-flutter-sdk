@@ -133,12 +133,20 @@ class FeedProductCard extends StatelessWidget {
             ],
           ],
         ),
-        Text(
-          ProductUtils.getProductPriceLabel(product) ?? "",
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+        ProductUtils.getProductPriceLabel(
+          product,
+          formatter: clientConfig.priceFormatter ??
+              ({
+                required String price,
+                required String currencySymbol,
+              }) =>
+                  Text(
+                    "$currencySymbol$price",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
         ),
       ],
     );
