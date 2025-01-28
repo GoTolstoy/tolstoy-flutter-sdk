@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_client_config.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/rail/models.dart";
 import "package:tolstoy_flutter_sdk/modules/rail/widgets/rail_asset.dart";
@@ -12,6 +13,7 @@ class Rail extends StatefulWidget {
   const Rail({
     required this.config,
     super.key,
+    this.clientConfig = const TvPageClientConfig(),
     this.onAssetClick,
     this.options = const RailOptions(),
     this.onVideoError,
@@ -20,6 +22,7 @@ class Rail extends StatefulWidget {
   });
 
   final TvPageConfig? config;
+  final TvPageClientConfig clientConfig;
   final void Function(Asset)? onAssetClick;
   final RailOptions options;
   final VideoErrorCallback? onVideoError;
@@ -238,6 +241,7 @@ class _RailState extends State<Rail> {
                 child: isLastItem && widget.showMoreButton
                     ? RailMoreAsset(
                         config: localConfig,
+                        clientConfig: widget.clientConfig,
                         onTap: () {
                           if (localConfig == null || asset == null) {
                             return;
@@ -251,6 +255,7 @@ class _RailState extends State<Rail> {
                     : RailAsset(
                         asset: asset,
                         config: localConfig,
+                        clientConfig: widget.clientConfig,
                         onTap: () {
                           if (localConfig == null || asset == null) {
                             return;

@@ -5,6 +5,7 @@ import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_client_config.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/constants.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/widgets/feed_asset.dart";
@@ -28,6 +29,7 @@ class FeedViewOptions {
 class FeedView extends StatefulWidget {
   FeedView({
     required this.config,
+    this.clientConfig = const TvPageClientConfig(),
     this.safeInsets = EdgeInsets.zero,
     super.key,
     this.onLoadNextPage,
@@ -40,6 +42,7 @@ class FeedView extends StatefulWidget {
   }) : footerKey = GlobalKey();
 
   final TvPageConfig config;
+  final TvPageClientConfig clientConfig;
   final FeedViewOptions options;
   final Function()? onLoadNextPage;
   final void Function(Product)? onProductClick;
@@ -184,6 +187,7 @@ class _FeedViewState extends State<FeedView>
           return FeedAssetView(
             asset: asset,
             config: widget.config,
+            clientConfig: widget.clientConfig,
             options: AssetViewOptions(
               isPlaying: isPlayingEnabled && isActive && _isVisible,
               isPlayingEnabled: isPlayingEnabled,

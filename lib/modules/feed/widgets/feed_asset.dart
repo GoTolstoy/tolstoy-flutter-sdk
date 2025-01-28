@@ -3,6 +3,7 @@ import "dart:async";
 import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_client_config.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/widgets.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/widgets/feed_overlay.dart";
@@ -22,6 +23,7 @@ class FeedAssetView extends StatefulWidget {
     required this.onPlayClick,
     required this.onMuteClick,
     required this.products,
+    this.clientConfig = const TvPageClientConfig(),
     super.key,
     this.options = const AssetViewOptions(),
     this.onProductClick,
@@ -32,6 +34,7 @@ class FeedAssetView extends StatefulWidget {
 
   final Asset asset;
   final TvPageConfig config;
+  final TvPageClientConfig clientConfig;
   final AssetViewOptions options;
   final List<Product?> products;
   final Function(Asset) onPlayClick;
@@ -71,6 +74,7 @@ class _FeedAssetViewState extends State<FeedAssetView> {
           AssetView(
             asset: widget.asset,
             config: widget.config,
+            clientConfig: widget.clientConfig,
             options: widget.options,
             preload: widget.preload,
             onProgressUpdate: _handleProgressUpdate,
@@ -85,6 +89,7 @@ class _FeedAssetViewState extends State<FeedAssetView> {
               handle: widget.asset.externalProviderData?.handle,
               products: widget.products,
               config: widget.config,
+              clientConfig: widget.clientConfig,
               isPlayingEnabled: widget.options.isPlayingEnabled,
               isMuted: widget.options.isMuted,
               onProductClick: widget.onProductClick,

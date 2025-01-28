@@ -10,8 +10,8 @@ class TvConfigProvider extends StatefulWidget {
     required this.builder,
     required this.publishId,
     required this.createProductsLoader,
+    required this.appKey,
     this.disableCache = false,
-    this.clientConfig,
     this.onError,
     super.key,
   });
@@ -20,7 +20,7 @@ class TvConfigProvider extends StatefulWidget {
   final String publishId;
   final ProductsLoaderFactory createProductsLoader;
   final bool disableCache;
-  final TvPageClientConfig? clientConfig;
+  final String appKey;
   final SdkErrorCallback? onError;
 
   @override
@@ -40,8 +40,8 @@ class _TvConfigProviderState extends State<TvConfigProvider> {
     final config = await ApiService.getTvPageConfig(
       widget.publishId,
       widget.createProductsLoader,
+      appKey: widget.appKey,
       disableCache: widget.disableCache,
-      clientConfig: widget.clientConfig,
       onError: widget.onError,
     );
 

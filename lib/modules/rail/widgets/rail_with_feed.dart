@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_client_config.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/screens.dart";
 import "package:tolstoy_flutter_sdk/modules/products/models.dart";
@@ -10,6 +11,7 @@ import "package:tolstoy_flutter_sdk/modules/rail/widgets/rail.dart";
 class RailWithFeed extends StatefulWidget {
   const RailWithFeed({
     required this.config,
+    this.clientConfig = const TvPageClientConfig(),
     this.safeInsets = EdgeInsets.zero,
     super.key,
     this.railOptions = const RailOptions(),
@@ -23,6 +25,7 @@ class RailWithFeed extends StatefulWidget {
   });
 
   final TvPageConfig? config;
+  final TvPageClientConfig clientConfig;
   final RailOptions railOptions;
   final void Function(Product)? onProductClick;
   final PreferredSizeWidget? Function({
@@ -62,6 +65,7 @@ class _RailWithFeedState extends State<RailWithFeed> {
   @override
   Widget build(BuildContext context) => Rail(
         config: widget.config,
+        clientConfig: widget.clientConfig,
         showMoreButton: widget.showMoreButton,
         maxVisibleItems: widget.maxVisibleItems,
         options: widget.railOptions,
@@ -86,6 +90,7 @@ class _RailWithFeedState extends State<RailWithFeed> {
 
                 return FeedScreen(
                   config: localConfig,
+                  clientConfig: widget.clientConfig,
                   initialAssetId: asset.id,
                   onProductClick: widget.onProductClick,
                   buildFeedHeader: widget.buildFeedHeader,

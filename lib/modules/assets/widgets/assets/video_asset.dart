@@ -4,6 +4,7 @@ import "package:tolstoy_flutter_sdk/core/config.dart";
 import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/analytics/analytics.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_client_config.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/services.dart";
 import "package:tolstoy_flutter_sdk/utils/components/delayed_display.dart";
@@ -15,6 +16,7 @@ class VideoAsset extends StatefulWidget {
   const VideoAsset({
     required this.asset,
     required this.config,
+    this.clientConfig = const TvPageClientConfig(),
     super.key,
     this.onAssetEnded,
     this.onProgressUpdate,
@@ -25,6 +27,7 @@ class VideoAsset extends StatefulWidget {
 
   final Asset asset;
   final TvPageConfig config;
+  final TvPageClientConfig clientConfig;
   final Function(Asset)? onAssetEnded;
   final Function(
     Asset asset,
@@ -324,7 +327,7 @@ class _VideoAssetState extends State<VideoAsset> {
             localController.value.hasError &&
             localErrorWidget != null)
           localErrorWidget,
-        if (widget.config.clientConfig.videoBufferingIndicator &&
+        if (widget.clientConfig.videoBufferingIndicator &&
             widget.options.isPlaying &&
             localController != null &&
             _isVideoInitialized &&

@@ -3,6 +3,7 @@ import "dart:convert";
 import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_client_config.dart";
 import "package:tolstoy_flutter_sdk/modules/api/services/api.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/screens/feed_screen_menu.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/widgets/feed_view.dart";
@@ -11,6 +12,7 @@ import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 class FeedScreen extends StatefulWidget {
   const FeedScreen({
     required this.config,
+    this.clientConfig = const TvPageClientConfig(),
     this.safeInsets = EdgeInsets.zero,
     super.key,
     this.onProductClick,
@@ -21,6 +23,7 @@ class FeedScreen extends StatefulWidget {
   });
 
   final TvPageConfig config;
+  final TvPageClientConfig clientConfig;
   final void Function(Product)? onProductClick;
   final String? initialAssetId;
   final PreferredSizeWidget? Function({
@@ -118,6 +121,7 @@ class _FeedScreenState extends State<FeedScreen> {
         ),
         body: FeedView(
           config: widget.config,
+          clientConfig: widget.clientConfig,
           onProductClick: widget.onProductClick,
           initialAssetId: widget.initialAssetId,
           onAssetIdChange: (assetId) =>

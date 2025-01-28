@@ -22,16 +22,12 @@ class ApiService {
   static Future<TvPageConfig?> getTvPageConfig(
     String publishId,
     ProductsLoaderFactory createProductsLoader, {
+    required String appKey,
     bool disableCache = false,
-    TvPageClientConfig? clientConfig,
     SdkErrorCallback? onError,
   }) async {
     try {
       final benchmark = benchmarkedFutureStart();
-
-      final localClientConfig = clientConfig ?? TvPageClientConfig();
-
-      final appKey = localClientConfig.appKey;
 
       final cacheVersion = await _getCacheVersion(appKey, onError: onError);
 
@@ -72,7 +68,6 @@ class ApiService {
         return TvPageConfig.fromJson(
           jsonData,
           createProductsLoader,
-          clientConfig: clientConfig,
           onError: onError,
         );
       } else {

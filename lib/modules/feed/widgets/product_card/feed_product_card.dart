@@ -1,5 +1,6 @@
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/material.dart";
+import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_client_config.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/widgets/product_card/feed_product_reviews.dart";
 import "package:tolstoy_flutter_sdk/modules/products/services.dart";
 import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
@@ -25,6 +26,7 @@ class FeedProductCardOptions {
 class FeedProductCard extends StatelessWidget {
   const FeedProductCard({
     required this.config,
+    this.clientConfig = const TvPageClientConfig(),
     this.product,
     super.key,
     this.onProductClick,
@@ -35,7 +37,7 @@ class FeedProductCard extends StatelessWidget {
   final void Function(Product)? onProductClick;
   final FeedProductCardOptions options;
   final TvPageConfig config;
-
+  final TvPageClientConfig clientConfig;
   @override
   Widget build(BuildContext context) {
     final localProduct = product;
@@ -69,7 +71,7 @@ class FeedProductCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    config.clientConfig.loadingPlaceholderWidget,
+                    clientConfig.loadingPlaceholderWidget,
                     if (localProduct != null)
                       CachedNetworkImage(
                         imageUrl: ProductUtils.getOptimizedImageUrl(
@@ -154,7 +156,7 @@ class FeedProductCard extends StatelessWidget {
                 child: SizedBox(
                   height: 0.15 * options.height,
                   width: double.infinity,
-                  child: config.clientConfig.loadingPlaceholderWidget,
+                  child: clientConfig.loadingPlaceholderWidget,
                 ),
               ),
               const SizedBox(height: 6),
@@ -163,7 +165,7 @@ class FeedProductCard extends StatelessWidget {
                 child: SizedBox(
                   height: 0.15 * options.height,
                   width: double.infinity,
-                  child: config.clientConfig.loadingPlaceholderWidget,
+                  child: clientConfig.loadingPlaceholderWidget,
                 ),
               ),
             ],
@@ -175,7 +177,7 @@ class FeedProductCard extends StatelessWidget {
                 child: SizedBox(
                   height: 0.15 * options.height,
                   width: 50,
-                  child: config.clientConfig.loadingPlaceholderWidget,
+                  child: clientConfig.loadingPlaceholderWidget,
                 ),
               ),
               SizedBox(height: 0.06 * options.height),
