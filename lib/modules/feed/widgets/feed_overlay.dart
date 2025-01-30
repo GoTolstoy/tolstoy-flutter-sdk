@@ -119,15 +119,18 @@ class FeedAssetOverlay extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 24),
               if (products.isNotEmpty)
                 FeedProductList(
+                  options: const FeedProductListOptions(
+                    padding: EdgeInsets.zero,
+                  ),
                   config: config,
                   clientConfig: clientConfig,
                   products: products,
                   onProductClick: onProductClick,
                 ),
-              if (products.isNotEmpty) const SizedBox(height: 12),
+              if (products.isNotEmpty) const SizedBox(height: 36),
               StreamBuilder<double>(
                 stream: progressStream,
                 builder: (context, snapshot) => LinearProgressIndicator(
