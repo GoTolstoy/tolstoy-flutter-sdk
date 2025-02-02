@@ -136,6 +136,7 @@ class Variant {
   Variant({
     required this.id,
     required this.price,
+    this.imageUrl,
     this.compareAtPrice,
     this.title,
     this.productId,
@@ -152,6 +153,7 @@ class Variant {
     return Variant(
       id: parse.string("id"),
       price: parse.string("price"),
+      imageUrl: parse.stringOrNull("imageUrl"),
       compareAtPrice: parse.stringOrNull("compareAtPrice"),
       title: parse.stringOrNull("title"),
       productId: parse.stringOrNull("productId"),
@@ -163,6 +165,7 @@ class Variant {
 
   final String id;
   final String price;
+  final String? imageUrl;
   final String? compareAtPrice;
   final String? title;
   final String? productId;
@@ -172,6 +175,7 @@ class Variant {
   JsonMap toJson() => {
         "id": id,
         "price": price,
+        "imageUrl": imageUrl,
         "productId": productId,
         "compareAtPrice": compareAtPrice,
         "title": title,
