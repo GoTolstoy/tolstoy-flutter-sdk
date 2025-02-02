@@ -2,6 +2,7 @@ import "dart:async";
 
 import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_client_config.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/models/asset.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/widgets/feed_product_list.dart";
 import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
 
@@ -13,7 +14,7 @@ class FeedAssetOverlay extends StatelessWidget {
     required this.onPlayPause,
     required this.onMuteUnmute,
     required this.progressStream,
-    required this.config,
+    required this.asset,
     this.clientConfig = const TvPageClientConfig(),
     this.handle,
     super.key,
@@ -30,7 +31,7 @@ class FeedAssetOverlay extends StatelessWidget {
   final VoidCallback onMuteUnmute;
   final void Function(Product)? onProductClick;
   final Stream<double> progressStream;
-  final TvPageConfig config;
+  final Asset asset;
   final TvPageClientConfig clientConfig;
   final String? handle;
 
@@ -125,7 +126,7 @@ class FeedAssetOverlay extends StatelessWidget {
                   options: const FeedProductListOptions(
                     padding: EdgeInsets.zero,
                   ),
-                  config: config,
+                  asset: asset,
                   clientConfig: clientConfig,
                   products: products,
                   onProductClick: onProductClick,

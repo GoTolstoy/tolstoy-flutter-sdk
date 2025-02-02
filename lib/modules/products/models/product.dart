@@ -4,6 +4,7 @@ import "package:tolstoy_flutter_sdk/utils/types.dart";
 
 class Product {
   Product({
+    required this.dbId,
     required this.id,
     required this.title,
     required this.imageUrl,
@@ -21,7 +22,7 @@ class Product {
     this.yotpoReview,
   });
 
-  factory Product.fromJsonUnsafe(JsonMap json) {
+  factory Product.fromJsonUnsafe(String dbId, JsonMap json) {
     final parse = JsonParser(
       location: "Product",
       json: json,
@@ -32,6 +33,7 @@ class Product {
     final yotpo = parse.jsonMapOrNull("yotpo");
 
     return Product(
+      dbId: dbId,
       id: parse.string("id"),
       title: parse.string("title"),
       imageUrl: parse.string("imageUrl"),
@@ -60,6 +62,7 @@ class Product {
     );
   }
 
+  final String dbId;
   final String id;
   final String title;
   final String imageUrl;
@@ -83,8 +86,8 @@ class Product {
       json["currencySymbol"] != null &&
       json["variants"] != null;
 
-  static Product? fromJson(JsonMap json) =>
-      isConvertable(json) ? Product.fromJsonUnsafe(json) : null;
+  static Product? fromJson(String dbId, JsonMap json) =>
+      isConvertable(json) ? Product.fromJsonUnsafe(dbId, json) : null;
 
   JsonMap toJson() => {
         "id": id,
@@ -136,6 +139,7 @@ class Variant {
   Variant({
     required this.id,
     required this.price,
+    this.imageUrl,
     this.compareAtPrice,
     this.title,
     this.productId,
@@ -152,6 +156,7 @@ class Variant {
     return Variant(
       id: parse.string("id"),
       price: parse.string("price"),
+      imageUrl: parse.stringOrNull("imageUrl"),
       compareAtPrice: parse.stringOrNull("compareAtPrice"),
       title: parse.stringOrNull("title"),
       productId: parse.stringOrNull("productId"),
@@ -163,6 +168,7 @@ class Variant {
 
   final String id;
   final String price;
+  final String? imageUrl;
   final String? compareAtPrice;
   final String? title;
   final String? productId;
@@ -172,6 +178,7 @@ class Variant {
   JsonMap toJson() => {
         "id": id,
         "price": price,
+        "imageUrl": imageUrl,
         "productId": productId,
         "compareAtPrice": compareAtPrice,
         "title": title,
@@ -230,7 +237,7 @@ class ProductsMap {
         return;
       }
 
-      final product = Product.fromJson(productJson);
+      final product = Product.fromJson(key, productJson);
 
       if (product == null) {
         return;
