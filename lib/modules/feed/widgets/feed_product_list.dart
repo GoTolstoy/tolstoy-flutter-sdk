@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_client_config.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/models/asset.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/widgets/product_card/feed_product_card.dart";
 import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
 
@@ -22,7 +23,7 @@ class FeedProductListOptions {
 class FeedProductList extends StatefulWidget {
   const FeedProductList({
     required this.products,
-    required this.config,
+    required this.asset,
     this.clientConfig = const TvPageClientConfig(),
     super.key,
     this.options = const FeedProductListOptions(),
@@ -31,7 +32,7 @@ class FeedProductList extends StatefulWidget {
 
   final List<Product?> products;
   final FeedProductListOptions options;
-  final TvPageConfig config;
+  final Asset asset;
   final TvPageClientConfig clientConfig;
   final void Function(Product)? onProductClick;
 
@@ -54,7 +55,7 @@ class _FeedProductListState extends State<FeedProductList> {
               return Padding(
                 padding: widget.options.itemPadding,
                 child: FeedProductCard(
-                  config: widget.config,
+                  asset: widget.asset,
                   clientConfig: widget.clientConfig,
                   product: product,
                   options: FeedProductCardOptions(

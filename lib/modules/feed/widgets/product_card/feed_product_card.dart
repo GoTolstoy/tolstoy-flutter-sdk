@@ -1,6 +1,8 @@
 import "package:cached_network_image/cached_network_image.dart";
+import "package:collection/collection.dart";
 import "package:flutter/material.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models/tv_page_client_config.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/models/asset.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/widgets/product_card/feed_product_reviews.dart";
 import "package:tolstoy_flutter_sdk/modules/products/services.dart";
 import "package:tolstoy_flutter_sdk/tolstoy_flutter_sdk.dart";
@@ -25,7 +27,7 @@ class FeedProductCardOptions {
 
 class FeedProductCard extends StatelessWidget {
   const FeedProductCard({
-    required this.config,
+    required this.asset,
     this.clientConfig = const TvPageClientConfig(),
     this.product,
     super.key,
@@ -36,11 +38,22 @@ class FeedProductCard extends StatelessWidget {
   final Product? product;
   final void Function(Product)? onProductClick;
   final FeedProductCardOptions options;
-  final TvPageConfig config;
+  final Asset asset;
   final TvPageClientConfig clientConfig;
+
   @override
   Widget build(BuildContext context) {
     final localProduct = product;
+    final taggedProducts = asset.products;
+    final taggedProduct = localProduct != null && taggedProducts != null
+        ? taggedProducts.firstWhereOrNull((p) => p.id == localProduct.dbId)
+        : null;
+    final taggedVariantIds = taggedProduct?.variantIds;
+    final variant = localProduct != null && taggedVariantIds != null
+        ? localProduct.variants
+            .firstWhereOrNull((v) => taggedVariantIds.contains(v.id))
+        : null;
+    final imageUrl = variant?.imageUrl ?? localProduct?.imageUrl;
 
     return GestureDetector(
       onTap: () {
@@ -72,10 +85,10 @@ class FeedProductCard extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     clientConfig.loadingPlaceholderWidget,
-                    if (localProduct != null)
+                    if (imageUrl != null)
                       CachedNetworkImage(
                         imageUrl: ProductUtils.getOptimizedImageUrl(
-                          localProduct.imageUrl,
+                          imageUrl,
                           width: options.imageWidth.toInt(),
                         ),
                         fit: options.imageFit,
