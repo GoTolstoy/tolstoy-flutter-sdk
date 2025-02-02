@@ -75,7 +75,7 @@ class FeedProductCard extends StatelessWidget {
                     if (localProduct != null)
                       CachedNetworkImage(
                         imageUrl: ProductUtils.getOptimizedImageUrl(
-                          localProduct,
+                          localProduct.imageUrl,
                           width: options.imageWidth.toInt(),
                         ),
                         fit: options.imageFit,

@@ -50,17 +50,15 @@ class ProductUtils {
   }
 
   static String getOptimizedImageUrl(
-    Product product, {
+    String imageUrl, {
     int? width,
     int? height,
   }) {
-    final originalUrl = product.imageUrl;
-
-    if (originalUrl.contains("cdn.shopify.com")) {
-      return _optimizeShopifyImageUrl(originalUrl, width, height);
+    if (imageUrl.contains("cdn.shopify.com")) {
+      return _optimizeShopifyImageUrl(imageUrl, width, height);
     }
 
-    return originalUrl;
+    return imageUrl;
   }
 
   static String _optimizeShopifyImageUrl(String url, int? width, int? height) {
