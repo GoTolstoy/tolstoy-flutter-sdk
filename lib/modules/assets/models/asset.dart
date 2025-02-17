@@ -127,6 +127,8 @@ class StockAsset {
 class ExternalProviderData {
   ExternalProviderData({
     this.handle,
+    this.postUrl,
+    this.provider,
   });
 
   factory ExternalProviderData.fromJson(JsonMap json) {
@@ -137,8 +139,12 @@ class ExternalProviderData {
 
     return ExternalProviderData(
       handle: parse.stringOrNull("handle"),
+      postUrl: parse.stringOrNull("postUrl"),
+      provider: parse.stringOrNull("provider"),
     );
   }
 
   final String? handle;
+  final String? postUrl;
+  final String? provider;
 }

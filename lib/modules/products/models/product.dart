@@ -81,6 +81,7 @@ class Product {
 
   static bool isConvertable(JsonMap json) =>
       json["id"] != null &&
+      json["handle"] != null &&
       json["title"] != null &&
       json["imageUrl"] != null &&
       json["currencySymbol"] != null &&

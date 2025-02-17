@@ -47,6 +47,12 @@ class AppConfig {
   static const cacheVersionEndpointUrl =
       "https://${_devPart}apilb.gotolstoy.com/settings/mobile-app/get-cache-version-by-app-key";
 
+  static const categoriesEndpointUrl =
+      "https://${_devPart}apilb.gotolstoy.com/settings/mobile-app/get-categories-by-app-key";
+
+  static const categoriesEndpointCacheUrl =
+      "https://${_devPart}cf-apilb.gotolstoy.com/settings/mobile-app/get-categories-by-app-key";
+
   static const configEndpointUrl =
       "https://${_devPart}apilb.gotolstoy.com/settings$_mobileAppPart/player/by-publish-id";
 
