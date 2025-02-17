@@ -40,10 +40,17 @@ class TvPageConfig {
     return TvPageConfig(
       publishId: parse.string("publishId"),
       appUrl: parse.string("appUrl"),
-      assets: parse.list(
+      assets: parse
+          .list(
         "steps",
         (step) => Asset.fromStepJson(cast.jsonMap(step, "steps::step")),
-      ),
+      )
+          .where(
+        (asset) {
+          final localProducts = asset.products;
+          return localProducts != null && localProducts.isNotEmpty;
+        },
+      ).toList(),
       name: parse.string("name"),
       id: parse.string("id"),
       startStep: parse.string("startStep"),
