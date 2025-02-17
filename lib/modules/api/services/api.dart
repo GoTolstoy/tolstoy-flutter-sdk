@@ -19,6 +19,96 @@ class ApiService {
   static Future<SharedPreferences>? _sharedPreferences;
   static final _cacheVersionByAppKey = <String, Future<String>>{};
 
+  static Future<List<TvPageConfig>> getTvPageConfigsByAppKey(
+    String appKey,
+    ProductsLoaderFactory createProductsLoader, {
+    bool disableCache = false,
+    SdkErrorCallback? onError,
+  }) async {
+    try {
+      final cacheVersion = await _getCacheVersion(appKey, onError: onError);
+
+      final endpoint = disableCache
+          ? AppConfig.categoriesEndpointUrl
+          : AppConfig.categoriesEndpointCacheUrl;
+
+      final url = Uri.parse(
+        "$endpoint?appKey=$appKey&fetchMobileAppTvConfigs=true&v=$cacheVersion",
+      );
+
+      debugInfo("HTTP request: $url");
+
+      final response = await benchmarkedFuture(
+        http.get(url),
+        "ApiService.getTvPageConfigsByAppKey.get",
+      );
+
+      if (AppConfig.debugNetworkDelay != Duration.zero) {
+        debugError("Debug network delay for ${AppConfig.debugNetworkDelay}");
+        await Future.delayed(AppConfig.debugNetworkDelay);
+      }
+
+      if (response.statusCode == 200) {
+        const cast = Cast(location: "ApiService.getTvPageConfigsByAppKey");
+
+        final jsonData =
+            cast.jsonMapOrNull(json.decode(response.body), "response.body");
+
+        if (jsonData == null) {
+          const message = "Failed to load TV page configs by app key";
+          debugError(message);
+          onError?.call(message, StackTrace.current);
+          return [];
+        }
+
+        final tvConfigs = cast.listOrNull(
+          jsonData["categories"],
+          "response.body.categories",
+          (rawCategory) {
+            final category = cast.jsonMapOrNull(
+              rawCategory,
+              "response.body.categories.category",
+            );
+
+            if (category == null) {
+              return null;
+            }
+
+            final rawTvConfig = cast.jsonMapOrNull(
+              category["tvConfig"],
+              "response.body.categories.category.tvConfig",
+            );
+
+            if (rawTvConfig == null) {
+              return null;
+            }
+
+            final tvConfig = TvPageConfig.fromJson(
+              rawTvConfig,
+              createProductsLoader,
+              onError: onError,
+            );
+
+            return tvConfig;
+          },
+        );
+
+        return tvConfigs?.whereType<TvPageConfig>().toList() ?? [];
+      } else {
+        const message = "Failed to load TV page configs by app key";
+        debugError(message);
+        onError?.call(message, StackTrace.current);
+        return [];
+      }
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      const message = "Failed to load TV page configs by app key";
+      debugError("$message: $e");
+      onError?.call(message, StackTrace.current, e);
+      return [];
+    }
+  }
+
   static Future<TvPageConfig?> getTvPageConfig(
     String publishId,
     ProductsLoaderFactory createProductsLoader, {
@@ -27,8 +117,6 @@ class ApiService {
     SdkErrorCallback? onError,
   }) async {
     try {
-      final benchmark = benchmarkedFutureStart();
-
       final cacheVersion = await _getCacheVersion(appKey, onError: onError);
 
       final endpoint = disableCache
@@ -46,9 +134,8 @@ class ApiService {
         "ApiService.getTvPageConfig.get",
       );
 
-      benchmarkedFutureEnd(benchmark, "ApiService.getTvPageConfig");
-
       if (AppConfig.debugNetworkDelay != Duration.zero) {
+        debugError("Debug network delay for ${AppConfig.debugNetworkDelay}");
         await Future.delayed(AppConfig.debugNetworkDelay);
       }
 
@@ -93,8 +180,6 @@ class ApiService {
     SdkErrorCallback? onError,
   }) async {
     try {
-      final benchmark = benchmarkedFutureStart();
-
       final cacheVersion = await _getCacheVersion(appKey, onError: onError);
 
       final endpoint = disableCache
@@ -112,9 +197,8 @@ class ApiService {
         "ApiService.getProductsByVodAssetIds.get",
       );
 
-      benchmarkedFutureEnd(benchmark, "ApiService.getProductsByVodAssetIds");
-
       if (AppConfig.debugNetworkDelay != Duration.zero) {
+        debugError("Debug network delay for ${AppConfig.debugNetworkDelay}");
         await Future.delayed(AppConfig.debugNetworkDelay);
       }
 
