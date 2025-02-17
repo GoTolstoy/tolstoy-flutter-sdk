@@ -114,6 +114,7 @@ class _FeedScreenReportMenuState extends State<FeedScreenReportMenu> {
                             const TextStyle(fontSize: 12, color: Colors.grey),
                       ),
                       value: reason.id,
+                      dense: true,
                       groupValue: _selectedId,
                       controlAffinity: ListTileControlAffinity.trailing,
                       contentPadding: EdgeInsets.zero,
