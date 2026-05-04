@@ -52,7 +52,7 @@ class ApiService {
         const cast = Cast(location: "ApiService.getTvPageConfigsByAppKey");
 
         final jsonData =
-            cast.jsonMapOrNull(json.decode(response.body), "response.body");
+            cast.jsonMapOrNull(json.decode(utf8.decode(response.bodyBytes)), "response.body");
 
         if (jsonData == null) {
           const message = "Failed to load TV page configs by app key";
@@ -143,7 +143,7 @@ class ApiService {
         const cast = Cast(location: "ApiService.getTvPageConfig");
 
         final jsonData =
-            cast.jsonMapOrNull(json.decode(response.body), "response.body");
+            cast.jsonMapOrNull(json.decode(utf8.decode(response.bodyBytes)), "response.body");
 
         if (jsonData == null) {
           const message = "Failed to load TV page config";
@@ -206,7 +206,7 @@ class ApiService {
         const cast = Cast(location: "ApiService.getProductsByVodAssetIds");
 
         final jsonData =
-            cast.jsonMapOrNull(json.decode(response.body), "response.body");
+            cast.jsonMapOrNull(json.decode(utf8.decode(response.bodyBytes)), "response.body");
 
         if (jsonData == null) {
           const message = "Failed to load products by VOD asset IDs";
@@ -313,7 +313,7 @@ class ApiService {
     if (response.statusCode == 200) {
       const cast = Cast(location: "ApiService.getCacheVersion");
 
-      final jsonData = cast.jsonMap(json.decode(response.body), "body");
+      final jsonData = cast.jsonMap(json.decode(utf8.decode(response.bodyBytes)), "body");
 
       cacheVersion = cast.string(jsonData["cacheVersion"], "body.cacheVersion");
     } else {
