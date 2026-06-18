@@ -5,6 +5,7 @@ import "package:shared_preferences/shared_preferences.dart";
 import "package:tolstoy_flutter_sdk/core/config.dart";
 import "package:tolstoy_flutter_sdk/core/types.dart";
 import "package:tolstoy_flutter_sdk/modules/api/models.dart";
+import "package:tolstoy_flutter_sdk/modules/api/services/random_order.dart";
 import "package:tolstoy_flutter_sdk/modules/products/loaders/products_loader.dart";
 import "package:tolstoy_flutter_sdk/modules/products/models.dart";
 import "package:tolstoy_flutter_sdk/utils/benchmarked_future.dart";
@@ -152,11 +153,24 @@ class ApiService {
           return null;
         }
 
-        return TvPageConfig.fromJson(
+        final config = TvPageConfig.fromJson(
           jsonData,
           createProductsLoader,
           onError: onError,
         );
+
+        // The config response is shared (CDN-cached), so randomize "random order" feeds here.
+        if (config.mediaSortOrder == "random") {
+          return config.copyWith(
+            assets: shuffleAssetsWithSeed(
+              config.assets,
+              config.pinnedStepIds,
+              tvFeedShuffleSeed,
+            ),
+          );
+        }
+
+        return config;
       } else {
         const message = "Failed to load TV page config";
         debugError(message);
