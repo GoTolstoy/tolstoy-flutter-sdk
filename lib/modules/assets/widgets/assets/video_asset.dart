@@ -1,3 +1,5 @@
+import "dart:async";
+
 import "package:flutter/material.dart";
 import "package:flutter_spinkit/flutter_spinkit.dart";
 import "package:tolstoy_flutter_sdk/core/config.dart";
@@ -62,24 +64,27 @@ class _VideoAssetState extends State<VideoAsset> {
     _thumbnailUrl = AssetService.getPosterUrl(widget.asset);
 
     if (widget.preload) {
-      _initializeVideoController();
+      unawaited(_initializeVideoController());
     }
   }
 
-  void _initializeVideoController() {
+  Future<void> _initializeVideoController() async {
     final url = widget.options.playMode == AssetViewOptionsPlayMode.preview
         ? AssetService.getPreviewUrl(widget.asset)
         : AssetService.getAssetUrl(widget.asset);
 
-    final localController = VideoPlayerController.networkUrl(
-      Uri.parse(url),
-    );
+    final localController = await _createController(url);
+
+    if (!mounted) {
+      unawaited(localController.dispose());
+      return;
+    }
 
     _controller = localController;
 
     localController.addListener(_videoPlayerListener);
 
-    localController.initialize().then((_) {
+    unawaited(localController.initialize().then((_) {
       localController.setLooping(widget.options.shouldLoop);
       _updateControllerState();
       setState(() {
@@ -93,7 +98,32 @@ class _VideoAssetState extends State<VideoAsset> {
           });
         }
       });
-    });
+    }),);
+  }
+
+  /// Builds a controller for [url]. Small rail preview clips are served from the
+  /// disk cache (downloaded on first use); everything else streams from the
+  /// network. Falls back to network streaming if the cached file is
+  /// unavailable.
+  ///
+  /// Only rail previews are cached: caching is gated on preview play mode (the
+  /// rail is the sole preview-mode consumer) plus the small `_preview.mp4` clip
+  /// URL. Full-resolution feed videos always stream.
+  Future<VideoPlayerController> _createController(String url) async {
+    final isRailPreview =
+        widget.options.playMode == AssetViewOptionsPlayMode.preview &&
+            VideoPreviewCacheManager.isCacheable(url);
+
+    if (isRailPreview) {
+      try {
+        final file = await VideoPreviewCacheManager.instance.getSingleFile(url);
+        return VideoPlayerController.file(file);
+      } on Object catch (_) {
+        // Fall through to network streaming on any cache/download failure.
+      }
+    }
+
+    return VideoPlayerController.networkUrl(Uri.parse(url));
   }
 
   void _videoPlayerListener() {
@@ -220,7 +250,7 @@ class _VideoAssetState extends State<VideoAsset> {
     if (oldWidget.preload != widget.preload &&
         widget.preload &&
         _controller == null) {
-      _initializeVideoController();
+      unawaited(_initializeVideoController());
     }
     if (_controller != null &&
         (oldWidget.options.isPlaying != widget.options.isPlaying ||
