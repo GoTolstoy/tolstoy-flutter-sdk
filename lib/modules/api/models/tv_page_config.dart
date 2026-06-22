@@ -19,6 +19,8 @@ class TvPageConfig {
     required this.createProductsLoader,
     this.onError,
     this.userId,
+    this.mediaSortOrder,
+    this.pinnedStepIds = const [],
   }) : productsLoader = createProductsLoader(
           appKey: appKey,
           appUrl: appUrl,
@@ -57,6 +59,9 @@ class TvPageConfig {
       appKey: parse.string("appKey"),
       owner: parse.string("owner"),
       userId: parse.stringOrNull("userId"),
+      mediaSortOrder: parse.stringOrNull("mediaSortOrder"),
+      pinnedStepIds:
+          parse.listOrNull("pinnedStepIds", (id) => cast.string(id, "pinnedStepIds::id")) ?? const [],
       createProductsLoader: createProductsLoader,
       onError: onError,
     );
@@ -73,6 +78,10 @@ class TvPageConfig {
   final ProductsLoaderFactory createProductsLoader;
   final SdkErrorCallback? onError;
   final String? userId;
+  // 'random' feeds are shuffled client-side per device/launch (the cached config is shared across
+  // devices, so the server can't randomize without breaking the CDN cache). pinnedStepIds keep their slots.
+  final String? mediaSortOrder;
+  final List<String> pinnedStepIds;
   final ProductsLoader productsLoader;
 
   TvPageConfig copyWith({
@@ -85,6 +94,8 @@ class TvPageConfig {
     String? appKey,
     String? owner,
     String? userId,
+    String? mediaSortOrder,
+    List<String>? pinnedStepIds,
     ProductsLoaderFactory? createProductsLoader,
     SdkErrorCallback? onError,
   }) =>
@@ -98,6 +109,8 @@ class TvPageConfig {
         appKey: appKey ?? this.appKey,
         owner: owner ?? this.owner,
         userId: userId ?? this.userId,
+        mediaSortOrder: mediaSortOrder ?? this.mediaSortOrder,
+        pinnedStepIds: pinnedStepIds ?? this.pinnedStepIds,
         createProductsLoader: createProductsLoader ?? this.createProductsLoader,
         onError: onError ?? this.onError,
       );
