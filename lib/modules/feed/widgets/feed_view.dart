@@ -10,6 +10,7 @@ import "package:tolstoy_flutter_sdk/modules/assets/constants.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
 import "package:tolstoy_flutter_sdk/modules/feed/widgets/feed_asset.dart";
 import "package:tolstoy_flutter_sdk/modules/products/models.dart";
+import "package:visibility_detector/visibility_detector.dart";
 
 class FeedViewOptions {
   const FeedViewOptions({
@@ -66,7 +67,7 @@ class _FeedViewState extends State<FeedView>
   bool isPlayingEnabled = true;
   bool isMuted = false;
   int activePageIndex = 0;
-  late FocusNode _focusNode;
+  final _visibilityKey = UniqueKey();
   bool _isVisible = true;
   late Analytics _analytics;
   double _footerHeight = 0;
@@ -92,10 +93,7 @@ class _FeedViewState extends State<FeedView>
 
     _pageViewController = PageController(initialPage: initialPage);
     activePageIndex = initialPage;
-    _focusNode = FocusNode();
-    _focusNode.addListener(_onFocusChange);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNode.requestFocus();
       _calculateFooterHeight();
     });
   }
@@ -117,18 +115,17 @@ class _FeedViewState extends State<FeedView>
   @override
   void dispose() {
     _pageViewController.dispose();
-    _focusNode
-      ..removeListener(_onFocusChange)
-      ..dispose();
     super.dispose();
   }
 
-  void _onFocusChange() {
-    if (mounted) {
-      setState(() {
-        _isVisible = _focusNode.hasFocus;
-      });
+  void _onVisibilityChanged(VisibilityInfo visibilityInfo) {
+    if (!mounted) {
+      return;
     }
+
+    setState(() {
+      _isVisible = visibilityInfo.visibleFraction > 0.5;
+    });
   }
 
   void _onPageChanged(int index) {
@@ -217,8 +214,9 @@ class _FeedViewState extends State<FeedView>
       config: widget.config,
     );
 
-    return Focus(
-      focusNode: _focusNode,
+    return VisibilityDetector(
+      key: _visibilityKey,
+      onVisibilityChanged: _onVisibilityChanged,
       child: ColoredBox(
         color: Theme.of(context).colorScheme.surface,
         child: Stack(
