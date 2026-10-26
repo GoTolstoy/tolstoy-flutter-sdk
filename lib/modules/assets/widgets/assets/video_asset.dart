@@ -111,7 +111,7 @@ class _VideoAssetState extends State<VideoAsset> {
   /// unavailable.
   ///
   /// Only rail previews are cached: caching is gated on preview play mode (the
-  /// rail is the sole preview-mode consumer) plus the small `_preview.mp4` clip
+  /// rail is the sole preview-mode consumer) plus the small preview clip
   /// URL. Full-resolution feed videos always stream.
   Future<VideoPlayerController> _createController(String url) async {
     final isRailPreview =
