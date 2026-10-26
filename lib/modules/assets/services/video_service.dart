@@ -1,10 +1,14 @@
 import "package:tolstoy_flutter_sdk/core/config.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/constants.dart";
 import "package:tolstoy_flutter_sdk/modules/assets/models.dart";
+import "package:tolstoy_flutter_sdk/modules/assets/services/image_service.dart";
+
+const int _previewWidth = 320;
 
 class VideoService {
   static String getVideoUrl(Asset asset, {AssetSize size = AssetSize.m}) {
-    final videoUrl = asset.stockAsset?.videoUrl;
+    final videoUrl = asset.stockAsset?.videoUrl ??
+        asset.mediaAsset?.sourceUrl(getWidth(size));
     if (videoUrl != null) {
       return videoUrl;
     }
@@ -15,7 +19,8 @@ class VideoService {
   }
 
   static String getPreviewUrl(Asset asset) {
-    final previewUrl = asset.stockAsset?.previewUrl;
+    final previewUrl = asset.stockAsset?.previewUrl ??
+        asset.mediaAsset?.previewUrl(_previewWidth);
     if (previewUrl != null) {
       return previewUrl;
     }
@@ -24,10 +29,11 @@ class VideoService {
     return "${_getBaseVideoUrl(asset, isAiVideo: isAiVideo)}_preview.mp4";
   }
 
-  static String getPosterUrl(Asset asset) {
-    final stockPosterUrl = asset.stockAsset?.posterUrl;
-    if (stockPosterUrl != null) {
-      return stockPosterUrl;
+  static String getPosterUrl(Asset asset, {AssetSize size = AssetSize.m}) {
+    final posterUrl = asset.stockAsset?.posterUrl ??
+        asset.mediaAsset?.posterUrl(ImageService.getWidth(size));
+    if (posterUrl != null) {
+      return posterUrl;
     }
 
     return "${AppConfig.videoBaseUrl}/public/${asset.owner}/${asset.id}/${asset.id}.0000000.jpg";
@@ -52,6 +58,19 @@ class VideoService {
       case AssetSize.l:
       case AssetSize.xl:
         return "";
+    }
+  }
+
+  static int getWidth(AssetSize size) {
+    switch (size) {
+      case AssetSize.xs:
+      case AssetSize.s:
+        return 640;
+      case AssetSize.m:
+        return 960;
+      case AssetSize.l:
+      case AssetSize.xl:
+        return 1280;
     }
   }
 }

@@ -18,7 +18,7 @@ class AssetService {
       case AssetType.image:
         return ImageService.getImageUrl(asset, size: size);
       case AssetType.video:
-        return VideoService.getPosterUrl(asset);
+        return VideoService.getPosterUrl(asset, size: size);
     }
   }
 

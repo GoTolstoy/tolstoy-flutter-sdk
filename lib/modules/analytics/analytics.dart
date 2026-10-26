@@ -15,6 +15,7 @@ enum AnalyticsEventType {
   videoClicked,
   videoLoaded,
   videoWatched,
+  videoError,
 
   clickViewProduct,
 }
@@ -115,6 +116,17 @@ class Analytics {
     final params = _getAnalyticsParams(
       config,
       {"eventName": AnalyticsEventType.videoWatched.name, ...dynamicParams},
+    );
+    _sendEvent(params);
+  }
+
+  void sendVideoError(
+    TvPageConfig config,
+    AnalyticsParams dynamicParams,
+  ) {
+    final params = _getAnalyticsParams(
+      config,
+      {"eventName": AnalyticsEventType.videoError.name, ...dynamicParams},
     );
     _sendEvent(params);
   }

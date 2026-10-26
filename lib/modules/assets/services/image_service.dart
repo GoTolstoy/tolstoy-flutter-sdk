@@ -10,21 +10,25 @@ class ImageService {
         "${AppConfig.videoBaseUrl}/public/${asset.owner}/${asset.id}/";
     final fileName = "${asset.id}${getSuffix(size)}$_extension";
 
-    return asset.stockAsset?.posterUrl ?? "$route$fileName";
+    return asset.stockAsset?.posterUrl ??
+        asset.mediaAsset?.sourceUrl(getWidth(size)) ??
+        "$route$fileName";
   }
 
-  static String getSuffix(AssetSize size) {
+  static String getSuffix(AssetSize size) => "_${getWidth(size)}";
+
+  static int getWidth(AssetSize size) {
     switch (size) {
       case AssetSize.xs:
-        return "_250";
+        return 250;
       case AssetSize.s:
-        return "_480";
+        return 480;
       case AssetSize.m:
-        return "_960";
+        return 960;
       case AssetSize.l:
-        return "_1280";
+        return 1280;
       case AssetSize.xl:
-        return "_1920";
+        return 1920;
     }
   }
 }
