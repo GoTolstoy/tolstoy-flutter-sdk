@@ -39,13 +39,23 @@ class TvPageConfig {
 
     const cast = Cast(location: "TvPageConfig");
 
+    final mediaAssetsById = parse.mapOrNull(
+      "mediaAssetsById",
+      (mediaAsset) => MediaAsset.fromJson(
+        cast.jsonMap(mediaAsset, "mediaAssetsById::mediaAsset"),
+      ),
+    );
+
     return TvPageConfig(
       publishId: parse.string("publishId"),
       appUrl: parse.string("appUrl"),
       assets: parse
           .list(
         "steps",
-        (step) => Asset.fromStepJson(cast.jsonMap(step, "steps::step")),
+        (step) => Asset.fromStepJson(
+          cast.jsonMap(step, "steps::step"),
+          mediaAssetsById: mediaAssetsById,
+        ),
       )
           .where(
         (asset) {

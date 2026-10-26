@@ -55,6 +55,8 @@ class _VideoAssetState extends State<VideoAsset> {
   bool _isVideoInitialized = false;
   bool _isVideoReady = false;
   Widget? _errorWidget;
+  String? _videoUrl;
+  bool _hasSentError = false;
 
   @override
   void initState() {
@@ -72,6 +74,8 @@ class _VideoAssetState extends State<VideoAsset> {
     final url = widget.options.playMode == AssetViewOptionsPlayMode.preview
         ? AssetService.getPreviewUrl(widget.asset)
         : AssetService.getAssetUrl(widget.asset);
+
+    _videoUrl = url;
 
     final localController = await _createController(url);
 
@@ -136,11 +140,13 @@ class _VideoAssetState extends State<VideoAsset> {
     }
 
     if (localController.value.hasError) {
+      final error = localController.value.errorDescription ?? "Unknown error";
       _errorWidget = widget.onVideoError?.call(
-        localController.value.errorDescription ?? "Unknown error",
+        error,
         widget.asset,
         widget.options.playMode,
       );
+      _sendVideoErrorAnalytics(error);
     }
 
     if (!_isVideoInitialized) {
@@ -225,6 +231,28 @@ class _VideoAssetState extends State<VideoAsset> {
     );
     _loopCount = 0;
     _hasWatched = false;
+  }
+
+  void _sendVideoErrorAnalytics(String error) {
+    if (_hasSentError) {
+      return;
+    }
+
+    _hasSentError = true;
+    _analytics.sendVideoError(
+      widget.config,
+      {
+        "videoId": widget.asset.id,
+        "text": widget.asset.name,
+        "type": widget.asset.type.name,
+        // The events API keeps only known top-level fields; customParams is stored as JSON.
+        "customParams": {
+          "uploadType": widget.asset.uploadType,
+          "url": _videoUrl,
+          "error": error,
+        },
+      },
+    );
   }
 
   void _updateControllerState() {

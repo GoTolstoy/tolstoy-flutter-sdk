@@ -15,9 +15,13 @@ class Asset {
     this.stockAsset,
     this.externalProviderData,
     this.createdAt,
+    this.mediaAsset,
   });
 
-  factory Asset.fromStepJson(JsonMap json) {
+  factory Asset.fromStepJson(
+    JsonMap json, {
+    Map<String, MediaAsset>? mediaAssetsById,
+  }) {
     final parse = JsonParser(
       location: "Asset",
       json: json,
@@ -27,10 +31,11 @@ class Asset {
 
     final stockAsset = parse.jsonMapOrNull("stockAsset");
     final externalProviderData = parse.jsonMapOrNull("externalProviderData");
+    final id = parse.string("videoId");
 
     return Asset(
       owner: parse.string("videoOwner"),
-      id: parse.string("videoId"),
+      id: id,
       uploadType: parse.string("uploadType"),
       type: enumFromString(
         parse.stringOrNull("type"),
@@ -49,6 +54,7 @@ class Asset {
       externalProviderData: externalProviderData != null
           ? ExternalProviderData.fromJson(externalProviderData)
           : null,
+      mediaAsset: mediaAssetsById?[id],
     );
   }
 
@@ -61,6 +67,7 @@ class Asset {
   final StockAsset? stockAsset;
   final ExternalProviderData? externalProviderData;
   final DateTime? createdAt;
+  final MediaAsset? mediaAsset;
 }
 
 class ProductReference {
@@ -147,4 +154,64 @@ class ExternalProviderData {
   final String? handle;
   final String? postUrl;
   final String? provider;
+}
+
+class MediaAsset {
+  MediaAsset({
+    this.sources = const {},
+    this.preview = const {},
+    this.poster = const {},
+  });
+
+  factory MediaAsset.fromJson(JsonMap json) {
+    final parse = JsonParser(
+      location: "MediaAsset",
+      json: json,
+    );
+
+    return MediaAsset(
+      sources: _urlsByWidth(parse.jsonMapOrNull("sources")),
+      preview: _urlsByWidth(parse.jsonMapOrNull("preview")),
+      poster: _urlsByWidth(parse.jsonMapOrNull("poster")),
+    );
+  }
+
+  final Map<int, String> sources;
+  final Map<int, String> preview;
+  final Map<int, String> poster;
+
+  String? sourceUrl(int width) => _urlForWidth(sources, width);
+
+  String? previewUrl(int width) => _urlForWidth(preview, width);
+
+  String? posterUrl(int width) => _urlForWidth(poster, width);
+
+  static Map<int, String> _urlsByWidth(JsonMap? json) {
+    final urls = <int, String>{};
+
+    for (final entry in (json ?? {}).entries) {
+      final key = entry.key;
+      final url = entry.value;
+      final width = key is String ? int.tryParse(key) : null;
+
+      if (width != null && url is String) {
+        urls[width] = url;
+      }
+    }
+
+    return urls;
+  }
+
+  static String? _urlForWidth(Map<int, String> urls, int width) {
+    if (urls.isEmpty) {
+      return null;
+    }
+
+    final widths = urls.keys.toList()..sort();
+
+    return urls[widths.firstWhere(
+      (availableWidth) => availableWidth >= width,
+      orElse: () => widths.last,
+    )];
+  }
 }
